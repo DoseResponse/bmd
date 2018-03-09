@@ -6,35 +6,64 @@ Benchmark dose estimation
 \description{Estimation of benchmark doses and benchmark dose lower limit from dose response model fits 
 }
 \usage{
-bmd(object, bmr, backgType = c("modelBased","absolute","hybridSD","hybridPercentile"), backg = NA, 
+bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra","absolute", "hybridExc", "hybridAdd", "point"), 
               interval = "delta", display = FALSE) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
-  \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose (should be between 0 and 1)}
-  \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". 
-  For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
+  \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
+  \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
-  "modelBased" - the background risk is obtained from the model as the risk for dose 0 
+  "modelBased" - the background risk is obtained from the model as the risk for dose 0: 
+  p0 = f(0) 
   
-  "absolute" - the background risk is specified by the user through the backg argument
+  "absolute" - the background risk is specified by the user through the backg argument:
+  p0 = backg for binomial response and for the "relative" and "extra" definiton for continuous response. 
+  p0 = 1 - \phi((\back - f(0))/\sigma) for "hybridExc" and "hybridAdd" definitions.
   
-  "hybridSD" - the background risk is specified by the user in terms of SD from the mean for the control group
-  
-  "hybridPercentile" - the background risk is specified by the user in terms of percentile from the control group distribution (assuming a normal distribution)}
+  "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
+  p0 = 1 - \phi(((backg*\sigma + f(0)) - f(0))/\sigma) = 1 - \phi(backg),
+  where \phi is the normal distribution function and \sigma is the SD for the control group. 
+  "hybridPercentile" - the background risk is specified by the user in terms of percentile from the control group distribution (assuming a normal distribution).
+  p0 = 1 - \phi((x0 - f(0))/\sigma) = 1 - backg.
+  where x0 is the level for which the response is considered adverse, \phi is the normal distribution function and \sigma is the SD for the control group}
     
-  \item{backg}{numeric value specifying the background level (defaults to 0)}
-  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess" and "additional" are for binomial
-  response whereas "relative" and "hybrid" (additive hybrid) are for continuous response}
-  \item{interval}{character string specifying the type of confidence interval to use}
-  \item{ma}{logical value switching on/off model averaging using a default list of model functions}
-  \item{maList}{list of model functions to include in the model averaging}
-  \item{display}{logical. If TRUE results are displayed; otherwise they are not}
+  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomail response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
+  
+  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "absolute", "hybridExc" (excess hybrid), "hybridAdd" (additive hybrid), and "point" are for continuous response
+  
+  "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
+  Works for binomial response. BMR should be between 0 and 1.  
+  
+  "additional" - BMR is defined as: BMR = f(BMD) - p0.
+  Works for binomial response. BMR should be between 0 and 1.  
+  
+  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for both binomial and continious response 
+  
+  "relative" - BMR is defined as: BMR = (f(BMD) - p0)/p0. 
+  Works for continuous response 
+  
+  "extra" - BMR is defined as: BMR = (f(BMD) - p0)/(f(Inf) - p0).
+  Works for continuous response
+  
+  "absolute" - BMR is defined as: BMR= f(BMD) + p0.
+  Works for continuous response
+  
+  "hybridExc" - BMR is defined as: BMR = (1 - \phi((x0 - f(BMD))/\sigma) - p0)/ (1- p0), 
+  where x0 is the level for which the response is considered adverse, \phi is the normal distribution function and \sigma is the SD for the control group. 
+  Works for continuous response
+  
+  "hybridAdd" - BMR is defined as: BMR = 1 - \phi((x0 - f(BMD))/\sigma) - p0, 
+  where x0 is the level for which the response is considered adverse, \phi is the normal distribution function and \sigma is the SD for the control group. 
+  Works for continuous response}
+  
+  \item{interval}{character string specifying the type of confidence interval to use (only option is delta)}
+  \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 }
 
 \details{
-This package project just started and is still under development. The aim to provide an R package 
+This package project is still under development. The aim to provide an R package 
   calculating the benchmark dose (BMD) and the lower limit of the corresponding 95\% confidence interval (BMDL)
   for continuous and quantal dose-response data for a range of dose-response model based on the available
   definitions of the benchmark dose concepts.
@@ -42,7 +71,7 @@ This package project just started and is still under development. The aim to pro
   Details on the implemented definitions and methods can be found in Crump (2002)
 }
 \value{
-A matrix with two column, one containing BMD and the other containing BMDL.
+A matrix with two columns, one containing BMD and the other containing BMDL.
 }
 \references{
   Budtz-Jorgensen, E., Keiding, N., and Grandjean, P. (2001) 
@@ -65,30 +94,26 @@ A matrix with two column, one containing BMD and the other containing BMDL.
 ## Fitting log-logistic two-parameter model to binomial data
 deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
 
-## Estimated EC values for comparison
-ED(deguelin.m1, c(5, 10, 50), interval = "delta")
+## BMD for 5% additional risk with estimated background risk
+bmd(deguelin.m1, 0.05, backgType = "modelBased", def = "additional")
 
-## Excess risk with BMR=5% and background 0
-bmd(deguelin.m1, 0.05)
+## BMD for 10% additional risk with 2% background risk
+bmd(deguelin.m1, 0.1, backg = 0.02 , backgType = "absolute", def = "additional")
 
-## Additional risk BMR=5% and with background 0
-bmd(deguelin.m1, 0.05, def = "additional")
+## BMD for 5% excess risk and background 0
+bmd(deguelin.m1, 0.05, backg = 0, backgType = "absolute", def = "excess")
 
-## Excess risk with BMR=5% and known background
-bmd(deguelin.m1, 0.05, backg = 0.05)
-
-## Additional risk with BMR=5% and known background
-## similar but not identical to excess risk
-bmd(deguelin.m1, 0.05, backg = 0.05, def = "additional", display = TRUE)
+## Dose resulting in 12% risk
+bmd(deguelin.m1, 0.12, def = "point")
 
 ## Benchmark doses for a continuous response
 ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
 
-## Standard single-model BMD using relative values (background level cannot be incorporated)
-bmd(ryegrass.m1, 0.05, def = "relative", display = TRUE)
+## BMD as the dose resulting in a 5% change relative to the mean background level
+bmd(ryegrass.m1, 0.05, backgType = "modelBased", def = "relative", display = TRUE)
 
-## Standard single-model BMD using the hybrid method (background level can be incorporated)
-bmd(ryegrass.m1, 0.05, backg = 0.05, def = "hybrid", display = TRUE)
+## BMD using the hybrid method, background risk is 2 SD, hybrid definition using excess risk
+bmd(ryegrass.m1, 0.05, backg = 2, backgType = "hybridSD", def = "hybridAdd", display = TRUE)
 
 }
 \keyword{models}

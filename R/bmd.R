@@ -1,10 +1,22 @@
-bmd<-function (object, bmr, backgType = c("modelBased","absolute","hybridSD","hybridPercentile"),
+bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
                backg=NA, 
                def = c("excess", "additional", 
-                       "relative", "extra","absolute", "hybridExc", "hybridAdd", "point"), 
+                       "relative", "extra", "absolute", "hybridExc", "hybridAdd", "point"), 
               interval = "delta", display = FALSE) 
 {
-    slope <- ifelse(as.numeric(predict(object,data.frame(0))-predict(object,data.frame(Inf)))>0,"decreasing","increasing")
+  if (missing(def)) {
+    stop(paste("def is missing", sep=""))
+  }
+  if (missing(backgType)) {
+    stop(paste("backgType is missing", sep=""))
+  }
+  if (!(def %in% c("excess", "additional", "relative", "extra", "absolute", "hybridExc", "hybridAdd", "point"))) {
+    stop(paste("Could not recognize def", sep=""))
+  }
+  if (!(backgType %in% c("modelBased","absolute","hybridSD","hybridPercentile"))) {
+    stop(paste("Could not recognize backgType", sep=""))
+  }
+  slope <- ifelse(as.numeric(predict(object,data.frame(0))-predict(object,data.frame(Inf)))>0,"decreasing","increasing")
     if( identical(slope,"increasing" )) {
     f0 <- ifelse(!is.na(coef(object)["c:(Intercept)"]), coef(object)["c:(Intercept)"], predict(object,data.frame(0)))
     } else {
@@ -13,8 +25,10 @@ bmd<-function (object, bmr, backgType = c("modelBased","absolute","hybridSD","hy
     if(identical(slope,"increasing" )) {
       if (identical(backgType,"modelBased")) {
         background <- f0
+        } else if (identical(backgType,"absolute") & !(def %in% c("relative","extra"))) {
+        background <- backg
         } else if (identical(backgType,"absolute") & !(def %in% c("hybridExc","hybridAdd"))) {
-        background <- ifelse(is.na(backg),0,backg)
+          background <- ifelse(is.na(backg),0,backg)
         } else if (identical(backgType,"hybridSD")) {
         background <- ifelse(is.na(backg), 1-pnorm(2), 1-pnorm(backg))
         } else if (identical(backgType,"absolute") & 
@@ -30,14 +44,14 @@ bmd<-function (object, bmr, backgType = c("modelBased","absolute","hybridSD","hy
         } else if (identical(backgType,"absolute") & !(def %in% c("hybridExc","hybridAdd"))) {
         background <- ifelse(is.na(backg),1,backg)
         } else if (identical(backgType,"hybridSD")) {
-        background <- ifelse(is.na(backg), 1-pnorm(2), 1-pnorm(backg))
+        background <- ifelse(is.na(backg), pnorm(-2), pnorm(-backg))
         } else if (identical(backgType,"absolute") & 
                  (identical(def,"hybridExc") | identical(def,"hybridAdd") )) {
         background <- ifelse(is.na(backg), 
-                             1-pnorm(2),
-                             1-pnorm((f0-backg)/sqrt(summary(object)$resVar)))
+                             pnorm(-2),
+                             pnorm((backg-f0)/sqrt(summary(object)$resVar)))
         } else {
-        background <- ifelse(is.na(backg),0.9,backg)}
+        background <- ifelse(is.na(backg),0.1,backg)}
     }
     
     def <- match.arg(def)
@@ -56,35 +70,36 @@ bmd<-function (object, bmr, backgType = c("modelBased","absolute","hybridSD","hy
       } 
       typeVal <- "absolute"
     }
-    if (identical(respType, "binomial") & (def %in% c("relative","absolute","hybridExc","hybridAdd"))) {
+    if (identical(respType, "binomial") & (def %in% c("relative","absolute","extra", "hybridExc","hybridAdd"))) {
       stop(paste("\"",def, "\" is not available for quantal data", sep=""))
+    }
+    if (def %in% c("excess","additional") & (backgType %in% c("hybridSD", "hybridPercentile"))) {
+      stop(paste("\"",def, "\" does not work with backgType = \"", backgType,"\"", sep=""))
     }
     if (identical(respType, "continuous")) {
       if(identical(slope,"increasing" )) {
         bmrScaled0 <- switch(def, relative = bmr * background + background, 
                              absolute = bmr + background,
                              point = bmr,
-                             std = bmr*sqrt(summary(object)$resVar) + background,
                              extra = bmr*abs(diff(predict(object, data.frame(c(0, Inf)))))
                                      + background,
                              hybridAdd = sqrt(summary(object)$resVar) * 
                                    (qnorm(1 - background) - qnorm(1 - (background + bmr))) + 
-                                   coef(object)["c:(Intercept)"],
+                                   f0,
                              hybridExc = sqrt(summary(object)$resVar) * 
                                   (qnorm(1 - background) - qnorm(1 + background - (1 - background)*bmr)) + 
-                                  coef(object)["c:(Intercept)"])
+                                   f0)
       } else {
         bmrScaled0 <- switch(def, relative = background - bmr * background, 
                              absolute = background - bmr,
                              point = bmr,
-                             std = background - bmr*sqrt(summary(object)$resVar),
                              extra = background - bmr*abs(diff(predict(object, data.frame(c(0, Inf))))),
                              hybridAdd = sqrt(summary(object)$resVar) * 
-                               (qnorm(1 - background) - qnorm(1 - (background + bmr))) + 
-                               coef(object)["c:(Intercept)"],
+                               (qnorm(background) - qnorm(background + bmr)) + 
+                               f0,
                              hybridExc = sqrt(summary(object)$resVar) * 
-                               (qnorm(1 - background) - qnorm(1 + background - (1 - background)*bmr)) + 
-                               coef(object)["c:(Intercept)"])
+                               (qnorm(background) - qnorm(background*(1+bmr))) + 
+                               f0)
       }
         bmrScaled <- as.numeric(format(bmrScaled0, digits = 5))
         typeVal <- "absolute"
@@ -105,3 +120,6 @@ bmd<-function (object, bmr, backgType = c("modelBased","absolute","hybridSD","hy
     cat("\n\n")
     resMat
     }
+
+
+
