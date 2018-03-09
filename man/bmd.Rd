@@ -7,7 +7,7 @@ Benchmark dose estimation
 }
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
-def = c("excess", "additional", "relative", "extra","absolute", "hybridExc", "hybridAdd", "point"), 
+def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
               interval = "delta", display = FALSE) 
 }
 \arguments{
@@ -19,7 +19,7 @@ def = c("excess", "additional", "relative", "extra","absolute", "hybridExc", "hy
   p0 = f(0) 
   
   "absolute" - the background risk is specified by the user through the backg argument:
-  p0 = backg for binomial response and for the "relative" and "extra" definiton for continuous response. 
+  p0 = backg for binomial response and for the "relative", "extra" and "added" definiton for continuous response. 
   p0 = 1 - \phi((\back - f(0))/\sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
@@ -31,7 +31,7 @@ def = c("excess", "additional", "relative", "extra","absolute", "hybridExc", "hy
     
   \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomail response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
   
-  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "absolute", "hybridExc" (excess hybrid), "hybridAdd" (additive hybrid), and "point" are for continuous response
+  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
   
   "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
   Works for binomial response. BMR should be between 0 and 1.  
@@ -47,7 +47,7 @@ def = c("excess", "additional", "relative", "extra","absolute", "hybridExc", "hy
   "extra" - BMR is defined as: BMR = (f(BMD) - p0)/(f(Inf) - p0).
   Works for continuous response
   
-  "absolute" - BMR is defined as: BMR= f(BMD) + p0.
+  "added" - BMR is defined as: BMR= f(BMD) + p0.
   Works for continuous response
   
   "hybridExc" - BMR is defined as: BMR = (1 - \phi((x0 - f(BMD))/\sigma) - p0)/ (1- p0), 

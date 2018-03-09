@@ -1,16 +1,19 @@
 bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
                backg=NA, 
                def = c("excess", "additional", 
-                       "relative", "extra", "absolute", "hybridExc", "hybridAdd", "point"), 
+                       "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
               interval = "delta", display = FALSE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
   }
+  if(def=="point"){
+    backgType <- "modelBased"
+    } 
   if (missing(backgType)) {
     stop(paste("backgType is missing", sep=""))
   }
-  if (!(def %in% c("excess", "additional", "relative", "extra", "absolute", "hybridExc", "hybridAdd", "point"))) {
+  if (!(def %in% c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"))) {
     stop(paste("Could not recognize def", sep=""))
   }
   if (!(backgType %in% c("modelBased","absolute","hybridSD","hybridPercentile"))) {
@@ -70,7 +73,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       } 
       typeVal <- "absolute"
     }
-    if (identical(respType, "binomial") & (def %in% c("relative","absolute","extra", "hybridExc","hybridAdd"))) {
+    if (identical(respType, "binomial") & (def %in% c("relative","added","extra", "hybridExc","hybridAdd"))) {
       stop(paste("\"",def, "\" is not available for quantal data", sep=""))
     }
     if (def %in% c("excess","additional") & (backgType %in% c("hybridSD", "hybridPercentile"))) {
@@ -79,7 +82,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     if (identical(respType, "continuous")) {
       if(identical(slope,"increasing" )) {
         bmrScaled0 <- switch(def, relative = bmr * background + background, 
-                             absolute = bmr + background,
+                             added = bmr + background,
                              point = bmr,
                              extra = bmr*abs(diff(predict(object, data.frame(c(0, Inf)))))
                                      + background,
@@ -91,7 +94,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                                    f0)
       } else {
         bmrScaled0 <- switch(def, relative = background - bmr * background, 
-                             absolute = background - bmr,
+                             added = background - bmr,
                              point = bmr,
                              extra = background - bmr*abs(diff(predict(object, data.frame(c(0, Inf))))),
                              hybridAdd = sqrt(summary(object)$resVar) * 
