@@ -20,7 +20,7 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   
   "absolute" - the background risk is specified by the user through the backg argument:
   p0 = backg for binomial response and for the "relative", "extra" and "added" definiton for continuous response. 
-  p0 = 1 - phi((\back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
+  p0 = 1 - phi((back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
   p0 = 1 - phi(((backg*sigma + f(0)) - f(0))/sigma) = 1 - phi(backg),
