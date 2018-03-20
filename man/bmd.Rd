@@ -20,14 +20,14 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   
   "absolute" - the background risk is specified by the user through the backg argument:
   p0 = backg for binomial response and for the "relative", "extra" and "added" definiton for continuous response. 
-  p0 = 1 - \phi((\back - f(0))/\sigma) for "hybridExc" and "hybridAdd" definitions.
+  p0 = 1 - phi((\back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
-  p0 = 1 - \phi(((backg*\sigma + f(0)) - f(0))/\sigma) = 1 - \phi(backg),
-  where \phi is the normal distribution function and \sigma is the SD for the control group. 
+  p0 = 1 - phi(((backg*sigma + f(0)) - f(0))/sigma) = 1 - phi(backg),
+  where phi is the normal distribution function and sigma is the SD for the control group. 
   "hybridPercentile" - the background risk is specified by the user in terms of percentile from the control group distribution (assuming a normal distribution).
-  p0 = 1 - \phi((x0 - f(0))/\sigma) = 1 - backg.
-  where x0 is the level for which the response is considered adverse, \phi is the normal distribution function and \sigma is the SD for the control group}
+  p0 = 1 - phi((x0 - f(0))/sigma) = 1 - backg.
+  where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
     
   \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomail response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
   
@@ -50,12 +50,12 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   "added" - BMR is defined as: BMR= f(BMD) + p0.
   Works for continuous response
   
-  "hybridExc" - BMR is defined as: BMR = (1 - \phi((x0 - f(BMD))/\sigma) - p0)/ (1- p0), 
-  where x0 is the level for which the response is considered adverse, \phi is the normal distribution function and \sigma is the SD for the control group. 
+  "hybridExc" - BMR is defined as: BMR = (1 - phi((x0 - f(BMD))/sigma) - p0)/ (1- p0), 
+  where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response
   
-  "hybridAdd" - BMR is defined as: BMR = 1 - \phi((x0 - f(BMD))/\sigma) - p0, 
-  where x0 is the level for which the response is considered adverse, \phi is the normal distribution function and \sigma is the SD for the control group. 
+  "hybridAdd" - BMR is defined as: BMR = 1 - phi((x0 - f(BMD))/sigma) - p0, 
+  where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
   \item{interval}{character string specifying the type of confidence interval to use (only option is delta)}
