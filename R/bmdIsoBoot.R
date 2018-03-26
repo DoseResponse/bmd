@@ -8,7 +8,7 @@ bmdIsoBoot <- function(object, data, type, bmr, R=1000, boot="resample", backgTy
   data.e[,"row.num"]<-1:dim(data.e)[1]
   tmp.data <- list()
   for(i in 1:R){
-    sampled.expand <- data.e[as.numeric(unlist(aggregate(row.num ~ dose, data=data.e, 
+    sampled.expand <- data.e[as.numeric(unlist(aggregate(row.num ~ data.e[,as.character(object[[3]])], data=data.e, 
                                                         FUN=function(x) sample(x,replace=TRUE))[[2]])),]
     tmp.data[[i]] <- aggregateBinomial(object, sampled.expand)
   }

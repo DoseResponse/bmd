@@ -1,20 +1,20 @@
-\name{bmdIso}
-\alias{bmdIso}
+\name{bmdIsoBoot}
+\alias{bmdIsoBoot}
 \title{
 Benchmark dose estimation from isotonic regression
 }
-\description{The function monotonizes the sequence of response values based on the pool-adjacent violators algorithm and based on these use linear interpolating splines to build an isotonic regression model. From this model a benchmark dose is estimated.  
+\description{The function estimates BMD and BMDL using bootstrap based on isotonic regression.  
 }
 \usage{
-bmd(formula, data, type, bmr, p0, backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), 
-backg = NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point"), 
-display = FALSE) 
+bmd(formula, data, type, bmr, R=1000, boot="resample", backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), backg=NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point")) 
 }
 \arguments{
   \item{formula}{an object of class "formula" expressing dose-respone relationship. Details of model specification are given under 'Details'}
   \item{data}{data frame containing the variables in the model}
   \item{type}{character string specifying the type of data used in the model. "continuous" or "binomial"}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
+  \item{R}{number of bootstrap samples}
+  \item{boot}{character string specifying type of bootstrap used. "resample" or "pseudorandom"}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
   "modelBased" - the background risk is obtained from the model as the risk for dose 0: 
@@ -57,11 +57,17 @@ display = FALSE)
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
-  \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 }
 
 \details{
+BMD and BMDL is defined as the median and the 5th percentile in the bootstrap distribution, respectively.
+
 Formula should be specifed as in the form number/total ~ dose for binomial data.
+
+Bootstrapping with the argument boot = "resample" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "pseudorandom" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). 
+
+All sampling is made within dose groups.  
+
 For details about the use of isotonic regression for BMD estimation see Piegorsch et al. (20014) and Lin et al. (2015).
 }
 \value{
@@ -86,8 +92,8 @@ formaldehyde <- data.frame(conc = c(0.0, 0.7, 2.0, 6.0, 10.0, 15.0),
                           tumor.incidence = c(0, 0, 0, 3, 21, 150),
                           total = c(122, 27, 126, 113, 34, 182))
                           
-# Estimating BMD from isotonic regression using excess risk definition and a BMR=0.1
-bmdIso(tumor.incidence/total ~ conc, 
+# BMD and BMDL from isotonic regression using excess risk definition and a BMR=0.1
+bmdIsoBoot(tumor.incidence/total ~ conc, 
       data=formaldehyde, 
       type="binomial",
       bmr=0.1,
@@ -104,7 +110,7 @@ ryegrass1<-ryegrass
 ryegrass1$rootl<-100-ryegrass1$rootl
 
 # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
-bmdIso(rootl ~ conc, 
+bmdIsoBoot(rootl ~ conc, 
       data=ryegrass1, 
       type="continuous",
       bmr=0.05,
@@ -113,5 +119,6 @@ bmdIso(rootl ~ conc,
 }
 \keyword{nonparametric}
 \keyword{isotonic regression}
+\keyword{bootstrap}
 
 \concept{BMD BMDL benchmark dose-response}
