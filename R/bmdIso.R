@@ -27,7 +27,7 @@ bmdIso <- function(object, data, type, bmr, p0, backgType = c("modelBased", "abs
                          1-pnorm(2),
                          1-pnorm((backg-f0)/sigma.sq))
   } else {
-    background <- ifelse(is.na(backg),0.9,backg)
+    background <- ifelse(is.na(backg),1-0.9,1-backg)
   }
   def <- match.arg(def)
   if (identical(type, "binomial")) {

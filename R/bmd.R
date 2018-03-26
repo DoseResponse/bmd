@@ -40,7 +40,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                              1-pnorm(2),
                              1-pnorm((backg-f0)/sqrt(summary(object)$resVar)))
         } else {
-        background <- ifelse(is.na(backg),0.9,backg)}
+        background <- ifelse(is.na(backg),1-0.9,1-backg)}
     } else {
       if (identical(backgType,"modelBased")) {
         background <- f0
