@@ -8,7 +8,7 @@ Benchmark dose estimation
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = "delta", display = FALSE) 
+              interval = c("delta","sandwich","inv"), display = FALSE) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -65,7 +65,7 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   "sandwich" - BMDL is based on ht elower limit of a Wald confidence intervals based on the delta method with robust standard errors from the sandwich covariance matrix 
   
   "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
-  }
+  
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 }
 
