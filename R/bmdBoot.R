@@ -100,9 +100,4 @@ bmdBoot <- function(object, bmr, R=1000, boot="resample", bmdType = "orig",
    
 }
 
-bmdBoot(rye.m1,0.1,def="hybridAdd",backgType = "hybridSD",boot="pseudorandom",R=10)
-bmdBoot(rye.m1,0.1,def="hybridAdd",backgType = "hybridSD",boot="pseudorandom",R=10, bmdType="mean")
-bmdBoot(rye.m1,0.1,def="hybridAdd",backgType = "hybridSD",boot="pseudorandom",R=10, bmdType="median")
 
-bmdBoot(pathogen.m1, 0.1, def = "excess", backgType = "modelBased")
-bmdBoot(pathogen.m1, 0.1, def = "excess", backgType = "modelBased", boot="pseudorandom")
