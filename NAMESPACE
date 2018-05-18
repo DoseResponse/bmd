@@ -1,2 +1,2 @@
 import(drc)
-export(bmd, bmdIso, bmdIsoBoot, PAV)
+export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV)
