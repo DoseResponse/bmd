@@ -119,7 +119,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       stop(paste("\"",def, "\" is not available for continuous data", sep=""))
     }
     if (display) {
-        cat("Effective response level: ", bmrScaled)
+        cat("Effective response level: ", bmrScaled, "\n")
     }
     resMat <- ED(object, bmrScaled, interval = interval.type, 
             level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
@@ -127,7 +127,6 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
-    cat("\n\n")
     resMat
     }
 
