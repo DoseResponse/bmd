@@ -1,9 +1,9 @@
-bmdBoot <- function(object, bmr, R=1000, boot="resample", bmdType = "orig",
+bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
                     backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
                     backg=NA, 
                     def = c("excess", "additional", 
                             "relative", "extra", "added", "hybridExc", "hybridAdd", "point")){
-  if(boot=="resample"){
+  if(boot=="nonparametric"){
     if(object$type=="binomial"){
       data.str <- object$data
       data.str[["number"]] <- data.str[,2]*data.str[["weights"]]
@@ -35,7 +35,7 @@ bmdBoot <- function(object, bmr, R=1000, boot="resample", bmdType = "orig",
                                                              FUN=function(x) sample(x,replace=TRUE))[[2]])),]
          }
       }
-  } else if(boot=="pseudorandom"){
+  } else if(boot=="parametric"){
     if(object$type=="binomial"){
     Y <- object$data[[as.character(object$call$formula)[[2]]]]*object$data[["weights"]]
     N <- object$data[["weights"]]
@@ -75,6 +75,22 @@ bmdBoot <- function(object, bmr, R=1000, boot="resample", bmdType = "orig",
         colnames(sampled) <- c(as.character(object$call$formula[[2]]), as.character(object$call$formula[[3]]))
         tmp.data[[i]] <- sampled
         }
+    }
+  }
+  else if(boot=="semiparametric"){
+    if(object$type=="binomial"){
+      stop(paste("residSampling is not possible for binomial data", sep=""))
+    }
+    if(object$type=="continuous"){
+      data.st<-object$data
+      
+      tmp.data <- list()
+      for(i in 1:R){
+        sampled <- data.frame(y = fitted(object)+sample(resid(object),replace=TRUE), 
+                              dose = object$data[,as.character(object$call$formula[[3]])])
+        colnames(sampled) <- c(as.character(object$call$formula[[2]]), as.character(object$call$formula[[3]]))
+        tmp.data[[i]] <- sampled
+      }
     }
   }
     drm.list <- lapply(tmp.data, function(x){

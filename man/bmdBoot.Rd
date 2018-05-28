@@ -6,14 +6,14 @@ Benchmark dose estimation using bootstrap
 \description{The function estimates BMD and BMDL using bootstrap based on parametric dose-response models.  
 }
 \usage{
-bmd(object, bmr, R, boot, bmdType, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
+bmd(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
     backg=NA, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point")) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{R}{number of bootstrap samples. default is 1000}
-  \item{boot}{character string specifying type of bootstrap used. "resample" (default) or "pseudorandom". See details below}
+  \item{boot}{character string specifying type of bootstrap used. "nonparametric" (default), "semiparametric" or "parametric". See details below}
   \item{bmdType}{Type of estimate for BMD. Default is "orig" the bmd estimate from the original data set. Other choises are "mean" - the mean of the bootstrap estiamtes, or "median" - the median of the bootstrap estiamtes}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
@@ -65,7 +65,7 @@ bmd(object, bmr, R, boot, bmdType, backgType = c("modelBased", "absolute", "hybr
 \details{
 BMDL is defined as the 5th percentile in the bootstrap distribution.
 
-Bootstrapping with the argument boot = "resample" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "pseudorandom" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). 
+Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
 
 All sampling is made within dose groups.  
 
