@@ -79,7 +79,7 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
   }
   else if(boot=="semiparametric"){
     if(object$type=="binomial"){
-      stop(paste("residSampling is not possible for binomial data", sep=""))
+      stop(paste("semiparametric is not possible for binomial data", sep=""))
     }
     if(object$type=="continuous"){
       data.st<-object$data
