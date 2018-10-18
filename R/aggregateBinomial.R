@@ -6,4 +6,5 @@ aggregateBinomial <- function(object,data){
                     strsplit(as.character(object[[2]]),"/")[[2]],
                     strsplit(as.character(object[[2]]),"/")[[3]])
   df
+  
 }

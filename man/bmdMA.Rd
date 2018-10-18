@@ -122,12 +122,12 @@ deguelin.m4 <- drm(r/n~dose, weights=n, data=deguelin, fct=LN.2(), type="binomia
 
 
 ## Model averaged BMD for 5% additional risk with estimated background risk and BMDL based on Buckland et al.
-bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights=AIC, 0.05, 
+bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
       backgType = "modelBased", def = "additional",
       type = "Buckland")
 
 ## Model averaged BMD for 5% additional risk with estimated background risk and BMDL based on an average of the model curves
-bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights=AIC, 0.05, 
+bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
       backgType = "modelBased", def = "additional",
       type = "curve", bootstrapType = "parametric", bootInterval = "percentile", R=100)
 
@@ -139,7 +139,7 @@ ryegrass.m3<-drm(rootl~conc, data=ryegrass, fct=W2.4())
 ryegrass.m4<-drm(rootl~conc, data=ryegrass, fct=LN.4())
 
 ## Model-averaged BMD and bootstrap BMDL for bmr=5% and using the hybrid approach to estimate the background risk.  
-bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights=AIC, bmr=0.05, 
+bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="AIC", bmr=0.05, 
       backgType = "hybridSD",
       def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
 
