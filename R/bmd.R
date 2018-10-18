@@ -124,10 +124,26 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     resMat <- ED(object, bmrScaled, interval = interval.type, 
             level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
             c("Estimate", "Lower"), drop = FALSE]
-    
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
-    resMat
+    bmdInterval <- ED(object, bmrScaled, interval = interval.type, 
+                 level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
+                                                                              c("Lower", "Upper"), drop = FALSE]
+    colnames(bmdInterval) <- c("Lower CI", "Upper CI")
+    rownames(bmdInterval) <- c("")
+
+    bmdSE <- ED(object, bmrScaled, interval = interval.type, 
+                      level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
+                                                                                   c("Std. Error"), drop = FALSE]
+    colnames(bmdSE) <- c("Std. Error")
+    rownames(bmdSE) <- c("")
+    
+    resBMD<-list(Results = resMat,
+                 bmrScaled = bmrScaled,
+                 interval = bmdInterval,
+                 SE = bmdSE)
+    class(resBMD) = "bmd"
+    resBMD
     }
 
 
