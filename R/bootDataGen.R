@@ -1,4 +1,4 @@
-bootDataGen <- function(object, R=1000, boot="nonparametric"){
+bootDataGen <- function(object, R=1000, boot="nonparametric",aggregated=TRUE){
   if(boot=="nonparametric"){
     if(object$type=="binomial"){
       data.str <- object$data
@@ -12,13 +12,17 @@ bootDataGen <- function(object, R=1000, boot="nonparametric"){
   for(i in 1:R){
     sampled.expand <- data.e[as.numeric(unlist(aggregate(row.num ~ data.e[,as.character(object$call$formula[[3]])], data=data.e, 
                                                         FUN=function(x) sample(x,replace=TRUE))[[2]])),]
-    df <- aggregate(cbind(sampled.expand[,"number"],
+    if(aggregated){
+      df <- aggregate(cbind(sampled.expand[,"number"],
                           sampled.expand[,"weights"]) ~ 
                       sampled.expand[,as.character(object$call$formula[[3]])],FUN = sum)
     colnames(df) <- c(as.character(object$call$formula[[3]]),
                       as.character(object$call$formula[[2]])[[2]],
                       as.character(object$call$formula[[2]])[[3]])
     tmp.data[[i]] <- df
+    } else {
+      tmp.data[[i]] <- sampled.expand
+    }
   }
     }
     if(object$type=="continuous"){
@@ -44,11 +48,15 @@ bootDataGen <- function(object, R=1000, boot="nonparametric"){
       sampled.expand <- data.frame(number = rbinom(length(prob),1,prob), 
                                    dose = rep(object$data[,as.character(object$call$formula[[3]])],N), 
                                    total = 1)
+      if(aggregated){
       df <- aggregateBinomial(number/total~dose, sampled.expand)
       colnames(df) <- c(as.character(object$call$formula[[3]]),
                         as.character(object$call$formula[[2]])[[2]],
                         as.character(object$call$formula[[2]])[[3]])
-      tmp.data[[i]] <- df  
+      tmp.data[[i]] <- df
+      } else {
+        tmp.data[[i]] <- sampled.expand
+      }
     }
     }
     if(object$type=="continuous"){

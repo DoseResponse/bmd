@@ -9,10 +9,10 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
       )
       
     bmd.list <- lapply(drm.list,function(x){
-    bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def)[1]}
+    bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def)[["Results"]][1]}
     )
     if(bmdType == "orig"){
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def)[1]
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def)[["Results"]][1]
     } else if(bmdType == "mean"){
       use.bmd <- mean(unlist(bmd.list))
     } else if(bmdType == "median"){
