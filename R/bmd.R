@@ -143,7 +143,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                  interval = bmdInterval,
                  SE = bmdSE)
     class(resBMD) = "bmd"
-    resBMD
+    return(resBMD)
     }
 
 
