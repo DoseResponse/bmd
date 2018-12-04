@@ -131,10 +131,13 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                                                                               c("Lower", "Upper"), drop = FALSE]
     colnames(bmdInterval) <- c("Lower CI", "Upper CI")
     rownames(bmdInterval) <- c("")
+    bmdSE <- matrix(NA,1,1)
+    bmdSE[1,1] <- ifelse(identical(interval,"delta"),
+                    ED(object, bmrScaled, interval = interval.type, 
+                      level = 0.9, type = typeVal, vcov. = vcov., 
+                      display = FALSE)[, c("Std. Error"), drop = FALSE],
+                    NA)
 
-    bmdSE <- ED(object, bmrScaled, interval = interval.type, 
-                      level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
-                                                                                   c("Std. Error"), drop = FALSE]
     colnames(bmdSE) <- c("Std. Error")
     rownames(bmdSE) <- c("")
     
