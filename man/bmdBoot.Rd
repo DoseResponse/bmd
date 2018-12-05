@@ -6,8 +6,8 @@ Benchmark dose estimation using bootstrap
 \description{The function estimates BMD and BMDL using bootstrap based on parametric dose-response models.  
 }
 \usage{
-bmd(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
-    backg=NA, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point")) 
+bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
+    backg=NA, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), bmdInterval = c("Percentile","BCa")) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -59,6 +59,7 @@ bmd(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBased",
   "hybridAdd" - BMR is defined as: BMR = 1 - phi((x0 - f(BMD))/sigma) - p0, 
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
+  \item{bmdInterval}{character string indicating type of bootstrap interval used for estiamting BMDL. "Percentile" (default) or "BCa" (Bias corrected and adjusted)}
 
 }
 

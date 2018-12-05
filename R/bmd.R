@@ -107,11 +107,13 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
         bmrScaled <- as.numeric(format(bmrScaled0, digits = 5))
         typeVal <- "absolute"
     }
-    interval.type <- "delta"
+    
     if(identical(interval, "delta")){
       interval.type <- "delta"
       } else if(identical(interval,"inv")){
       interval.type <- "inv"
+      } else {
+        interval.type <- "delta"
       }
     vcov. <- ifelse(identical(interval,"sandwich"), sandwich, vcov)
     
@@ -132,7 +134,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     colnames(bmdInterval) <- c("Lower CI", "Upper CI")
     rownames(bmdInterval) <- c("")
     bmdSE <- matrix(NA,1,1)
-    bmdSE[1,1] <- ifelse(identical(interval,"delta"),
+    bmdSE[1,1] <- ifelse(identical(interval.type,"delta"),
                     ED(object, bmrScaled, interval = interval.type, 
                       level = 0.9, type = typeVal, vcov. = vcov., 
                       display = FALSE)[, c("Std. Error"), drop = FALSE],
