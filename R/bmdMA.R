@@ -420,7 +420,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
   resMat<-matrix(c(maBMD,maBMDL),1,2)
   colnames(resMat) <- c("BMD_MA", "BMDL_MA")
   rownames(resMat) <- c("")
-  resMat
+  
+  resBMD<-list(Results = resMat)
+  class(resBMD) = "bmd"
+  return(resBMD)
 }
 
 
