@@ -66,7 +66,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   
   "sandwich" - BMDL is based on ht elower limit of a Wald confidence intervals based on the delta method with robust standard errors from the sandwich covariance matrix 
   
-  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
+  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve. Not possible if type = "Buckland"}
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 }
