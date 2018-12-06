@@ -69,7 +69,6 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve. Not possible if type = "Buckland"}
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
-}
 
   \item{type}{character string specifying how to estimate BMD and BMDL: "curve", "bootstrap", "Kang" or "Buckland" 
   
