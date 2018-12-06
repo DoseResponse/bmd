@@ -8,6 +8,7 @@ Model-averaged benchmark dose estimation
 \usage{
 bmd(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
+interval = c("delta","sandwich","inv"),
 type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=1000, CI=0.1) 
 }
 \arguments{
@@ -59,6 +60,17 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
+  \item{interval}{character string specifying the type of confidence interval to use: "delta" (default), "sandwich" or "inv" 
+  
+  "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
+  
+  "sandwich" - BMDL is based on ht elower limit of a Wald confidence intervals based on the delta method with robust standard errors from the sandwich covariance matrix 
+  
+  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
+  
+  \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
+}
+
   \item{type}{character string specifying how to estimate BMD and BMDL: "curve", "bootstrap", "Kang" or "Buckland" 
   
   "curve" - 
