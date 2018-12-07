@@ -5,7 +5,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
                           "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
                   interval = "delta",
                   type = c("curve","bootstrap","Kang","Buckland","asymptotic"),
-                  bootstrapType = "nonparamteric",
+                  bootstrapType = "nonparametric",
                   R=1000,
                   bootInterval = "percentile",
                   CI=0.9){
