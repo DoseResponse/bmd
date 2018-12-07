@@ -51,7 +51,15 @@ bmdMACurve<-function(modelList,modelWeights,bmrScaled0, searchInterval="dataBase
     LLimit <- searchInterval[1]
     ULimit <- searchInterval[2]
   }
-  uniroot(g,interval=c(LLimit,ULimit))$root
+  BMD<-uniroot(g,interval=c(LLimit,ULimit))$root
+  
+  resMat<-matrix(c(BMD),1,1)
+  colnames(resMat) <- c("BMD")
+  rownames(resMat) <- c("")
+  resBMD<-list(Results = resMat,
+               MACurve = g)
+  class(resBMD) = "bmd"
+  return(resBMD)
 }
 
 

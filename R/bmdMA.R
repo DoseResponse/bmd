@@ -112,7 +112,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
   }
   if(identical(type,"curve")){
     bmrScaled0<-sum(sapply(bmdList, function(x){x$bmrScaled})*modelWeights0)
-    maBMD <- bmdMACurve(modelList,modelWeights0,bmrScaled0)
+    maBMD <- bmdMACurve(modelList,modelWeights0,bmrScaled0)$Results[1]
     
     if(identical(bootstrapType,"nonparametric")){
       set.seed(1)
@@ -158,7 +158,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     
     LLimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]]))[2]/10000
     ULimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]],decreasing=TRUE))[1]
-    funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))}
+    funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1]}
     bmrScaledList<-as.list(rowSums(do.call(rbind,modelWeightsList)*do.call(rbind,bootbmrListTrans)))
     
     boot<-mapply(funk,bootModelListTrans,modelWeightsList,bmrScaledList)
@@ -200,7 +200,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       LLimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]]))[2]/10000
       ULimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]],decreasing=TRUE))[1]
-      funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))}
+      funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1]}
       bmrScaledJack<-as.list(rowSums(do.call(rbind,modelWeightsJackList)*do.call(rbind,jackbmrListTrans)))
       
       bootjack<-mapply(funk,bootJackModelList,modelWeightsJackList,bmrScaledJack)
@@ -318,7 +318,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     }
     if(identical(type,"curve")){
       bmrScaled0<-sum(sapply(bmdList, function(x){x$bmrScaled})*modelWeights0)
-      maBMD <- bmdMACurve(modelList,modelWeights0,bmrScaled0)
+      maBMD <- bmdMACurve(modelList,modelWeights0,bmrScaled0)$Results[1]
       
       if(identical(bootstrapType,"nonparametric")){
         set.seed(1)
@@ -364,7 +364,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       LLimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]]))[2]/10000
       ULimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]],decreasing=TRUE))[1]
-      funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))}
+      funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1]}
       bmrScaledList<-as.list(rowSums(do.call(rbind,modelWeightsList)*do.call(rbind,bootbmrListTrans)))
       
       boot<-mapply(funk,bootModelListTrans,modelWeightsList,bmrScaledList)
@@ -412,7 +412,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         LLimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]]))[2]/10000
         ULimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]],decreasing=TRUE))[1]
-        funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))}
+        funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1]}
         bmrScaledJack<-as.list(rowSums(do.call(rbind,modelWeightsJackList)*do.call(rbind,jackbmrListTrans)))
         
         bootjack<-mapply(funk,bootJackModelList,modelWeightsJackList,bmrScaledJack)
