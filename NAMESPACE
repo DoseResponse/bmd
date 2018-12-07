@@ -1,2 +1,2 @@
 import(drc)
-export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve)
+export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa)
