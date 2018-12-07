@@ -34,7 +34,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     quant <- qnorm(1-(CI)/2)
     maBMDL <- maBMD - quant*maBMDse
   }
-  if(identical(type,"bootstrap")){
+  if(identical(type,"bootstrap") |identical(type,"Bootstrap") ){
     if(identical(bootstrapType,"nonparametric")){
       set.seed(1)
       bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
@@ -48,26 +48,27 @@ bmdMA <- function(modelList, modelWeights, bmr,
     bootModelList <-list()
     for(i in 1:length(modelList)){
       bootModelList[[i]] <- sapply(bootData, function(x){
-        bmd(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1]
+        suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),
+            bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
       }
       )
     }
     if(identical(modelWeights,"AIC")){
-      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(my.fun(x,y))))
+      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
       
     } else if(identical(modelWeights,"BIC")){
-      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(my.fun(x,y))))
+      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
     } else {
       modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
     }
     
     boot<-diag(t(do.call(rbind,bootModelList)) %*% modelWeights0)
+    boot0<-boot[!is.na(boot)]
     
     if(bootInterval %in% c("percentile","Percentile")){
-      maBMDL <- quantile(boot,p=c((1-CI)/2)) # ABC percentile lims.  
+      maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
     }
     if(identical(bootInterval,"BCa")){
       jackData <- list()
@@ -77,8 +78,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootJackList <-list()
       for(i in 1:length(modelList)){
         bootJackList[[i]] <- sapply(jackData, function(x){
-          bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1]
+          suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
         }
         )
       }
@@ -86,7 +87,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         AICJackList <-list()
         for(i in 1:length(modelList)){
           AICJackList[[i]] <- sapply(jackData, function(x){
-            AIC(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]))
+            suppressWarnings(AIC(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]])))
           }
           )
         }
@@ -95,7 +96,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         BICJackList <-list()
         for(i in 1:length(modelList)){
           BICJackList[[i]] <- sapply(jackData, function(x){
-            BIC(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]))
+            suppressWarnings(BIC(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]])))
           }
           )
         }
@@ -106,7 +107,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       bootjack<-diag(t(do.call(rbind,bootJackList)) %*% modelWeightsJack)
       
-      maBMDL <- as.numeric(BCa(obs = maBMD, data = modelList[[1]]$data, boot, bootjack)[1])
+      maBMDL <- as.numeric(BCa(obs = maBMD, data = modelList[[1]]$data, boot0, bootjack)[1])
     }
   }
   if(identical(type,"curve")){
@@ -125,7 +126,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     bootModelList <-list()
     for(i in 1:length(modelList)){
       bootModelList[[i]] <- lapply(bootData, function(x){
-        drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]])
+        suppressWarnings(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]))
       }
       )
     }
@@ -133,11 +134,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
     bootModelListTrans <- lapply(1:length(bootModelList[[1]]), function(i) lapply(bootModelList, "[[", i))
     
     if(identical(modelWeights,"AIC")){
-      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(my.fun(x,y))))
+      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
       
     } else if(identical(modelWeights,"BIC")){
-      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(my.fun(x,y))))
+      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
       
     } else {
@@ -148,8 +149,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     bootbmrList<-list()
     for(i in 1:length(modelList)){
       bootbmrList[[i]] <- sapply(bootData, function(x){
-        bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled
+        suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
+            bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
       }
       )
     }
@@ -161,9 +162,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
     bmrScaledList<-as.list(rowSums(do.call(rbind,modelWeightsList)*do.call(rbind,bootbmrListTrans)))
     
     boot<-mapply(funk,bootModelListTrans,modelWeightsList,bmrScaledList)
+    boot0<-boot[!is.na(boot)]
     
     if(bootInterval %in% c("percentile","Percentile")){
-      maBMDL <- quantile(boot,p=c((1-CI)/2)) # ABC percentile lims.  
+      maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
     }
     if(identical(bootInterval,"BCa")){
       jackData <- list()
@@ -171,14 +173,14 @@ bmdMA <- function(modelList, modelWeights, bmr,
         jackData[[i]] <- modelList[[1]]$data[-i,]
       }
       
-      bootJackModelList <- lapply(jackData, function(x) lapply(modelList, function(y) my.fun(x,y)))
+      bootJackModelList <- lapply(jackData, function(x) lapply(modelList, function(y) suppressWarnings(my.fun(x,y))))
       
       
       if(identical(modelWeights,"AIC")){
-        AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) AIC(my.fun(x,y))))
+        AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
         modelWeightsJack <- t(t(exp(-t(do.call(rbind,AICJackList))))/colSums(exp(-t(do.call(rbind,AICJackList)))))
       } else if(identical(modelWeights,"BIC")){
-        BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) BIC(my.fun(x,y))))
+        BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
         modelWeightsJack <- t(t(exp(-t(do.call(rbind,BICJackList))))/colSums(exp(-t(do.call(rbind,BICJackList)))))
       } else {
         modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
@@ -188,8 +190,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       jackbmrList<-list()
       for(i in 1:length(modelList)){
         jackbmrList[[i]] <- sapply(jackData, function(x){
-          bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled
+          suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
         }
         )
       }
@@ -203,7 +205,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       bootjack<-mapply(funk,bootJackModelList,modelWeightsJackList,bmrScaledJack)
       
-      maBMDL <- as.numeric(BCa(obs = maBMD, data = modelList[[1]]$data, boot, bootjack)[1])
+      maBMDL <- as.numeric(BCa(obs = maBMD, data = modelList[[1]]$data, boot0, bootjack)[1])
     }
   }
   }
@@ -232,7 +234,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       quant <- qnorm(1-(CI)/2)
       maBMDL <- maBMD - quant*maBMDse
     }
-    if(identical(type,"bootstrap")){
+    if(identical(type,"bootstrap") | identical(type,"Bootstrap") ){
       if(identical(bootstrapType,"nonparametric")){
         set.seed(1)
         bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
@@ -246,26 +248,27 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootModelList <-list()
       for(i in 1:length(modelList)){
         bootModelList[[i]] <- sapply(bootData, function(x){
-          bmd(my.fun(x,modelList[[i]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1]
+          suppressWarnings(bmd(my.fun(x,modelList[[i]]),
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
         }
         )
       }
       if(identical(modelWeights,"AIC")){
-        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(my.fun(x,y))))
+        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
         
       } else if(identical(modelWeights,"BIC")){
-        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(my.fun(x,y))))
+        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
       }
       
       boot<-diag(t(do.call(rbind,bootModelList)) %*% modelWeights0)
+      boot0<-boot[!is.na(boot)]
       
       if(bootInterval %in% c("percentile","Percentile")){
-        maBMDL <- quantile(boot,p=c((1-CI)/2)) # ABC percentile lims.  
+        maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
       }
       if(identical(bootInterval,"BCa")){
         data.str <- modelList[[1]]$data
@@ -281,8 +284,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         bootJackList <-list()
         for(i in 1:length(modelList)){
           bootJackList[[i]] <- sapply(jackData, function(x){
-            bmd(my.fun(x,modelList[[i]]),
-                bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1]
+            suppressWarnings(bmd(my.fun(x,modelList[[i]]),
+                bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
           }
           )
         }
@@ -290,7 +293,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           AICJackList <-list()
           for(i in 1:length(modelList)){
             AICJackList[[i]] <- sapply(jackData, function(x){
-              AIC(my.fun(x,modelList[[i]]))
+              AIC(suppressWarnings(my.fun(x,modelList[[i]])))
             }
             )
           }
@@ -299,7 +302,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           BICJackList <-list()
           for(i in 1:length(modelList)){
             BICJackList[[i]] <- sapply(jackData, function(x){
-              BIC(my.fun(x,modelList[[i]]))
+              BIC(suppressWarnings(my.fun(x,modelList[[i]])))
             }
             )
           }
@@ -310,7 +313,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         bootjack<-diag(t(do.call(rbind,bootJackList)) %*% modelWeightsJack)
         
-        maBMDL <- as.numeric(BCa(obs = maBMD, data = data.e, boot, bootjack)[1])
+        maBMDL <- as.numeric(BCa(obs = maBMD, data = data.e, boot0, bootjack)[1])
       }
     }
     if(identical(type,"curve")){
@@ -329,7 +332,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootModelList <-list()
       for(i in 1:length(modelList)){
         bootModelList[[i]] <- lapply(bootData, function(x){
-          my.fun(x,modelList[[i]])
+          suppressWarnings(my.fun(x,modelList[[i]]))
         }
         )
       }
@@ -337,11 +340,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootModelListTrans <- lapply(1:length(bootModelList[[1]]), function(i) lapply(bootModelList, "[[", i))
       
       if(identical(modelWeights,"AIC")){
-        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(my.fun(x,y))))
+        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
         
       } else if(identical(modelWeights,"BIC")){
-        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(my.fun(x,y))))
+        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
         
       } else {
@@ -352,8 +355,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootbmrList<-list()
       for(i in 1:length(modelList)){
         bootbmrList[[i]] <- sapply(bootData, function(x){
-          bmd(my.fun(x,modelList[[i]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled
+          suppressWarnings(bmd(my.fun(x,modelList[[i]]),
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
         }
         )
       }
@@ -365,9 +368,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bmrScaledList<-as.list(rowSums(do.call(rbind,modelWeightsList)*do.call(rbind,bootbmrListTrans)))
       
       boot<-mapply(funk,bootModelListTrans,modelWeightsList,bmrScaledList)
+      boot0<-boot[!is.na(boot)]
       
       if(bootInterval %in% c("percentile","Percentile")){
-        maBMDL <- quantile(boot,p=c((1-CI)/2)) # ABC percentile lims.  
+        maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
       }
       if(identical(bootInterval,"BCa")){
         data.str <- modelList[[1]]$data
@@ -381,14 +385,14 @@ bmdMA <- function(modelList, modelWeights, bmr,
           jackData[[i]] <- data.e[-i,]
         }
         
-        bootJackModelList <- lapply(jackData, function(x) lapply(modelList, function(y) my.fun(x,y)))
+        bootJackModelList <- lapply(jackData, function(x) lapply(modelList, function(y) suppressWarnings(my.fun(x,y))))
         
         
         if(identical(modelWeights,"AIC")){
-          AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) AIC(my.fun(x,y))))
+          AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
           modelWeightsJack <- t(t(exp(-t(do.call(rbind,AICJackList))))/colSums(exp(-t(do.call(rbind,AICJackList)))))
         } else if(identical(modelWeights,"BIC")){
-          BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) BIC(my.fun(x,y))))
+          BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
           modelWeightsJack <- t(t(exp(-t(do.call(rbind,BICJackList))))/colSums(exp(-t(do.call(rbind,BICJackList)))))
         } else {
           modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
@@ -398,8 +402,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         jackbmrList<-list()
         for(i in 1:length(modelList)){
           jackbmrList[[i]] <- sapply(jackData, function(x){
-            bmd(my.fun(x,modelList[[i]]),
-                bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled
+            suppressWarnings(bmd(my.fun(x,modelList[[i]]),
+                bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
           }
           )
         }
@@ -413,15 +417,17 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         bootjack<-mapply(funk,bootJackModelList,modelWeightsJackList,bmrScaledJack)
         
-        maBMDL <- as.numeric(BCa(obs = maBMD, data = data.e, boot, bootjack)[1])
+        maBMDL <- as.numeric(BCa(obs = maBMD, data = data.e, boot0, bootjack)[1])
       }
     }
   }
   resMat<-matrix(c(maBMD,maBMDL),1,2)
   colnames(resMat) <- c("BMD_MA", "BMDL_MA")
   rownames(resMat) <- c("")
-  
-  resBMD<-list(Results = resMat)
+  used.Boot<-ifelse(identical(type,"bootstrap")|identical(type,"Bootstrap")|identical(type,"curve"),
+                    length(boot0),NA)
+  resBMD<-list(Results = resMat,
+               Boot.samples.used = used.Boot)
   class(resBMD) = "bmd"
   return(resBMD)
 }
