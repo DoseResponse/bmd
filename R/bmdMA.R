@@ -54,11 +54,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
       )
     }
     if(identical(modelWeights,"AIC")){
-      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
+      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
       
     } else if(identical(modelWeights,"BIC")){
-      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
+      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
     } else {
       modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
@@ -134,11 +134,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
     bootModelListTrans <- lapply(1:length(bootModelList[[1]]), function(i) lapply(bootModelList, "[[", i))
     
     if(identical(modelWeights,"AIC")){
-      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
+      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
       
     } else if(identical(modelWeights,"BIC")){
-      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
+      BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
       
     } else {
@@ -177,10 +177,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       
       if(identical(modelWeights,"AIC")){
-        AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
+        AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
         modelWeightsJack <- t(t(exp(-t(do.call(rbind,AICJackList))))/colSums(exp(-t(do.call(rbind,AICJackList)))))
       } else if(identical(modelWeights,"BIC")){
-        BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
+        BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
         modelWeightsJack <- t(t(exp(-t(do.call(rbind,BICJackList))))/colSums(exp(-t(do.call(rbind,BICJackList)))))
       } else {
         modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
@@ -254,11 +254,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
         )
       }
       if(identical(modelWeights,"AIC")){
-        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
+        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
         
       } else if(identical(modelWeights,"BIC")){
-        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
+        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
@@ -293,7 +293,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           AICJackList <-list()
           for(i in 1:length(modelList)){
             AICJackList[[i]] <- sapply(jackData, function(x){
-              AIC(suppressWarnings(my.fun(x,modelList[[i]])))
+              suppressWarnings(AIC(my.fun(x,modelList[[i]])))
             }
             )
           }
@@ -302,7 +302,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           BICJackList <-list()
           for(i in 1:length(modelList)){
             BICJackList[[i]] <- sapply(jackData, function(x){
-              BIC(suppressWarnings(my.fun(x,modelList[[i]])))
+              suppressWarnings(BIC(my.fun(x,modelList[[i]])))
             }
             )
           }
@@ -340,11 +340,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootModelListTrans <- lapply(1:length(bootModelList[[1]]), function(i) lapply(bootModelList, "[[", i))
       
       if(identical(modelWeights,"AIC")){
-        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
+        AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
         
       } else if(identical(modelWeights,"BIC")){
-        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
+        BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
         modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
         
       } else {
@@ -389,10 +389,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         
         if(identical(modelWeights,"AIC")){
-          AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) AIC(suppressWarnings(my.fun(x,y)))))
+          AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
           modelWeightsJack <- t(t(exp(-t(do.call(rbind,AICJackList))))/colSums(exp(-t(do.call(rbind,AICJackList)))))
         } else if(identical(modelWeights,"BIC")){
-          BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) BIC(suppressWarnings(my.fun(x,y)))))
+          BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
           modelWeightsJack <- t(t(exp(-t(do.call(rbind,BICJackList))))/colSums(exp(-t(do.call(rbind,BICJackList)))))
         } else {
           modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
