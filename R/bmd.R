@@ -1,5 +1,5 @@
 bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
-               backg=NA, 
+               backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
               interval = c("delta","sandwich","inv"), display = FALSE) 
@@ -25,7 +25,8 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     } else {
     f0 <- ifelse(!is.na(coef(object)["d:(Intercept)"]), coef(object)["d:(Intercept)"], predict(object,data.frame(0)))
     }
-    if(identical(slope,"increasing" )) {
+  useSD <- ifelse(!is.na(controlSD),controlSD,sqrt(summary(object)$resVar))
+  if(identical(slope,"increasing" )) {
       if (identical(backgType,"modelBased")) {
         background <- f0
         } else if (identical(backgType,"absolute") & !(def %in% c("relative","extra"))) {
@@ -38,7 +39,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                (identical(def,"hybridExc") | identical(def,"hybridAdd") )) {
         background <- ifelse(is.na(backg), 
                              1-pnorm(2),
-                             1-pnorm((backg-f0)/sqrt(summary(object)$resVar)))
+                             1-pnorm((backg-f0)/useSD))
         } else {
         background <- ifelse(is.na(backg),1-0.9,1-backg)}
     } else {
@@ -52,7 +53,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                  (identical(def,"hybridExc") | identical(def,"hybridAdd") )) {
         background <- ifelse(is.na(backg), 
                              pnorm(-2),
-                             pnorm((backg-f0)/sqrt(summary(object)$resVar)))
+                             pnorm((backg-f0)/useSD))
         } else {
         background <- ifelse(is.na(backg),0.1,backg)}
     }
@@ -86,10 +87,10 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                              point = bmr,
                              extra = bmr*abs(diff(predict(object, data.frame(c(0, Inf)))))
                                      + background,
-                             hybridAdd = sqrt(summary(object)$resVar) * 
+                             hybridAdd = useSD * 
                                    (qnorm(1 - background) - qnorm(1 - (background + bmr))) + 
                                    f0,
-                             hybridExc = sqrt(summary(object)$resVar) * 
+                             hybridExc = useSD * 
                                   (qnorm(1 - background) - qnorm(1 + background - (1 - background)*bmr)) + 
                                    f0)
       } else {
@@ -97,10 +98,10 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                              added = background - bmr,
                              point = bmr,
                              extra = background - bmr*abs(diff(predict(object, data.frame(c(0, Inf))))),
-                             hybridAdd = sqrt(summary(object)$resVar) * 
+                             hybridAdd = useSD * 
                                (qnorm(background) - qnorm(background + bmr)) + 
                                f0,
-                             hybridExc = sqrt(summary(object)$resVar) * 
+                             hybridExc = useSD * 
                                (qnorm(background) - qnorm(background*(1+bmr))) + 
                                f0)
       }

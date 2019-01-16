@@ -6,7 +6,7 @@ Benchmark dose estimation
 \description{Estimation of benchmark doses and benchmark dose lower limit from dose response model fits 
 }
 \usage{
-bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
+bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
               interval = c("delta","sandwich","inv"), display = FALSE) 
 }
@@ -19,19 +19,22 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   p0 = f(0) 
   
   "absolute" - the background risk is specified by the user through the backg argument:
-  p0 = backg for binomial response and for the "relative", "extra" and "added" definiton for continuous response. 
+  p0 = backg for binomial response and for the "relative", "extra" and "added" definition for continuous response. 
   p0 = 1 - phi((back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
   p0 = 1 - phi(((backg*sigma + f(0)) - f(0))/sigma) = 1 - phi(backg),
   where phi is the normal distribution function and sigma is the SD for the control group. 
+  
   "hybridPercentile" - the background risk is specified by the user in terms of percentile from the control group distribution (assuming a normal distribution).
   p0 = 1 - phi((x0 - f(0))/sigma) = 1 - backg.
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
     
-  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomail response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
+  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomial response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridPercentile"}
   
-  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
+  \item{controlSD}{numeric value specifying the standard deviation of the control group (used in the hybrid approach). If not specified the SD for the control group will be estimated as the square root of the residual variance (assuming variance homogeneity).}
+  
+  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
   
   "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
   Works for binomial response. BMR should be between 0 and 1.  
@@ -39,7 +42,7 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   "additional" - BMR is defined as: BMR = f(BMD) - p0.
   Works for binomial response. BMR should be between 0 and 1.  
   
-  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for both binomial and continious response 
+  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for both binomial and continuous response 
   
   "relative" - BMR is defined as: BMR = (f(BMD) - p0)/p0. 
   Works for continuous response 
@@ -62,7 +65,7 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
   
-  "sandwich" - BMDL is based on ht elower limit of a Wald confidence intervals based on the delta method with robust standard errors from the sandwich covariance matrix 
+  "sandwich" - BMDL is based on the lower limit of a Wald confidence intervals based on the delta method with robust standard errors from the sandwich covariance matrix 
   
   "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
   
