@@ -1,4 +1,4 @@
-bmdMACurve<-function(modelList,modelWeights,bmrScaled0, searchInterval="dataBased",display=TRUE){
+bmdMACurve<-function(modelList,modelWeights,bmrScaled0, searchInterval="dataBased"){
   fList <- mtList()
   
   f.all<-list()
@@ -56,10 +56,6 @@ bmdMACurve<-function(modelList,modelWeights,bmrScaled0, searchInterval="dataBase
   resMat<-matrix(c(BMD),1,1)
   colnames(resMat) <- c("BMD")
   rownames(resMat) <- c("")
-  
-  if(display){
-  print(resMat)
-  }
   
   resBMD<-list(Results = resMat,
                MACurve = g)
