@@ -64,11 +64,13 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
     
+    print(resMat)
+    
     resBMD<-list(Results = resMat,
                  bootEst = unlist(bmd.list),
                  percentileInterval = quantile(unlist(bmd.list),c(0.05,0.95)))
-    class(resBMD) = "bmd"
-    return(resBMD)
+    class(resBMD) <- "bmd"
+    invisible(resBMD)
    
 }
 
