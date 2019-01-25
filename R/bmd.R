@@ -144,12 +144,14 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     colnames(bmdSE) <- c("Std. Error")
     rownames(bmdSE) <- c("")
     
+    print(resMat)
+    
     resBMD<-list(Results = resMat,
                  bmrScaled = bmrScaled,
                  interval = bmdInterval,
                  SE = bmdSE)
-    class(resBMD) = "bmd"
-    return(resBMD)
+    class(resBMD) <- "bmd"
+    invisible(resBMD) 
     }
 
 
