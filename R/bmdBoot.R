@@ -3,7 +3,8 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
                     backg=NA, 
                     def = c("excess", "additional", 
                             "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
-                    bootInterval = c("percentile","BCa")){
+                    bootInterval = c("percentile","BCa"),
+                    display=TRUE){
   tmp.data <- bootDataGen(object,R,boot)
     drm.list <- lapply(tmp.data, function(x){
       drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]])}
@@ -64,7 +65,9 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
     
-    print(resMat)
+    if(display){
+      print(resMat)
+    }
     
     resBMD<-list(Results = resMat,
                  bootEst = unlist(bmd.list),

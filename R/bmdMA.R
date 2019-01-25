@@ -8,7 +8,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   bootstrapType = "nonparametric",
                   R=1000,
                   bootInterval = "percentile",
-                  CI=0.9){
+                  CI=0.9,
+                  display=TRUE){
   
   bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)})  
   if(identical(modelList[[1]]$type,"continuous")){
@@ -429,7 +430,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
                     length(boot0),NA)
   resBMD<-list(Results = resMat,
                Boot.samples.used = used.Boot)
-  print(resMat)
+  if(display){
+    print(resMat)
+  }
   
   class(resBMD) <- "bmd"
   invisible(resBMD)
