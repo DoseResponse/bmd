@@ -10,7 +10,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   bootInterval = "percentile",
                   CI=0.9){
   
-  bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, interval = interval)})  
+  bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)})  
   if(identical(modelList[[1]]$type,"continuous")){
     my.fun<-function(x,y){drm(y$call$formula, data = x, fct = y[["fct"]])}
   
@@ -49,7 +49,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     for(i in 1:length(modelList)){
       bootModelList[[i]] <- sapply(bootData, function(x){
         suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
+            bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
       }
       )
     }
@@ -79,7 +79,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       for(i in 1:length(modelList)){
         bootJackList[[i]] <- sapply(jackData, function(x){
           suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
         }
         )
       }
@@ -150,7 +150,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     for(i in 1:length(modelList)){
       bootbmrList[[i]] <- sapply(bootData, function(x){
         suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
+            bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
       }
       )
     }
@@ -191,7 +191,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       for(i in 1:length(modelList)){
         jackbmrList[[i]] <- sapply(jackData, function(x){
           suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
         }
         )
       }
@@ -249,7 +249,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       for(i in 1:length(modelList)){
         bootModelList[[i]] <- sapply(bootData, function(x){
           suppressWarnings(bmd(my.fun(x,modelList[[i]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
         }
         )
       }
@@ -285,7 +285,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         for(i in 1:length(modelList)){
           bootJackList[[i]] <- sapply(jackData, function(x){
             suppressWarnings(bmd(my.fun(x,modelList[[i]]),
-                bmr, backgType = backgType, backg = backg, def = def, interval = interval)$Results[1])
+                bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
           }
           )
         }
@@ -356,7 +356,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       for(i in 1:length(modelList)){
         bootbmrList[[i]] <- sapply(bootData, function(x){
           suppressWarnings(bmd(my.fun(x,modelList[[i]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
         }
         )
       }
@@ -403,7 +403,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         for(i in 1:length(modelList)){
           jackbmrList[[i]] <- sapply(jackData, function(x){
             suppressWarnings(bmd(my.fun(x,modelList[[i]]),
-                bmr, backgType = backgType, backg = backg, def = def, interval = interval)$bmrScaled)
+                bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
           }
           )
         }

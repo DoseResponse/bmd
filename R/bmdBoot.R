@@ -10,7 +10,7 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
       )
       
     bmd.list <- lapply(drm.list,function(x){
-    bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def)[["Results"]][1]}
+    bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]}
     )
     if(identical(object$type, "continuous")){
     if(identical(bootInterval,"BCa")){
@@ -20,10 +20,10 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
       }
       bootJack <- sapply(jackData, function(x){
           bmd(drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = "delta")$Results[1]
+              bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
         }
         )
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def)[["Results"]][1]
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
       as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
       }
     }
@@ -41,15 +41,15 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
       }
       bootJack <- sapply(jackData, function(x){
         bmd(drm(number~dose, data = x, type = "binomial", fct = object[["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = "delta")$Results[1]
+            bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
       }
       )
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def)[["Results"]][1]
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
       BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = data.e, unlist(bmd.list), bootJack)[1])
     }
 }
       if(bmdType == "orig"){
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def)[["Results"]][1]
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
     } else if(bmdType == "mean"){
       use.bmd <- mean(unlist(bmd.list))
     } else if(bmdType == "median"){

@@ -2,7 +2,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","sandwich","inv"), display = FALSE) 
+              interval = c("delta","sandwich","inv"), display = TRUE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -121,9 +121,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     if (identical(respType, "continuous") & (def %in% c("excess", "additional"))) {
       stop(paste("\"",def, "\" is not available for continuous data", sep=""))
     }
-    if (display) {
-        cat("Effective response level: ", bmrScaled, "\n")
-    }
+    
     resMat <- ED(object, bmrScaled, interval = interval.type, 
             level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
             c("Estimate", "Lower"), drop = FALSE]
@@ -143,8 +141,9 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
 
     colnames(bmdSE) <- c("Std. Error")
     rownames(bmdSE) <- c("")
-    
-    print(resMat)
+    if (display) {
+      print(resMat)
+    }
     
     resBMD<-list(Results = resMat,
                  bmrScaled = bmrScaled,
