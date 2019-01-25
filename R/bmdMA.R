@@ -424,12 +424,15 @@ bmdMA <- function(modelList, modelWeights, bmr,
   resMat<-matrix(c(maBMD,maBMDL),1,2)
   colnames(resMat) <- c("BMD_MA", "BMDL_MA")
   rownames(resMat) <- c("")
+  
   used.Boot<-ifelse(identical(type,"bootstrap")|identical(type,"Bootstrap")|identical(type,"curve"),
                     length(boot0),NA)
   resBMD<-list(Results = resMat,
                Boot.samples.used = used.Boot)
-  class(resBMD) = "bmd"
-  return(resBMD)
+  print(resMat)
+  
+  class(resBMD) <- "bmd"
+  invisible(resBMD)
 }
 
 

@@ -56,10 +56,13 @@ bmdMACurve<-function(modelList,modelWeights,bmrScaled0, searchInterval="dataBase
   resMat<-matrix(c(BMD),1,1)
   colnames(resMat) <- c("BMD")
   rownames(resMat) <- c("")
+  
+  print(resMat)
+  
   resBMD<-list(Results = resMat,
                MACurve = g)
-  class(resBMD) = "bmd"
-  return(resBMD)
+  class(resBMD) <- "bmd"
+  invisible(resBMD)
 }
 
 
