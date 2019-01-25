@@ -429,7 +429,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
                     length(boot0),NA)
   resBMD<-list(Results = resMat,
                Boot.samples.used = used.Boot)
-  print(resMat)
+  return(resMat)
   
   class(resBMD) <- "bmd"
   invisible(resBMD)
