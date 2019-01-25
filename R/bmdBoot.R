@@ -64,7 +64,7 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
     
-    return(resMat)
+    print(resMat)
     
     resBMD<-list(Results = resMat,
                  bootEst = unlist(bmd.list),

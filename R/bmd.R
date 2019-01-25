@@ -142,7 +142,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     colnames(bmdSE) <- c("Std. Error")
     rownames(bmdSE) <- c("")
     if (display) {
-      return(resMat)
+      print(resMat)
     }
     
     resBMD<-list(Results = resMat,
