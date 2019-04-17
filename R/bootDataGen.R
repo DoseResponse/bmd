@@ -25,7 +25,7 @@ bootDataGen <- function(object, R=1000, boot="nonparametric",aggregated=TRUE){
     }
   }
     }
-    if(object$type=="continuous"){
+    if(object$type %in% c("continuous","Poisson","negbin1","negbin2")){
       data.e<-object$data
       data.e[,"row.num"]<-1:dim(data.e)[1]
       data.e[,"dose"]<-data.e[,as.character(object$call$formula[[3]])]
@@ -34,7 +34,7 @@ bootDataGen <- function(object, R=1000, boot="nonparametric",aggregated=TRUE){
         tmp.data[[i]] <- data.e[as.numeric(unlist(aggregate(row.num ~ dose, data=data.e, 
                                                              FUN=function(x) sample(x,replace=TRUE))[[2]])),]
          }
-      }
+    }
   } else if(boot=="parametric"){
     if(object$type=="binomial"){
     Y <- object$data[[as.character(object$call$formula)[[2]]]]*object$data[["weights"]]

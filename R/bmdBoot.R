@@ -5,27 +5,34 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
                             "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
                     bootInterval = c("percentile","BCa"),
                     display=TRUE){
+  if (identical(object$type,"binomial") & boot=="semiparametric") {
+    stop(paste("\" Semiparametric bootstrap does not work for quantal data \"", sep=""))
+  }
+  if (object$type %in% c("Poisson","negbin1","negbin2") & boot!="nonparametric") {
+    stop(paste("\"",object$type,"\" only works with nonparametric bootstrap \"", sep=""))
+  }
   tmp.data <- bootDataGen(object,R,boot)
-    drm.list <- lapply(tmp.data, function(x){
-      drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]])}
+    
+  drm.list <- lapply(tmp.data, function(x){
+      drm(object$call$formula, data = x, type = object$type, weights = object$call$weights, fct = object[["fct"]])}
       )
       
     bmd.list <- lapply(drm.list,function(x){
     bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]}
     )
-    if(identical(object$type, "continuous")){
+    if(object$type %in% c("continuous","Poisson","negbin1","negbin2")){
     if(identical(bootInterval,"BCa")){
       jackData <- list()
       for(i in 1:(dim(object$data)[1])){
         jackData[[i]] <- object$data[-i,]
       }
       bootJack <- sapply(jackData, function(x){
-          bmd(drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]]),
+          bmd(drm(object$call$formula, data = x, type = object$type, weights=object$call$weights, fct = object[["fct"]]),
               bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
         }
         )
       use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
-      as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
+      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
       }
     }
     if(identical(object$type, "binomial")){

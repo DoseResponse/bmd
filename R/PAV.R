@@ -17,7 +17,7 @@ PAV<-function(object,data,type){
       PAV.p[i] <- max(tmp2)
     }
   }
-  if( identical(type,"continuous")){
+  if(type %in% c("continuous","Poisson","negbin1","negbin2")){
     N <- length( unique(data[, paste(object[[3]]) ]))
     Response.m<-aggregate(data[,as.character(object[[2]])] ~data[,as.character(object[[3]])],FUN=mean)[,2]
     n <- as.numeric(table(data[, paste(object[[3]])]))

@@ -39,6 +39,15 @@ bmdIso <- function(object, data, type, bmr, p0, backgType = c("modelBased", "abs
   if (identical(type, "binomial") & (def %in% c("relative","added", "hybridExc","hybridAdd"))) {
     stop(paste("\"",def, "\" is not available for quantal data", sep=""))
   }
+  if (type %in% c("Poisson","negbin1","negbin2")) {
+      Cq <- switch(def,
+                   relative = bmr * background + background,
+                   extra = bmr*abs(diff(predict(object, data.frame(c(0, Inf))))) + background,
+                   point = bmr)
+    }
+  if (type %in% c("Poisson","negbin1","negbin2") & (def %in% c("excess","additional","added","hybridExc","hybridAdd"))) {
+    stop(paste("\"",def, "\" is not available for count data", sep=""))
+  }
   if (identical(type, "continuous") & (def %in% c("excess", "additional"))) {
     stop(paste("\"",def, "\" is not available for continuous data", sep=""))
   }

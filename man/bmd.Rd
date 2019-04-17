@@ -8,18 +8,18 @@ Benchmark dose estimation
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","sandwich","inv"), display = FALSE) 
+              interval = c("delta","inv"), sandwich=FALSE, display = FALSE) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
-  \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
+  \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "modelBased","absolute", "hybridSD" and "hybridPercentile". For count data (Poisson, negbin1 or negbin2) the options are "modelBased" and "absolute".
 
-  "modelBased" - the background risk is obtained from the model as the risk for dose 0: 
+  "modelBased" - the background level is obtained from the model as the level for dose 0: 
   p0 = f(0) 
   
-  "absolute" - the background risk is specified by the user through the backg argument:
-  p0 = backg for binomial response and for the "relative", "extra" and "added" definition for continuous response. 
+  "absolute" - the background level is specified by the user through the backg argument:
+  p0 = backg for binomial response and for the "relative", "extra" and "added" definition for continuous or count response data. 
   p0 = 1 - phi((back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
@@ -34,7 +34,7 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   
   \item{controlSD}{numeric value specifying the standard deviation of the control group (used in the hybrid approach). If not specified the SD for the control group will be estimated as the square root of the residual variance (assuming variance homogeneity).}
   
-  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
+  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess", "additional" and "point" are for binomial response. "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response. "relative", "extra", and "point" are for count response data.
   
   "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
   Works for binomial response. BMR should be between 0 and 1.  
@@ -42,13 +42,13 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   "additional" - BMR is defined as: BMR = f(BMD) - p0.
   Works for binomial response. BMR should be between 0 and 1.  
   
-  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for both binomial and continuous response 
+  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for binomial, count and continuous response data
   
   "relative" - BMR is defined as: BMR = (f(BMD) - p0)/p0. 
-  Works for continuous response 
+  Works for continuous and count response data 
   
   "extra" - BMR is defined as: BMR = (f(BMD) - p0)/(f(Inf) - p0).
-  Works for continuous response
+  Works for continuous and count response data 
   
   "added" - BMR is defined as: BMR= f(BMD) + p0.
   Works for continuous response
@@ -61,13 +61,13 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
-  \item{interval}{character string specifying the type of confidence interval to use: "delta" (default), "sandwich" or "inv" 
+  \item{interval}{character string specifying the type of confidence interval to use: "delta" (default) or "inv" 
   
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
   
-  "sandwich" - BMDL is based on the lower limit of a Wald confidence intervals based on the delta method with robust standard errors from the sandwich covariance matrix 
-  
   "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
+  
+  \item{sandwich}{logical. If TRUE BMDL is based on confidence intervals based on robust standard errors from the sandwich covariance matrix 
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 }

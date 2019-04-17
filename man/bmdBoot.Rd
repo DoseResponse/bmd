@@ -13,15 +13,15 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   \item{object}{object of class \code{drc}}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{R}{number of bootstrap samples. default is 1000}
-  \item{boot}{character string specifying type of bootstrap used. "nonparametric" (default), "semiparametric" or "parametric". See details below}
-  \item{bmdType}{Type of estimate for BMD. Default is "orig" the bmd estimate from the original data set. Other choises are "mean" - the mean of the bootstrap estiamtes, or "median" - the median of the bootstrap estiamtes}
-  \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
+  \item{boot}{character string specifying type of bootstrap used. "nonparametric" (default), "semiparametric" or "parametric". "Semiparametric is only available for continuous data and "nonparametric" is at present the only option for count data. See details below}
+  \item{bmdType}{Type of estimate for BMD. Default is "orig" the bmd estimate from the original data set. Other choices are "mean" - the mean of the bootstrap estimates, or "median" - the median of the bootstrap estimates}
+  \item{backgType}{character string specifying how the background level is specified. For binomial and count data the options are "modelBased" and "absolute". For continuous data the options are "modelBased", "absolute", "hybridSD" and "hybridPercentile"
 
-  "modelBased" - the background risk is obtained from the model as the risk for dose 0: 
+  "modelBased" - the background level is obtained from the model as the level for dose 0: 
   p0 = f(0) 
   
-  "absolute" - the background risk is specified by the user through the backg argument:
-  p0 = backg for binomial response and for the "relative", "extra" and "added" definiton for continuous response. 
+  "absolute" - the background level is specified by the user through the backg argument:
+  p0 = backg for binomial response and for the "relative", "extra" and "added" definition for continuous response. 
   p0 = 1 - phi((back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
@@ -31,9 +31,9 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   p0 = 1 - phi((x0 - f(0))/sigma) = 1 - backg.
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
     
-  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomail response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
+  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background level for binomial response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
   
-  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
+  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response. "relative", "extra", and "point" are for count response data.
   
   "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
   Works for binomial response. BMR should be between 0 and 1.  
@@ -41,13 +41,13 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   "additional" - BMR is defined as: BMR = f(BMD) - p0.
   Works for binomial response. BMR should be between 0 and 1.  
   
-  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for both binomial and continious response 
+  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for binomial, count and continuous response 
   
   "relative" - BMR is defined as: BMR = (f(BMD) - p0)/p0. 
-  Works for continuous response 
+  Works for count and continuous response 
   
   "extra" - BMR is defined as: BMR = (f(BMD) - p0)/(f(Inf) - p0).
-  Works for continuous response
+  Works for count and continuous response
   
   "added" - BMR is defined as: BMR= f(BMD) + p0.
   Works for continuous response
@@ -59,14 +59,15 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   "hybridAdd" - BMR is defined as: BMR = 1 - phi((x0 - f(BMD))/sigma) - p0, 
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
-  \item{bmdInterval}{character string indicating type of bootstrap interval used for estiamting BMDL. "Percentile" (default) or "BCa" (Bias corrected and adjusted)}
+  
+  \item{bmdInterval}{character string indicating type of bootstrap interval used for estimating BMDL. "Percentile" (default) or "BCa" (Bias corrected and adjusted)}
 
 }
 
 \details{
 BMDL is defined as the 5th percentile in the bootstrap distribution.
 
-Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
+Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
 
 All sampling is made within dose groups.  
 

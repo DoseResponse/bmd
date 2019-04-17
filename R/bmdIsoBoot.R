@@ -1,4 +1,10 @@
-bmdIsoBoot <- function(object, data, type, bmr, R=1000, boot="resample", backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), backg=NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point")){
+bmdIsoBoot <- function(object, data, type, bmr, R=1000, boot="resample", 
+                       backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), 
+                       backg=NA, 
+                       def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point")){
+  if (type %in% c("Poisson","negbin1","negbin2") & boot!="resample") {
+    stop(paste("\"",type,"\" only works with resample bootstrap \"", sep=""))
+  }
   if(boot=="resample"){
     if(type=="binomial"){
       data.e<-expandBinomial(data, 
@@ -13,7 +19,7 @@ bmdIsoBoot <- function(object, data, type, bmr, R=1000, boot="resample", backgTy
     tmp.data[[i]] <- aggregateBinomial(object, sampled.expand)
   }
     }
-    if(type=="continuous"){
+    if(type %in% c("continuous","Poisson","negbin1","negbin2")){
       data.e<-data
       data.e[,"row.num"]<-1:dim(data.e)[1]
       data.e[,"dose"]<-data.e[,as.character(object[[3]])]

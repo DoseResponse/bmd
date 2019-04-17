@@ -9,15 +9,15 @@ Pool-adjacent-violators monotonizing
 function(formula,data,type) 
 }
 \arguments{
-  \item{formula}{an object of class "formula" expressing dose-respone relationship. Details of model specification are given under 'Details'}
+  \item{formula}{an object of class "formula" expressing dose-response relationship. Details of model specification are given under 'Details'}
   \item{data}{data frame containing the variables in the formula}
-  \item{type}{character string specifying the type of data used in the model. "continuous" or "binomial"}
+  \item{type}{character string specifying the type of data used in the model, "continuous" or "binomial" or "Poisson"}
 }
 
 \details{
 For details on how the pool-adjacent-violators algorithm is defined see Silvapulle and Sen (2004).
 
-Formula should be specifed as in the form number/total ~ dose for binomial data and response ~ for continuous data.
+Formula should be specified as in the form number/total ~ dose for binomial data and response ~ for continuous data.
 }
 \value{
 A vector containing the monotonized sequence.

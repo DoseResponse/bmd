@@ -2,7 +2,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","sandwich","inv"), display = TRUE) 
+              interval = c("delta","inv"), sandwich=FALSE, display = TRUE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -25,7 +25,9 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     } else {
     f0 <- ifelse(!is.na(coef(object)["d:(Intercept)"]), coef(object)["d:(Intercept)"], predict(object,data.frame(0)))
     }
+  if(def %in% c("hybridAdd","hybridExc")){
   useSD <- ifelse(!is.na(controlSD),controlSD,sqrt(summary(object)$resVar))
+  }
   if(identical(slope,"increasing" )) {
       if (identical(backgType,"modelBased")) {
         background <- f0
@@ -77,12 +79,30 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     if (identical(respType, "binomial") & (def %in% c("relative","added","extra", "hybridExc","hybridAdd"))) {
       stop(paste("\"",def, "\" is not available for quantal data", sep=""))
     }
+    if (respType %in% c("Poisson","negbin1","negbin2")) {
+      if(identical(slope,"increasing" )) {
+        bmrScaled <- switch(def, 
+                            relative = bmr * background + background,
+                            extra = bmr*abs(diff(predict(object, data.frame(c(0, Inf))))) + background,
+                            point = bmr)
+      } else {
+        bmrScaled <- switch(def, 
+                            relative = background - bmr * background, 
+                            extra = background - bmr*abs(diff(predict(object, data.frame(c(0, Inf))))),
+                            point = bmr)
+      } 
+      typeVal <- "absolute"
+    }
+    if (respType %in% c("Poisson","negbin1","negbin2") & (def %in% c("excess","additional","added","hybridExc","hybridAdd"))) {
+      stop(paste("\"",def, "\" is not available for count data", sep=""))
+    }
     if (def %in% c("excess","additional") & (backgType %in% c("hybridSD", "hybridPercentile"))) {
       stop(paste("\"",def, "\" does not work with backgType = \"", backgType,"\"", sep=""))
     }
     if (identical(respType, "continuous")) {
       if(identical(slope,"increasing" )) {
-        bmrScaled0 <- switch(def, relative = bmr * background + background, 
+        bmrScaled0 <- switch(def, 
+                             relative = bmr * background + background, 
                              added = bmr + background,
                              point = bmr,
                              extra = bmr*abs(diff(predict(object, data.frame(c(0, Inf)))))
@@ -94,7 +114,8 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                                   (qnorm(1 - background) - qnorm(1 + background - (1 - background)*bmr)) + 
                                    f0)
       } else {
-        bmrScaled0 <- switch(def, relative = background - bmr * background, 
+        bmrScaled0 <- switch(def, 
+                             relative = background - bmr * background, 
                              added = background - bmr,
                              point = bmr,
                              extra = background - bmr*abs(diff(predict(object, data.frame(c(0, Inf))))),
@@ -109,6 +130,10 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
         typeVal <- "absolute"
     }
     
+    if (identical(respType, "continuous") & (def %in% c("excess", "additional"))) {
+      stop(paste("\"",def, "\" is not available for continuous data", sep=""))
+    }
+    
     if(identical(interval, "delta")){
       interval.type <- "delta"
       } else if(identical(interval,"inv")){
@@ -116,11 +141,8 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       } else {
         interval.type <- "delta"
       }
-    vcov. <- ifelse(identical(interval,"sandwich"), sandwich, vcov)
+    vcov. <- ifelse(sandwich, sandwich, vcov)
     
-    if (identical(respType, "continuous") & (def %in% c("excess", "additional"))) {
-      stop(paste("\"",def, "\" is not available for continuous data", sep=""))
-    }
     
     resMat <- ED(object, bmrScaled, interval = interval.type, 
             level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 

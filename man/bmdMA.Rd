@@ -21,7 +21,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   p0 = f(0) 
   
   "absolute" - the background risk is specified by the user through the backg argument:
-  p0 = backg for binomial response and for the "relative", "extra" and "added" definiton for continuous response. 
+  p0 = backg for binomial response and for the "relative", "extra" and "added" definition for continuous response. 
   p0 = 1 - phi((back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
@@ -31,9 +31,9 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   p0 = 1 - phi((x0 - f(0))/sigma) = 1 - backg.
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
     
-  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomail response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
+  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomial response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
   
-  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
+  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
   
   "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
   Works for binomial response. BMR should be between 0 and 1.  
@@ -41,7 +41,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   "additional" - BMR is defined as: BMR = f(BMD) - p0.
   Works for binomial response. BMR should be between 0 and 1.  
   
-  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for both binomial and continious response 
+  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for both binomial and continuous response 
   
   "relative" - BMR is defined as: BMR = (f(BMD) - p0)/p0. 
   Works for continuous response 
@@ -64,9 +64,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
   
-  "sandwich" - BMDL is based on ht elower limit of a Wald confidence intervals based on the delta method with robust standard errors from the sandwich covariance matrix 
-  
-  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve. Not possible if type = "Buckland"}
+  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the point wise confidence interval of the dose-response curve. Not possible if type = "Buckland"}
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 
@@ -81,9 +79,9 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   "Buckland" - 
   }
   
-  \item{bootstrapType}{character string indicating type of bootstrap sampling to be used if type="bootstrap". "nonparamteric" (default), "semiparamteric" or "paramteric" (see details)}
+  \item{bootstrapType}{character string indicating type of bootstrap sampling to be used if type="bootstrap". "nonparametric" (default), "semiparametric" or "parametric" (see details)}
   
-  \item{bootInterval}{character string indicating how to estiamte the bootstrap confidence intervals used to find BMDL type="bootstrap". "percentile" (default) or "BCa" (Bias corrected and adjusted)}
+  \item{bootInterval}{character string indicating how to estimate the bootstrap confidence intervals used to find BMDL type="bootstrap". "percentile" (default) or "BCa" (Bias corrected and adjusted)}
   
   \item{R}{number of bootstrap samples to use. Default is 1000}
   
@@ -100,7 +98,7 @@ This package project is still under development. The aim to provide an R package
   
   Details on the implemented definitions and methods can be found in Crump (2002)
   
-  Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
+  Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
 
 All sampling is made within dose groups.  
 }

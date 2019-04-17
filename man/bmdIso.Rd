@@ -11,17 +11,17 @@ backg = NA, def = c("excess", "additional", "relative", "added", "hybridExc", "h
 display = FALSE) 
 }
 \arguments{
-  \item{formula}{an object of class "formula" expressing dose-respone relationship. Details of model specification are given under 'Details'}
+  \item{formula}{an object of class "formula" expressing the dose-response relationship. Details of model specification are given under 'Details'}
   \item{data}{data frame containing the variables in the model}
-  \item{type}{character string specifying the type of data used in the model. "continuous" or "binomial"}
+  \item{type}{character string specifying the type of data used in the model. "continuous", "binomial" or "Poisson"}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
-  "modelBased" - the background risk is obtained from the model as the risk for dose 0: 
+  "modelBased" - the background level is obtained from the model as the level for dose 0: 
   p0 = f(0) 
   
-  "absolute" - the background risk is specified by the user through the backg argument:
-  p0 = backg for binomial response and for the "relative" and "added" definiton for continuous response. 
+  "absolute" - the background level is specified by the user through the backg argument:
+  p0 = backg for binomial response and for the "relative" and "added" definition for continuous response. 
   p0 = 1 - phi((back - f(0))/sigma) for "hybridExc" and "hybridAdd" definitions.
   
   "hybridSD" - the background risk is specified by the user in terms of number of SDs from the mean of the control group.
@@ -31,9 +31,9 @@ display = FALSE)
   p0 = 1 - phi((x0 - f(0))/sigma) = 1 - backg.
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
     
-  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomail response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
+  \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomial response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
   
-  \item{def}{character string specifiying the definition of the benchmark dose to use in the calculations. "excess", "additional" and "point" are for binomial response whereas "relative", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response
+  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess", "additional" and "point" are for binomial response whereas "relative", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response. "relative", "extra", and "point" are for count response data.
   
   "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
   Works for binomial response. BMR should be between 0 and 1.  
@@ -41,10 +41,10 @@ display = FALSE)
   "additional" - BMR is defined as: BMR = f(BMD) - p0.
   Works for binomial response. BMR should be between 0 and 1.  
   
-  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD).   Works for both binomial and continious response 
+  "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for binomial, count and continuous response 
   
   "relative" - BMR is defined as: BMR = (f(BMD) - p0)/p0. 
-  Works for continuous response 
+  Works for count and continuous response 
   
   "added" - BMR is defined as: BMR= f(BMD) + p0.
   Works for continuous response
@@ -61,7 +61,7 @@ display = FALSE)
 }
 
 \details{
-Formula should be specifed as in the form number/total ~ dose for binomial data.
+Formula should be specified as in the form number/total ~ dose for binomial data.
 For details about the use of isotonic regression for BMD estimation see Piegorsch et al. (20014) and Lin et al. (2015).
 }
 \value{
