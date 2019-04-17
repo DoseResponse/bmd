@@ -67,7 +67,7 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   
   "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
   
-  \item{sandwich}{logical. If TRUE BMDL is based on confidence intervals based on robust standard errors from the sandwich covariance matrix 
+  \item{sandwich}{logical. If TRUE BMDL is based on confidence intervals based on robust standard errors from the sandwich covariance matrix} 
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 }
