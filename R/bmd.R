@@ -2,7 +2,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","inv"), sandwich=FALSE, display = TRUE) 
+              interval = "delta", sandwich=FALSE, display = TRUE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -134,29 +134,22 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       stop(paste("\"",def, "\" is not available for continuous data", sep=""))
     }
     
-    if(identical(interval, "delta")){
-      interval.type <- "delta"
-      } else if(identical(interval,"inv")){
-      interval.type <- "inv"
-      } else {
-        interval.type <- "delta"
-      }
     vcov. <- ifelse(sandwich, sandwich, vcov)
     
     
-    resMat <- ED(object, bmrScaled, interval = interval.type, 
+    resMat <- ED(object, bmrScaled, interval = interval, 
             level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
             c("Estimate", "Lower"), drop = FALSE]
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
-    bmdInterval <- ED(object, bmrScaled, interval = interval.type, 
+    bmdInterval <- ED(object, bmrScaled, interval = interval, 
                  level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
                                                                               c("Lower", "Upper"), drop = FALSE]
     colnames(bmdInterval) <- c("Lower CI", "Upper CI")
     rownames(bmdInterval) <- c("")
     bmdSE <- matrix(NA,1,1)
-    bmdSE[1,1] <- ifelse(identical(interval.type,"delta"),
-                    ED(object, bmrScaled, interval = interval.type, 
+    bmdSE[1,1] <- ifelse(identical(interval,"delta"),
+                    ED(object, bmrScaled, interval = interval, 
                       level = 0.9, type = typeVal, vcov. = vcov., 
                       display = FALSE)[, c("Std. Error"), drop = FALSE],
                     NA)
