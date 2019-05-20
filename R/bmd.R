@@ -2,7 +2,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = "delta", sandwich=FALSE, display = TRUE) 
+              interval = "delta", sandwich.vcov=FALSE, display = TRUE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -134,26 +134,47 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       stop(paste("\"",def, "\" is not available for continuous data", sep=""))
     }
     
-    vcov. <- ifelse(sandwich, sandwich, vcov)
+    #vcov. <- ifelse(sandwich, sandwich, vcov)
     
-    
+    if(sandwich.vcov==TRUE){
     resMat <- ED(object, bmrScaled, interval = interval, 
-            level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
-            c("Estimate", "Lower"), drop = FALSE]
+                level = 0.9, type = typeVal, vcov. = sandwich, display = FALSE)[, 
+                  c("Estimate", "Lower"), drop = FALSE]
+    }
+    if(sandwich.vcov==FALSE){
+    resMat <- ED(object, bmrScaled, interval = interval, 
+                level = 0.9, type = typeVal, vcov. = vcov, display = FALSE)[, 
+                  c("Estimate", "Lower"), drop = FALSE]
+    }
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
-    bmdInterval <- ED(object, bmrScaled, interval = interval, 
-                 level = 0.9, type = typeVal, vcov. = vcov., display = FALSE)[, 
-                                                                              c("Lower", "Upper"), drop = FALSE]
+    if(sandwich.vcov==TRUE){
+      bmdInterval <- ED(object, bmrScaled, interval = interval, 
+                        level = 0.9, type = typeVal, vcov. = sandwich, display = FALSE)[, 
+                                                                                     c("Lower", "Upper"), drop = FALSE]
+    }
+    if(sandwich.vcov==FALSE){
+      bmdInterval <- ED(object, bmrScaled, interval = interval, 
+                        level = 0.9, type = typeVal, vcov. = vcov, display = FALSE)[, 
+                                                                                        c("Lower", "Upper"), drop = FALSE]
+    }
     colnames(bmdInterval) <- c("Lower CI", "Upper CI")
     rownames(bmdInterval) <- c("")
     bmdSE <- matrix(NA,1,1)
+    if(sandwich.vcov==TRUE){
+      bmdSE[1,1] <- ifelse(identical(interval,"delta"),
+                           ED(object, bmrScaled, interval = interval, 
+                              level = 0.9, type = typeVal, vcov. = sandwich, 
+                              display = FALSE)[, c("Std. Error"), drop = FALSE],
+                           NA)
+    }
+    if(sandwich.vcov==FALSE){
     bmdSE[1,1] <- ifelse(identical(interval,"delta"),
-                    ED(object, bmrScaled, interval = interval, 
-                      level = 0.9, type = typeVal, vcov. = vcov., 
-                      display = FALSE)[, c("Std. Error"), drop = FALSE],
-                    NA)
-
+                         ED(object, bmrScaled, interval = interval, 
+                            level = 0.9, type = typeVal, vcov. = vcov, 
+                            display = FALSE)[, c("Std. Error"), drop = FALSE],
+                         NA)
+    }
     colnames(bmdSE) <- c("Std. Error")
     rownames(bmdSE) <- c("")
     if (display) {

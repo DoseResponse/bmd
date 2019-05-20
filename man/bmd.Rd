@@ -8,7 +8,7 @@ Benchmark dose estimation
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","inv"), sandwich=FALSE, display = FALSE) 
+              interval = c("delta","inv"), sandwich.vcov=FALSE, display = FALSE) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -67,7 +67,7 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   
   "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
   
-  \item{sandwich}{logical. If TRUE BMDL is based on confidence intervals based on robust standard errors from the sandwich covariance matrix} 
+  \item{sandwich.vcov}{logical. If TRUE BMDL is based on confidence intervals based on robust standard errors from the sandwich covariance matrix} 
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 }
