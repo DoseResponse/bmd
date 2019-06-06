@@ -1,5 +1,5 @@
-bootDataGen <- function(object, R=1000, boot="nonparametric",aggregated=TRUE){
-  if(boot=="nonparametric"){
+bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE){
+  if(bootType=="nonparametric"){
     if(object$type=="binomial"){
       data.str <- object$data
       data.str[["number"]] <- data.str[,2]*data.str[["weights"]]
@@ -21,7 +21,13 @@ bootDataGen <- function(object, R=1000, boot="nonparametric",aggregated=TRUE){
                       as.character(object$call$formula[[2]])[[3]])
     tmp.data[[i]] <- df
     } else {
-      tmp.data[[i]] <- sampled.expand
+      df <- data.frame(sampled.expand[,as.character(object$call$formula[[3]])],
+                  sampled.expand[,"number"],
+                  sampled.expand[,"weights"])
+      colnames(df) <- c(as.character(object$call$formula[[3]]),
+                        as.character(object$call$formula[[2]])[[2]],
+                        as.character(object$call$formula[[2]])[[3]])
+      tmp.data[[i]] <- df
     }
   }
     }
@@ -35,7 +41,7 @@ bootDataGen <- function(object, R=1000, boot="nonparametric",aggregated=TRUE){
                                                              FUN=function(x) sample(x,replace=TRUE))[[2]])),]
          }
     }
-  } else if(boot=="parametric"){
+  } else if(bootType=="parametric"){
     if(object$type=="binomial"){
     Y <- object$data[[as.character(object$call$formula)[[2]]]]*object$data[["weights"]]
     N <- object$data[["weights"]]
@@ -81,7 +87,7 @@ bootDataGen <- function(object, R=1000, boot="nonparametric",aggregated=TRUE){
         }
     }
   }
-  else if(boot=="semiparametric"){
+  else if(bootType=="semiparametric"){
     if(object$type=="binomial"){
       stop(paste("semiparametric is not possible for binomial data", sep=""))
     }
