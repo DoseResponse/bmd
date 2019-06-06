@@ -1,18 +1,50 @@
-bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
+bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "orig",
                     backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
                     backg=NA, 
                     def = c("excess", "additional", 
                             "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
                     bootInterval = c("percentile","BCa"),
                     display=TRUE){
-  tmp.data <- bootDataGen(object,R,boot)
-  drm.list <- lapply(tmp.data, function(x){
+  if (identical(object$type,"binomial") & bootType=="semiparametric") {
+    stop(paste("\"Semiparametric bootstrap does not work for quantal data\"", sep=""))
+  }
+  if (object$type %in% c("Poisson","negbin1","negbin2") & bootType!="nonparametric") {
+    stop(paste("\"",object$type,"\" only works with nonparametric bootstrap\"", sep=""))
+  }
+  
+  if (object$type %in% c("binomial","continuous")) {
+  
+  tmp.data <- bootDataGen(object,R,bootType,aggregated=FALSE)
+  
+  
+  drm.list.tmp <- lapply(tmp.data, function(x){
     drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]])}
   )
+  list.condition <- sapply(drm.list.tmp, function(x) class(x)=="drc")
+  drm.list  <- drm.list.tmp[list.condition]
   
   bmd.list <- lapply(drm.list,function(x){
     bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]}
   )
+  
+  }
+  
+  if (object$type %in% c("Poisson","negbin1","negbin2")) {
+    tmp.data <- bootDataGen(object,R,bootType,aggregated=FALSE)
+  
+    drm.list.tmp <- lapply(tmp.data, function(x){
+      try(drm(object$call$formula, data = x, type = object$type, weights=weights, fct = object[["fct"]]),TRUE)}
+    )
+    list.condition <- sapply(drm.list.tmp, function(x) class(x)=="drc")
+    drm.list  <- drm.list.tmp[list.condition]
+    
+    bmd.list <- lapply(drm.list,function(x){
+      bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]}
+    )
+    }
+  
+  
+  
   if(identical(object$type, "continuous")){
     if(identical(bootInterval,"BCa")){
       jackData <- list()
@@ -49,6 +81,27 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
       BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = data.e, unlist(bmd.list), bootJack)[1])
     }
   }
+  if(object$type %in% c("Poisson","negbin1","negbin2")){
+    if(identical(bootInterval,"BCa")){
+      jackData <- list()
+      for(i in 1:(dim(object$data)[1])){
+        jackData[[i]] <- object$data[-i,]
+      }
+      bootJack.drm.tmp <- sapply(jackData, function(x){
+        try(drm(object$call$formula, data = x, type = object$type, weights=weights, fct = object[["fct"]]),TRUE)
+      })
+      list.condition <- sapply(bootJack.drm.tmp, function(x) class(x)=="drc")
+      bootJack.drm<- bootJack.drm.tmp[list.condition]
+      
+      bootJack <- sapply(bootJack.drm, function(x){
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
+      }
+      )
+      
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
+      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
+    }
+  }
   if(bmdType == "orig"){
     use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
   } else if(bmdType == "mean"){
@@ -74,5 +127,4 @@ bmdBoot <- function(object, bmr, R=1000, boot="nonparametric", bmdType = "orig",
                percentileInterval = quantile(unlist(bmd.list),c(0.05,0.95)))
   class(resBMD) <- "bmd"
   invisible(resBMD)
-  
 }

@@ -61,6 +61,9 @@ bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE
                         as.character(object$call$formula[[2]])[[3]])
       tmp.data[[i]] <- df
       } else {
+        colnames(sampled.expand) <- c(as.character(object$call$formula[[2]])[[2]],
+                                      as.character(object$call$formula[[3]]),
+                                      as.character(object$call$formula[[2]])[[3]])
         tmp.data[[i]] <- sampled.expand
       }
     }

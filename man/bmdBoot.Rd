@@ -13,7 +13,7 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   \item{object}{object of class \code{drc}}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{R}{number of bootstrap samples. default is 1000}
-  \item{boot}{character string specifying type of bootstrap used. "nonparametric" (default), "semiparametric" or "parametric". "Semiparametric is only available for continuous data and "nonparametric" is at present the only option for count data. See details below}
+  \item{bootType}{character string specifying type of bootstrap used. "nonparametric" (default), "semiparametric" or "parametric". "Semiparametric is only available for continuous data and "nonparametric" is at present the only option for count data. See details below}
   \item{bmdType}{Type of estimate for BMD. Default is "orig" the bmd estimate from the original data set. Other choices are "mean" - the mean of the bootstrap estimates, or "median" - the median of the bootstrap estimates}
   \item{backgType}{character string specifying how the background level is specified. For binomial and count data the options are "modelBased" and "absolute". For continuous data the options are "modelBased", "absolute", "hybridSD" and "hybridPercentile"
 
