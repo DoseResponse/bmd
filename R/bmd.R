@@ -83,17 +83,19 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       if(identical(slope,"increasing" )) {
         bmrScaled <- switch(def, 
                             relative = bmr * background + background,
+                            added = bmr + background,
                             extra = bmr*abs(diff(predict(object, data.frame(c(0, Inf))))) + background,
                             point = bmr)
       } else {
         bmrScaled <- switch(def, 
-                            relative = background - bmr * background, 
+                            relative = background - bmr * background,
+                            added = background - bmr,
                             extra = background - bmr*abs(diff(predict(object, data.frame(c(0, Inf))))),
                             point = bmr)
       } 
       typeVal <- "absolute"
     }
-    if (respType %in% c("Poisson","negbin1","negbin2") & (def %in% c("excess","additional","added","hybridExc","hybridAdd"))) {
+    if (respType %in% c("Poisson","negbin1","negbin2") & (def %in% c("excess","additional","hybridExc","hybridAdd"))) {
       stop(paste("\"",def, "\" is not available for count data", sep=""))
     }
     if (def %in% c("excess","additional") & (backgType %in% c("hybridSD", "hybridPercentile"))) {

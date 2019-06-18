@@ -50,7 +50,7 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   Works for count and continuous response
   
   "added" - BMR is defined as: BMR= f(BMD) + p0.
-  Works for continuous response
+  Works for count and continuous response
   
   "hybridExc" - BMR is defined as: BMR = (1 - phi((x0 - f(BMD))/sigma) - p0)/ (1- p0), 
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
@@ -67,7 +67,7 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
 \details{
 BMDL is defined as the 5th percentile in the bootstrap distribution.
 
-Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
+Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/4)/(N_i+1/2)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
 
 All sampling is made within dose groups.  
 
