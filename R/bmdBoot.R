@@ -18,7 +18,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   
   
   drm.list.tmp <- lapply(tmp.data, function(x){
-    drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]])}
+    try(drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]]),TRUE)}
   )
   list.condition <- sapply(drm.list.tmp, function(x) class(x)=="drc")
   drm.list  <- drm.list.tmp[list.condition]
@@ -51,13 +51,19 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       for(i in 1:(dim(object$data)[1])){
         jackData[[i]] <- object$data[-i,]
       }
-      bootJack <- sapply(jackData, function(x){
-        bmd(drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
+      bootJack.drm.tmp <- lapply(jackData, function(x){
+        try(drm(object$call$formula, data = x, fct = object[["fct"]]),TRUE)
+      })
+      list.condition <- sapply(bootJack.drm.tmp, function(x) class(x)=="drc")
+      bootJack.drm<- bootJack.drm.tmp[list.condition]
+      
+      bootJack <- sapply(bootJack.drm, function(x){
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
       }
       )
+      
       use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
-      as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
+      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
     }
   }
   if(identical(object$type, "binomial")){
@@ -72,11 +78,17 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       for(i in 1:(dim(data.e)[1])){
         jackData[[i]] <- data.e[-i,]
       }
-      bootJack <- sapply(jackData, function(x){
-        bmd(drm(number~dose, data = x, type = "binomial", fct = object[["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
+      bootJack.drm.tmp <- lapply(jackData, function(x){
+        try(drm(number~dose, data = x, type = "binomial", fct = object[["fct"]]),TRUE)
+      })
+      list.condition <- sapply(bootJack.drm.tmp, function(x) class(x)=="drc")
+      bootJack.drm<- bootJack.drm.tmp[list.condition]
+      
+      bootJack <- sapply(bootJack.drm, function(x){
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, interval = "delta", display=FALSE)$Results[1]
       }
       )
+      
       use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
       BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = data.e, unlist(bmd.list), bootJack)[1])
     }
@@ -87,7 +99,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       for(i in 1:(dim(object$data)[1])){
         jackData[[i]] <- object$data[-i,]
       }
-      bootJack.drm.tmp <- sapply(jackData, function(x){
+      bootJack.drm.tmp <- lapply(jackData, function(x){
         try(drm(object$call$formula, data = x, type = object$type, weights=weights, fct = object[["fct"]]),TRUE)
       })
       list.condition <- sapply(bootJack.drm.tmp, function(x) class(x)=="drc")
@@ -99,7 +111,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       )
       
       use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, display=FALSE)[["Results"]][1]
-      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
+      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, bootSample=unlist(bmd.list), bootjack=bootJack)[1])
     }
   }
   if(bmdType == "orig"){
