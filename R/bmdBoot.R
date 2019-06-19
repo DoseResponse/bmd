@@ -11,6 +11,8 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   if (object$type %in% c("Poisson","negbin1","negbin2") & bootType!="nonparametric") {
     stop(paste("\"",object$type,"\" only works with nonparametric bootstrap\"", sep=""))
   }
+  op <- options(error=NULL)
+  on.exit(options(op))
   
   if (object$type %in% c("binomial","continuous")) {
   
