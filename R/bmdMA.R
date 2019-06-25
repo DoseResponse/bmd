@@ -12,6 +12,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   display=TRUE){
   
   bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)})  
+  
   if(identical(modelList[[1]]$type,"continuous")){
     my.fun<-function(x,y){drm(y$call$formula, data = x, fct = y[["fct"]])}
   
@@ -32,7 +33,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     seBMD <- sapply(bmdList, function(x){x$SE})
     maBMD <- sum(modelWeights0 * estBMD)
     maBMDse <- sum(modelWeights0 * sqrt(seBMD^2 + (estBMD-maBMD)^2))
-    quant <- qnorm(1-(CI)/2)
+    quant <- qnorm(1-(1-CI)/2)
     maBMDL <- maBMD - quant*maBMDse
   }
   if(identical(type,"bootstrap") |identical(type,"Bootstrap") ){
@@ -46,16 +47,28 @@ bmdMA <- function(modelList, modelWeights, bmr,
     }
     maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
     
+    drmModelListTmp <-list()
+    for(i in 1:length(modelList)){
+      drmModelListTmp[[i]] <- which(!sapply(lapply(bootData, function(x){
+      try(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),TRUE)
+      }
+      ),function(x) class(x)=="drc"))
+    }
+    
+    non.convergence<-unique(unlist(drmModelListTmp))
+    if(length(non.convergence)>0){
+    bootData<-bootData[-non.convergence]
+    }
     bootModelList <-list()
     for(i in 1:length(modelList)){
       bootModelList[[i]] <- sapply(bootData, function(x){
-        suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
+        suppressWarnings(try(bmd(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),
+                                 bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1],TRUE))
       }
       )
     }
     if(identical(modelWeights,"AIC")){
-      AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
+      AICList <-suppressWarnings(lapply(bootData, function(x) sapply(modelList, function(y) {AIC(my.fun(x,y))})))
       modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
       
     } else if(identical(modelWeights,"BIC")){
@@ -124,6 +137,18 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
     }
     
+    drmModelListTmp <-list()
+    for(i in 1:length(modelList)){
+      drmModelListTmp[[i]] <- which(!sapply(lapply(bootData, function(x){
+        try(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),TRUE)
+      }
+      ),function(x) class(x)=="drc"))
+    }
+    
+    non.convergence<-unique(unlist(drmModelListTmp))
+    if(length(non.convergence)>0){
+      bootData<-bootData[-non.convergence]
+    }
     bootModelList <-list()
     for(i in 1:length(modelList)){
       bootModelList[[i]] <- lapply(bootData, function(x){
@@ -212,8 +237,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
   }
   
   if(identical(modelList[[1]]$type,"binomial")){
-    my.fun<-function(x,y){drm(number ~ dose, data = x, type="binomial", fct = y[["fct"]])
-      }
+    my.fun<-function(x,y){drm(y$call$formula, data = x, type="binomial", fct = y[["fct"]])}
+    my.fun2<-function(x,y){drm(number~dose, data = x, type="binomial", fct = y[["fct"]])}
+    
     
     if(identical(modelWeights,"AIC")){
       modelWeights0<-exp(-sapply(modelList,AIC))/sum(exp(-sapply(modelList,AIC)))
@@ -232,7 +258,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       seBMD <- sapply(bmdList, function(x){x$SE})
       maBMD <- sum(modelWeights0 * estBMD)
       maBMDse <- sum(modelWeights0 * sqrt(seBMD^2 + (estBMD-maBMD)^2))
-      quant <- qnorm(1-(CI)/2)
+      quant <- qnorm(1-(1-CI)/2)
       maBMDL <- maBMD - quant*maBMDse
     }
     if(identical(type,"bootstrap") | identical(type,"Bootstrap") ){
@@ -246,11 +272,23 @@ bmdMA <- function(modelList, modelWeights, bmr,
       }
       maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
       
+      drmModelListTmp <-list()
+      for(i in 1:length(modelList)){
+        drmModelListTmp[[i]] <- which(!sapply(lapply(bootData, function(x){
+          try(drm(modelList[[i]]$call$formula, data = x, type="binomial", fct = modelList[[i]][["fct"]]),TRUE)
+        }
+        ),function(x) class(x)=="drc"))
+      }
+      
+      non.convergence<-unique(unlist(drmModelListTmp))
+      if(length(non.convergence)>0){
+        bootData<-bootData[-non.convergence]
+      }
       bootModelList <-list()
       for(i in 1:length(modelList)){
         bootModelList[[i]] <- sapply(bootData, function(x){
-          suppressWarnings(bmd(my.fun(x,modelList[[i]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
+          try(bmd(my.fun(x,modelList[[i]]),
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1],TRUE)
         }
         )
       }
@@ -285,7 +323,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         bootJackList <-list()
         for(i in 1:length(modelList)){
           bootJackList[[i]] <- sapply(jackData, function(x){
-            suppressWarnings(bmd(my.fun(x,modelList[[i]]),
+            suppressWarnings(bmd(my.fun2(x,modelList[[i]]),
                 bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
           }
           )
@@ -294,7 +332,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           AICJackList <-list()
           for(i in 1:length(modelList)){
             AICJackList[[i]] <- sapply(jackData, function(x){
-              suppressWarnings(AIC(my.fun(x,modelList[[i]])))
+              suppressWarnings(AIC(my.fun2(x,modelList[[i]])))
             }
             )
           }
@@ -303,7 +341,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           BICJackList <-list()
           for(i in 1:length(modelList)){
             BICJackList[[i]] <- sapply(jackData, function(x){
-              suppressWarnings(BIC(my.fun(x,modelList[[i]])))
+              suppressWarnings(BIC(my.fun2(x,modelList[[i]])))
             }
             )
           }
@@ -330,6 +368,19 @@ bmdMA <- function(modelList, modelWeights, bmr,
         bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated=FALSE)
       }
       
+      
+      drmModelListTmp <-list()
+      for(i in 1:length(modelList)){
+        drmModelListTmp[[i]] <- which(!sapply(lapply(bootData, function(x){
+          try(drm(modelList[[i]]$call$formula, data = x, type="binomial", fct = modelList[[i]][["fct"]]),TRUE)
+        }
+        ),function(x) class(x)=="drc"))
+      }
+      
+      non.convergence<-unique(unlist(drmModelListTmp))
+      if(length(non.convergence)>0){
+        bootData<-bootData[-non.convergence]
+      }
       bootModelList <-list()
       for(i in 1:length(modelList)){
         bootModelList[[i]] <- lapply(bootData, function(x){
