@@ -184,11 +184,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
     
     LLimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]]))[2]/10000
     ULimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]],decreasing=TRUE))[1]
-    funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1]}
+    funk<-function(x,y,z){try(bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1],TRUE)}
     bmrScaledList<-as.list(rowSums(do.call(rbind,modelWeightsList)*do.call(rbind,bootbmrListTrans)))
     
     boot<-mapply(funk,bootModelListTrans,modelWeightsList,bmrScaledList)
-    boot0<-boot[!is.na(boot)]
+    boot0<-suppressWarnings(as.numeric(boot[!is.na(as.numeric(boot))]))
     
     if(bootInterval %in% c("percentile","Percentile")){
       maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
