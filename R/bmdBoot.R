@@ -122,7 +122,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
     use.bmd <- quantile(unlist(bmd.list),c(0.5))  
   } 
   
-  BMDL <- ifelse(identical(bootInterval,"BCa"), BCaBMDL, quantile(unlist(bmd.list),c(0.05)))
+  BMDL <- ifelse(identical(bootInterval,"BCa"), BCaBMDL, quantile(unlist(bmd.list),c(0.05),na.rm = TRUE))
   
   resMat <- matrix(NA,1,2)
   resMat[1,1] <- use.bmd
@@ -136,7 +136,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   
   resBMD<-list(Results = resMat,
                bootEst = unlist(bmd.list),
-               percentileInterval = quantile(unlist(bmd.list),c(0.05,0.95)))
+               percentileInterval = quantile(unlist(bmd.list),c(0.05,0.95),na.rm = TRUE))
   class(resBMD) <- "bmd"
   invisible(resBMD)
 }
