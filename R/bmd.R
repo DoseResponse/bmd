@@ -70,7 +70,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                             point = bmr)
       } else {
         bmrScaled <- switch(def, 
-                            excess = background - bmr * (1 - background), 
+                            excess = background - bmr * background, 
                             additional = background - bmr, 
                             point = bmr)
       } 

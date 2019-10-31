@@ -7,12 +7,12 @@ Benchmark dose estimation using bootstrap
 }
 \usage{
 bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
-    backg=NA, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), bmdInterval = c("Percentile","BCa")) 
+    backg=NA, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), bootInterval = c("Percentile","BCa")) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
-  \item{R}{number of bootstrap samples. default is 1000}
+  \item{R}{number of bootstrap samples. Default is 1000}
   \item{bootType}{character string specifying type of bootstrap used. "nonparametric" (default), "semiparametric" or "parametric". "Semiparametric is only available for continuous data and "nonparametric" is at present the only option for count data. See details below}
   \item{bmdType}{Type of estimate for BMD. Default is "orig" the bmd estimate from the original data set. Other choices are "mean" - the mean of the bootstrap estimates, or "median" - the median of the bootstrap estimates}
   \item{backgType}{character string specifying how the background level is specified. For binomial and count data the options are "modelBased" and "absolute". For continuous data the options are "modelBased", "absolute", "hybridSD" and "hybridPercentile"
@@ -60,7 +60,7 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
-  \item{bmdInterval}{character string indicating type of bootstrap interval used for estimating BMDL. "Percentile" (default) or "BCa" (Bias corrected and adjusted)}
+  \item{bootInterval}{character string indicating type of bootstrap interval used for estimating BMDL. "Percentile" (default) or "BCa" (Bias corrected and adjusted)}
 
 }
 
