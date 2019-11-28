@@ -24,10 +24,10 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   list.condition <- sapply(drm.list.tmp, function(x) class(x)=="drc")
   drm.list  <- drm.list.tmp[list.condition]
   
-  bmd.list <- lapply(drm.list,function(x){
-    bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1]}
+  bmd.list.try <- lapply(drm.list,function(x){
+    try(bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1],TRUE)}
   )
-  
+  bmd.list <- bmd.list.try[sapply(bmd.list.try, function(x) class(x)=="numeric")]
   }
   
   if (object$type %in% c("Poisson","negbin1","negbin2")) {
