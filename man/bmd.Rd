@@ -83,7 +83,7 @@ The aim to provide an R package
   Details on the implemented definitions and methods can be found in Crump (2002)
 }
 \value{
-A list with four elements: Results contain the estiamted BMD and BMDL, bmrScaled is the response value corresponding to the BMD, interval gives the lower (BMDL) and upper (BMDU) end of the confidence interval of BMD, SE gives the standard error of BMD.
+A list of four elements: Results contain the estimated BMD and BMDL, bmrScaled is the response value corresponding to the BMD, interval gives the lower (BMDL) and upper (BMDU) end of the confidence interval of BMD, SE gives the standard error of BMD.
 }
 \references{
   Budtz-Jorgensen, E., Keiding, N., and Grandjean, P. (2001) 

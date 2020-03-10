@@ -5,7 +5,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
                     def = c("excess", "additional", 
                             "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
                     bootInterval = c("percentile","BCa"),
-                    display=TRUE){
+                    display=TRUE, level=0.95){
   if (identical(object$type,"binomial") & bootType=="semiparametric") {
     stop(paste("\"Semiparametric bootstrap does not work for quantal data\"", sep=""))
   }
@@ -25,7 +25,8 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   drm.list  <- drm.list.tmp[list.condition]
   
   bmd.list.try <- lapply(drm.list,function(x){
-    try(bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1],TRUE)}
+    try(bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+            display=FALSE, level=level)[["Results"]][1],TRUE)}
   )
   bmd.list <- bmd.list.try[sapply(bmd.list.try, function(x) class(x)=="numeric")]
   }
@@ -40,7 +41,8 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
     drm.list  <- drm.list.tmp[list.condition]
     
     bmd.list <- lapply(drm.list,function(x){
-      bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1]}
+      bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+          display=FALSE, level=level)[["Results"]][1]}
     )
     }
   
@@ -59,12 +61,15 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       bootJack.drm<- bootJack.drm.tmp[list.condition]
       
       bootJack <- sapply(bootJack.drm, function(x){
-        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, interval = "delta", display=FALSE)$Results[1]
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, 
+            interval = "delta", display=FALSE, level=level)$Results[1]
       }
       )
       
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1]
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+                     display=FALSE, level=level)[["Results"]][1]
       BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
+      
     }
   }
   if(identical(object$type, "binomial")){
@@ -86,12 +91,14 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       bootJack.drm<- bootJack.drm.tmp[list.condition]
       
       bootJack <- sapply(bootJack.drm, function(x){
-        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, interval = "delta", display=FALSE)$Results[1]
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, 
+            interval = "delta", display=FALSE, level=level)$Results[1]
       }
       )
       
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1]
-      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = data.e, unlist(bmd.list), bootJack)[1])
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+                     display=FALSE, level=level)[["Results"]][1]
+      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = data.e, unlist(bmd.list), bootJack, level=level)[1])
     }
   }
   if(object$type %in% c("Poisson","negbin1","negbin2")){
@@ -107,23 +114,28 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       bootJack.drm<- bootJack.drm.tmp[list.condition]
       
       bootJack <- sapply(bootJack.drm, function(x){
-        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, interval = "delta", display=FALSE)$Results[1]
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, interval = "delta", 
+            display=FALSE, level=level)$Results[1]
       }
       )
       
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1]
-      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, bootSample=unlist(bmd.list), bootjack=bootJack)[1])
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+                     display=FALSE, level=level)[["Results"]][1]
+      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, bootSample=unlist(bmd.list), 
+                                bootjack=bootJack, level=level)[1])
     }
   }
   if(bmdType == "orig"){
-    use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, display=FALSE)[["Results"]][1]
+    use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+                   display=FALSE, level=level)[["Results"]][1]
   } else if(bmdType == "mean"){
     use.bmd <- mean(unlist(bmd.list))
   } else if(bmdType == "median"){
-    use.bmd <- quantile(unlist(bmd.list),c(0.5))  
+    use.bmd <- quantile(unlist(bmd.list),c(1-level))  
   } 
   
-  BMDL <- ifelse(identical(bootInterval,"BCa"), BCaBMDL, quantile(unlist(bmd.list),c(0.05),na.rm = TRUE))
+  BMDL <- ifelse(identical(bootInterval,"BCa"), BCaBMDL, quantile(unlist(bmd.list),c(1-level),na.rm = TRUE))
+  BMDU <- ifelse(identical(bootInterval,"BCa"), "Not available for BCa bootstrap", quantile(unlist(bmd.list),c(level),na.rm = TRUE))
   
   resMat <- matrix(NA,1,2)
   resMat[1,1] <- use.bmd
@@ -137,7 +149,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   
   resBMD<-list(Results = resMat,
                bootEst = unlist(bmd.list),
-               percentileInterval = quantile(unlist(bmd.list),c(0.05,0.95),na.rm = TRUE))
+               Interval = c(BMDL, BMDU))
   class(resBMD) <- "bmd"
   invisible(resBMD)
 }

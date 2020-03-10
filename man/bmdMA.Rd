@@ -9,7 +9,7 @@ Model-averaged benchmark dose estimation
 bmd(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
 interval = c("delta","sandwich","inv"),
-type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=1000, CI=0.1) 
+type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=1000, level=0.95) 
 }
 \arguments{
   \item{modelList}{list of models of class \code{drc}}
@@ -85,8 +85,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   
   \item{R}{number of bootstrap samples to use. Default is 1000}
   
-  \item{CI}{level of confidence interval for finding BMDL. Default is 0.9}
-  
+  \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
   
 }
 
@@ -103,7 +102,7 @@ This package project is still under development. The aim to provide an R package
 All sampling is made within dose groups.  
 }
 \value{
-A matrix with two columns, one containing the model-averaged BMD and the other containing the corresponding BMDL.
+A list of three elements: Results contain the estimated BMD and BMDL, Boot.samples.used gives the number of boot samples that resulted in succesful estimations and were accordingly used  in the estimation of BMDL (and BMDU), Interval gives BMDL and BMDU, which is identical to the confidence interval for the percentile interval approach.
 }
 \references{
   Budtz-Jorgensen, E., Keiding, N., and Grandjean, P. (2001) 

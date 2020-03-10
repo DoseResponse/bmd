@@ -6,8 +6,10 @@ Benchmark dose estimation using bootstrap
 \description{The function estimates BMD and BMDL using bootstrap based on parametric dose-response models.  
 }
 \usage{
-bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
-    backg=NA, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), bootInterval = c("Percentile","BCa")) 
+bmdBoot(object, bmr, R, bootType = c("nonparametric", "semiparametric", "parametric"), bmdType, backgType = c("modelBased",
+"absolute", "hybridSD", "hybridPercentile"),
+    backg=NA, controlSD, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),   bootInterval = c("Percentile","BCa"),
+    display=TRUE, level=0.95) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -32,6 +34,8 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
     
   \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background level for binomial response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridpercentile"}
+  
+  \item{controlSD}{numeric value specifying the standard deviation of the control group (used in the hybrid approach). If not specified the SD for the control group will be estimated as the square root of the residual variance (assuming variance homogeneity).}
   
   \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess" , "additional" and "point" are for binomial response whereas "relative", "extra", "added", "hybridExc" (excess hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous response. "relative", "extra", and "point" are for count response data.
   
@@ -62,6 +66,10 @@ bmdBoot(object, bmr, R, boot = "nonparametric", bmdType, backgType = c("modelBas
   
   \item{bootInterval}{character string indicating type of bootstrap interval used for estimating BMDL. "Percentile" (default) or "BCa" (Bias corrected and adjusted)}
 
+  \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
+  
+  \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
+
 }
 
 \details{
@@ -73,7 +81,7 @@ All sampling is made within dose groups.
 
 }
 \value{
-A matrix with two columns, one containing BMD and the other containing BMDL.
+A list of three elements: Results contain the estimated BMD and BMDL, bootEst is a vector af all of the estimated BMD values from each bootstrap sample, Interval gives BMDL and BMDU, which is identical to the confidence interval for the percentile interval approach. 
 }
 \references{
 

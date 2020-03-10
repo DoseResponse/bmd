@@ -8,10 +8,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   bootstrapType = "nonparametric",
                   R=1000,
                   bootInterval = "percentile",
-                  CI=0.9,
+                  level=0.95,
                   display=TRUE){
   
-  bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)})  
+  bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, 
+                                                      interval = interval, display=FALSE, level=level)})  
   
   if(identical(modelList[[1]]$type,"continuous")){
     my.fun<-function(x,y){drm(y$call$formula, data = x, fct = y[["fct"]])}
@@ -27,14 +28,16 @@ bmdMA <- function(modelList, modelWeights, bmr,
   if(identical(type,"Kang")){
     maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
     maBMDL <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,2]}))
+    maBMDU <- sum(modelWeights0 * sapply(bmdList, function(x){x$bmdInterval[,2]}))
   }
   if(identical(type,"Buckland")){
     estBMD <- sapply(bmdList, function(x){x$Results[,1]})
     seBMD <- sapply(bmdList, function(x){x$SE})
     maBMD <- sum(modelWeights0 * estBMD)
     maBMDse <- sum(modelWeights0 * sqrt(seBMD^2 + (estBMD-maBMD)^2))
-    quant <- qnorm(1-(1-CI)/2)
+    quant <- qnorm(level)
     maBMDL <- maBMD - quant*maBMDse
+    maBMDU <- maBMD + quant*maBMDse
   }
   if(identical(type,"bootstrap") |identical(type,"Bootstrap") ){
     if(identical(bootstrapType,"nonparametric")){
@@ -63,7 +66,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     for(i in 1:length(modelList)){
       bootModelList[[i]] <- sapply(bootData, function(x){
         suppressWarnings(try(bmd(drm(modelList[[i]]$call$formula, data = x, fct = modelList[[i]][["fct"]]),
-                                 bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1],TRUE))
+                                 bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+                                 display=FALSE, level=level)$Results[1],TRUE))
       }
       )
     }
@@ -82,7 +86,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     boot0<-boot[!is.na(boot)]
     
     if(bootInterval %in% c("percentile","Percentile")){
-      maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
+      maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
+      maBMDU <- quantile(boot0,p=c(level))
     }
     if(identical(bootInterval,"BCa")){
       jackData <- list()
@@ -92,8 +97,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootJackList <-list()
       for(i in 1:length(modelList)){
         bootJackList[[i]] <- sapply(jackData, function(x){
-          suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
+          suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, 
+                                   fct = modelList[[i]][["fct"]]),
+                               bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+                               display=FALSE, level=level)$Results[1])
         }
         )
       }
@@ -122,6 +129,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootjack<-diag(t(do.call(rbind,bootJackList)) %*% modelWeightsJack)
       
       maBMDL <- as.numeric(BCa(obs = maBMD, data = modelList[[1]]$data, boot0, bootjack)[1])
+      maBMDU <- "Not available for BCa bootstrap"
     }
   }
   if(identical(type,"curve")){
@@ -175,8 +183,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
     bootbmrList<-list()
     for(i in 1:length(modelList)){
       bootbmrList[[i]] <- sapply(bootData, function(x){
-        suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-            bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
+        suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, 
+                                 fct = modelList[[i]][["fct"]]),
+                             bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+                             display=FALSE, level=level)$bmrScaled)
       }
       )
     }
@@ -191,7 +201,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     boot0<-suppressWarnings(as.numeric(boot[!is.na(as.numeric(boot))]))
     
     if(bootInterval %in% c("percentile","Percentile")){
-      maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
+      maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
+      maBMDU <- quantile(boot0,p=c(level))
     }
     if(identical(bootInterval,"BCa")){
       jackData <- list()
@@ -216,8 +227,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
       jackbmrList<-list()
       for(i in 1:length(modelList)){
         jackbmrList[[i]] <- sapply(jackData, function(x){
-          suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, fct = modelList[[i]][["fct"]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
+          suppressWarnings(bmd(drm(modelList[[i]]$call$formula, data = x, type = modelList[[i]]$type, 
+                                   fct = modelList[[i]][["fct"]]),
+                               bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+                               display=FALSE, level=level)$bmrScaled)
         }
         )
       }
@@ -232,6 +245,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootjack<-mapply(funk,bootJackModelList,modelWeightsJackList,bmrScaledJack)
       
       maBMDL <- as.numeric(BCa(obs = maBMD, data = modelList[[1]]$data, boot0, bootjack)[1])
+      maBMDU <- "Not available for BCa bootstrap"
     }
   }
   }
@@ -252,14 +266,16 @@ bmdMA <- function(modelList, modelWeights, bmr,
     if(identical(type,"Kang")){
       maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
       maBMDL <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,2]}))
+      maBMDU <- sum(modelWeights0 * sapply(bmdList, function(x){x$bmdInterval[,2]}))
     }
     if(identical(type,"Buckland")){
       estBMD <- sapply(bmdList, function(x){x$Results[,1]})
       seBMD <- sapply(bmdList, function(x){x$SE})
       maBMD <- sum(modelWeights0 * estBMD)
       maBMDse <- sum(modelWeights0 * sqrt(seBMD^2 + (estBMD-maBMD)^2))
-      quant <- qnorm(1-(1-CI)/2)
+      quant <- qnorm(level)
       maBMDL <- maBMD - quant*maBMDse
+      maBMDU <- maBMD + quant*maBMDse
     }
     if(identical(type,"bootstrap") | identical(type,"Bootstrap") ){
       if(identical(bootstrapType,"nonparametric")){
@@ -288,7 +304,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       for(i in 1:length(modelList)){
         bootModelList[[i]] <- sapply(bootData, function(x){
           try(bmd(my.fun(x,modelList[[i]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1],TRUE)
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+              display=FALSE, level=level)$Results[1],TRUE)
         }
         )
       }
@@ -307,7 +324,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       boot0<-boot[!is.na(boot)]
       
       if(bootInterval %in% c("percentile","Percentile")){
-        maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
+        maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
+        maBMDU <- quantile(boot0,p=c(level))
       }
       if(identical(bootInterval,"BCa")){
         data.str <- modelList[[1]]$data
@@ -324,7 +342,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         for(i in 1:length(modelList)){
           bootJackList[[i]] <- sapply(jackData, function(x){
             suppressWarnings(bmd(my.fun2(x,modelList[[i]]),
-                bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$Results[1])
+                bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+                display=FALSE, level=level)$Results[1])
           }
           )
         }
@@ -353,6 +372,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         bootjack<-diag(t(do.call(rbind,bootJackList)) %*% modelWeightsJack)
         
         maBMDL <- as.numeric(BCa(obs = maBMD, data = data.e, boot0, bootjack)[1])
+        maBMDU <- "Not available for BCa bootstrap"
       }
     }
     if(identical(type,"curve")){
@@ -408,7 +428,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       for(i in 1:length(modelList)){
         bootbmrList[[i]] <- sapply(bootData, function(x){
           suppressWarnings(bmd(my.fun(x,modelList[[i]]),
-              bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
+              bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+              display=FALSE, level=level)$bmrScaled)
         }
         )
       }
@@ -423,7 +444,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       boot0<-boot[!is.na(boot)]
       
       if(bootInterval %in% c("percentile","Percentile")){
-        maBMDL <- quantile(boot0,p=c((1-CI)/2)) # ABC percentile lims.  
+        maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
+        maBMDU <- quantile(boot0,p=c(level))
       }
       if(identical(bootInterval,"BCa")){
         data.str <- modelList[[1]]$data
@@ -455,7 +477,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         for(i in 1:length(modelList)){
           jackbmrList[[i]] <- sapply(jackData, function(x){
             suppressWarnings(bmd(my.fun(x,modelList[[i]]),
-                bmr, backgType = backgType, backg = backg, def = def, interval = interval, display=FALSE)$bmrScaled)
+                bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
+                display=FALSE, level=level)$bmrScaled)
           }
           )
         }
@@ -470,6 +493,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         bootjack<-mapply(funk,bootJackModelList,modelWeightsJackList,bmrScaledJack)
         
         maBMDL <- as.numeric(BCa(obs = maBMD, data = data.e, boot0, bootjack)[1])
+        maBMDU <- "Not available for BCa bootstrap"
       }
     }
   }
@@ -480,7 +504,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
   used.Boot<-ifelse(identical(type,"bootstrap")|identical(type,"Bootstrap")|identical(type,"curve"),
                     length(boot0),NA)
   resBMD<-list(Results = resMat,
-               Boot.samples.used = used.Boot)
+               Boot.samples.used = used.Boot,
+               Interval = c(maBMDL, maBMDU))
   if(display){
     print(resMat)
   }
