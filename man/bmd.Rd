@@ -8,7 +8,7 @@ Benchmark dose estimation
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","inv"), sandwich.vcov=FALSE, display = FALSE) 
+              interval = c("delta","inv"), sandwich.vcov=FALSE, display = FALSE, level=0.95) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -70,18 +70,20 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   \item{sandwich.vcov}{logical. If TRUE BMDL is based on confidence intervals based on robust standard errors from the sandwich covariance matrix} 
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
+  
+  \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
 }
 
 \details{
-This package project is still under development. The aim to provide an R package 
+The aim to provide an R package 
   calculating the benchmark dose (BMD) and the lower limit of the corresponding 95\% confidence interval (BMDL)
-  for continuous and quantal dose-response data for a range of dose-response model based on the available
+  for continuous and quantal dose-response data for a range of dose-response models based on the available
   definitions of the benchmark dose concepts.
   
   Details on the implemented definitions and methods can be found in Crump (2002)
 }
 \value{
-A matrix with two columns, one containing BMD and the other containing BMDL.
+A list with four elements: Results contain the estiamted BMD and BMDL, bmrScaled is the response value corresponding to the BMD, interval gives the lower (BMDL) and upper (BMDU) end of the confidence interval of BMD, SE gives the standard error of BMD.
 }
 \references{
   Budtz-Jorgensen, E., Keiding, N., and Grandjean, P. (2001) 
