@@ -18,9 +18,13 @@ bmdMA <- function(modelList, modelWeights, bmr,
     my.fun<-function(x,y){drm(y$call$formula, data = x, fct = y[["fct"]])}
   
   if(identical(modelWeights,"AIC")){
-    modelWeights0<-exp(-sapply(modelList,AIC))/sum(exp(-sapply(modelList,AIC)))
+    modelWeights0<-exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC))))/
+      sum(exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC)))))
+    exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC))))/
+      sum(exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC)))))
   } else if(identical(modelWeights,"BIC")){
-    modelWeights0<-exp(-sapply(modelList,BIC))/sum(exp(-sapply(modelList,BIC)))
+    modelWeights0<-exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC))))/
+      sum(exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))))
   } else {
     modelWeights0 <- modelWeights
   }
@@ -28,7 +32,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
   if(identical(type,"Kang")){
     maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
     maBMDL <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,2]}))
-    maBMDU <- sum(modelWeights0 * sapply(bmdList, function(x){x$bmdInterval[,2]}))
+    maBMDU <- sum(modelWeights0 * sapply(bmdList, function(x){x$interval[,2]}))
   }
   if(identical(type,"Buckland")){
     estBMD <- sapply(bmdList, function(x){x$Results[,1]})
@@ -73,11 +77,13 @@ bmdMA <- function(modelList, modelWeights, bmr,
     }
     if(identical(modelWeights,"AIC")){
       AICList <-suppressWarnings(lapply(bootData, function(x) sapply(modelList, function(y) {AIC(my.fun(x,y))})))
-      modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
+      AICtmp <- do.call(rbind,AICList)
+      modelWeights0 <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
       
     } else if(identical(modelWeights,"BIC")){
       BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
-      modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
+      BICtmp <- do.call(rbind,BICList)
+      modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
     } else {
       modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
     }
@@ -86,8 +92,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     boot0<-boot[!is.na(boot)]
     
     if(bootInterval %in% c("percentile","Percentile")){
-      maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
-      maBMDU <- quantile(boot0,p=c(level))
+      maBMDL <- quantile(boot0,p=c(1-level), na.rm = TRUE) # ABC percentile lims.  
+      maBMDU <- quantile(boot0,p=c(level), na.rm = TRUE)
     }
     if(identical(bootInterval,"BCa")){
       jackData <- list()
@@ -112,8 +118,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
           }
           )
         }
-        modelWeightsJack <- t(t(exp(-do.call(rbind,AICJackList)))/colSums(exp(-do.call(rbind,AICJackList))))
-      } else if(identical(modelWeights,"BIC")){
+        AICtmp <- do.call(rbind,AICJackList)
+        modelWeightsJack <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
+        } else if(identical(modelWeights,"BIC")){
         BICJackList <-list()
         for(i in 1:length(modelList)){
           BICJackList[[i]] <- sapply(jackData, function(x){
@@ -121,8 +128,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
           }
           )
         }
-        modelWeightsJack <- t(t(exp(-do.call(rbind,BICJackList)))/colSums(exp(-do.call(rbind,BICJackList))))
-      } else {
+        BICtmp <- do.call(rbind,BICJackList)
+        modelWeightsJack <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
+        } else {
         modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
       }
       
@@ -169,11 +177,12 @@ bmdMA <- function(modelList, modelWeights, bmr,
     
     if(identical(modelWeights,"AIC")){
       AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
-      modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
-      
+      AICtmp <- do.call(rbind,AICList)
+      modelWeights0 <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
     } else if(identical(modelWeights,"BIC")){
       BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
-      modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
+      BICtmp <- do.call(rbind,BICList)
+      modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
       
     } else {
       modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
@@ -201,8 +210,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     boot0<-suppressWarnings(as.numeric(boot[!is.na(as.numeric(boot))]))
     
     if(bootInterval %in% c("percentile","Percentile")){
-      maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
-      maBMDU <- quantile(boot0,p=c(level))
+      maBMDL <- quantile(boot0,p=c(1-level), na.rm = FALSE) # ABC percentile lims.  
+      maBMDU <- quantile(boot0,p=c(level), na.rm = FALSE)
     }
     if(identical(bootInterval,"BCa")){
       jackData <- list()
@@ -215,10 +224,12 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       if(identical(modelWeights,"AIC")){
         AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
-        modelWeightsJack <- t(t(exp(-t(do.call(rbind,AICJackList))))/colSums(exp(-t(do.call(rbind,AICJackList)))))
+        AICtmp <- do.call(rbind,AICJackList)
+        modelWeightsJack <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
       } else if(identical(modelWeights,"BIC")){
         BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
-        modelWeightsJack <- t(t(exp(-t(do.call(rbind,BICJackList))))/colSums(exp(-t(do.call(rbind,BICJackList)))))
+        BICtmp <- do.call(rbind,BICJackList)
+        modelWeightsJack <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
       } else {
         modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
       }
@@ -256,9 +267,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
     
     
     if(identical(modelWeights,"AIC")){
-      modelWeights0<-exp(-sapply(modelList,AIC))/sum(exp(-sapply(modelList,AIC)))
+      modelWeights0<-exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC))))/
+        sum(exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC)))))
     } else if(identical(modelWeights,"BIC")){
-      modelWeights0<-exp(-sapply(modelList,BIC))/sum(exp(-sapply(modelList,BIC)))
+      modelWeights0<-exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC))))/
+        sum(exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))))
     } else {
       modelWeights0 <- modelWeights
     }
@@ -266,7 +279,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
     if(identical(type,"Kang")){
       maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
       maBMDL <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,2]}))
-      maBMDU <- sum(modelWeights0 * sapply(bmdList, function(x){x$bmdInterval[,2]}))
+      maBMDU <- sum(modelWeights0 * sapply(bmdList, function(x){x$interval[,2]}))
     }
     if(identical(type,"Buckland")){
       estBMD <- sapply(bmdList, function(x){x$Results[,1]})
@@ -311,11 +324,13 @@ bmdMA <- function(modelList, modelWeights, bmr,
       }
       if(identical(modelWeights,"AIC")){
         AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
-        modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
+        AICtmp <- do.call(rbind,AICList)
+        modelWeights0 <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
         
       } else if(identical(modelWeights,"BIC")){
         BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
-        modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
+        BICtmp <- do.call(rbind,BICList)
+        modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
       }
@@ -324,8 +339,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       boot0<-boot[!is.na(boot)]
       
       if(bootInterval %in% c("percentile","Percentile")){
-        maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
-        maBMDU <- quantile(boot0,p=c(level))
+        maBMDL <- quantile(boot0,p=c(1-level), na.rm = FALSE) # ABC percentile lims.  
+        maBMDU <- quantile(boot0,p=c(level), na.rm = FALSE)
       }
       if(identical(bootInterval,"BCa")){
         data.str <- modelList[[1]]$data
@@ -355,8 +370,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
             }
             )
           }
-          modelWeightsJack <- t(t(exp(-do.call(rbind,AICJackList)))/colSums(exp(-do.call(rbind,AICJackList))))
-        } else if(identical(modelWeights,"BIC")){
+          AICtmp <- do.call(rbind,AICJackList)
+          modelWeightsJack <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
+          } else if(identical(modelWeights,"BIC")){
           BICJackList <-list()
           for(i in 1:length(modelList)){
             BICJackList[[i]] <- sapply(jackData, function(x){
@@ -364,8 +380,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
             }
             )
           }
-          modelWeightsJack <- t(t(exp(-do.call(rbind,BICJackList)))/colSums(exp(-do.call(rbind,BICJackList))))
-        } else {
+          BICtmp <- do.call(rbind,BICJackList)
+          modelWeightsJack <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
+          } else {
           modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
         }
         
@@ -413,11 +430,13 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       if(identical(modelWeights,"AIC")){
         AICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
-        modelWeights0 <- t(t(exp(-t(do.call(rbind,AICList))))/colSums(exp(-t(do.call(rbind,AICList)))))
+        AICtmp <- do.call(rbind,AICList)
+        modelWeights0 <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
         
       } else if(identical(modelWeights,"BIC")){
         BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
-        modelWeights0 <- t(t(exp(-t(do.call(rbind,BICList))))/colSums(exp(-t(do.call(rbind,BICList)))))
+        BICtmp <- do.call(rbind,BICList)
+        modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
         
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
@@ -444,8 +463,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       boot0<-boot[!is.na(boot)]
       
       if(bootInterval %in% c("percentile","Percentile")){
-        maBMDL <- quantile(boot0,p=c(1-level)) # ABC percentile lims.  
-        maBMDU <- quantile(boot0,p=c(level))
+        maBMDL <- quantile(boot0,p=c(1-level), na.rm = TRUE) # ABC percentile lims.  
+        maBMDU <- quantile(boot0,p=c(level), na.rm = TRUE)
       }
       if(identical(bootInterval,"BCa")){
         data.str <- modelList[[1]]$data
@@ -464,10 +483,12 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         if(identical(modelWeights,"AIC")){
           AICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(AIC(my.fun(x,y)))))
-          modelWeightsJack <- t(t(exp(-t(do.call(rbind,AICJackList))))/colSums(exp(-t(do.call(rbind,AICJackList)))))
+          AICtmp <- do.call(rbind,AICJackList)
+          modelWeightsJack <- t(t(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp)))))/colSums(exp(-t(AICtmp - do.call(pmin, as.data.frame(AICtmp))))))
         } else if(identical(modelWeights,"BIC")){
           BICJackList <-lapply(jackData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
-          modelWeightsJack <- t(t(exp(-t(do.call(rbind,BICJackList))))/colSums(exp(-t(do.call(rbind,BICJackList)))))
+          BICtmp <- do.call(rbind,BICJackList)
+          modelWeightsJack <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
         } else {
           modelWeightsJack <- do.call(cbind,rep(list(modelWeights),dim(modelList[[1]]$data)[1]))
         }
