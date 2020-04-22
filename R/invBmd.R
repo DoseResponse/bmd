@@ -1,4 +1,4 @@
-inv.bmd.R <- function(object, bmr, level=0.9, slope, backgType="modelBased", 
+invBmd <- function(object, bmr, level=0.9, slope, backgType="modelBased", 
                      backg=NA, catLev=NA, extFactor=10, def, useSD=useSD, sandwich.vcov=FALSE){
   
   ParmVec0 <- object$fct$fixed
