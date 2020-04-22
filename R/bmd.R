@@ -173,12 +173,12 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     }
     
     if(interval=="inv"){
-      resMat <- invers.bmd(object, bmr, level = 1-2*(1-level), slope=slope, backgType=backgType,
+      resMat <- inv.bmd(object, bmr, level = 1-2*(1-level), slope=slope, backgType=backgType,
                              backg=backg, catLev=NA, extFactor=10, def=def, useSD=useSD, sandwich.vcov=sandwich.vcov)[, 
                                                                                                c("BMD","BMDL"), drop = FALSE]
       colnames(resMat) <- c("BMD", "BMDL")
       rownames(resMat) <- c("")
-      bmdInterval <- invers.bmd(object, bmr, level = 1-2*(1-level), slope=slope, backgType=backgType,
+      bmdInterval <- inv.bmd(object, bmr, level = 1-2*(1-level), slope=slope, backgType=backgType,
                                   backg=backg, catLev=NA, extFactor=10, def=def, useSD=useSD, sandwich.vcov=sandwich.vcov)[, 
                                                                                                     c("BMDL", "BMDU"), drop = FALSE]
       colnames(bmdInterval) <- c("Lower CI", "Upper CI")
