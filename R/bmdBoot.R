@@ -68,7 +68,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       
       use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
                      display=FALSE, level=level)[["Results"]][1]
-      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack)[1])
+      BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack, level=level)[1])
       
     }
   }
