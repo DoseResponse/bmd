@@ -20,6 +20,9 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     stop(paste("Could not recognize backgType", sep=""))
   }
   slope <- ifelse(as.numeric(predict(object,data.frame(0))-predict(object,data.frame(Inf)))>0,"decreasing","increasing")
+  if(is.na(predict(object, data.frame(0)))|is.na(predict(object, data.frame(Inf)))){
+  slope <- ifelse(as.numeric(predict(object,data.frame(0.00000001))-predict(object,data.frame(100000000)))>0,"decreasing","increasing")
+    }
     if( identical(slope,"increasing" )) {
     f0 <- ifelse(!is.na(coef(object)["c:(Intercept)"]), coef(object)["c:(Intercept)"], predict(object,data.frame(0)))
     } else {
