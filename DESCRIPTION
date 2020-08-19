@@ -1,8 +1,8 @@
 Package: bmd
 Type: Package
 Title: Benchmark dose estimation for dose-response data
-Version: 2.1.0
-Date: 2020-07-02
+Version: 2.2.0
+Date: 2020-19-08
 Author: Signe M.Jensen and Christian Ritz
 Maintainer: Signe M. Jensen <smj@plen.ku.dk>
 Description: Benchmark dose analysis for continuous and quantal dose-response data
