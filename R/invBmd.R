@@ -174,7 +174,7 @@ invBmd <- function(object, bmr, level=0.9, slope, backgType="modelBased",
   }
   
   if(def == "point"){
-    g0 <- function(x){g(x, matrix(coef(object), 1, length(coef(object))))}
+    stop(paste("Inverse regression not possible for def=point", sep=""))
   }
   
   if(def == "extra"){
