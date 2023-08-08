@@ -4,8 +4,10 @@ computeWeightsFromSplit <- function(trainData, validateData, modelList){
   
   # Fit models to training data
   tmpModelList <- lapply(modelList, function(model){
-    try(drm(model$call$formula, weights = eval(parse(text=as.character(model$call$weights))), data = trainData, type = model$type, fct = model[["fct"]]),
-        silent = TRUE)
+    try(
+      eval(substitute(drm(model$call$formula, weights = weights0, data = trainData, type = model$type, fct = model$fct),
+       list(weights0 = model$call$weights))),
+        silent = TRUE) # weights = eval(parse(text=as.character(model$call$weights)))
   })
   
   # Only compute weights for succesfully converged models
@@ -15,9 +17,9 @@ computeWeightsFromSplit <- function(trainData, validateData, modelList){
   # Treat data differently for binomial data
   if(modelList[[1]]$type == "binomial"){
     data.e<-expandBinomial(validateData, 
-                           number = as.character(object$call$formula[[2]][[2]]),
-                           total = as.character(object$call$formula[[2]][[3]]),
-                           dose = as.character(object$call$formula[[3]]))
+                           number = as.character(modelList[[1]]$call$formula[[2]][[2]]),
+                           total = as.character(modelList[[1]]$call$formula[[2]][[3]]),
+                           dose = as.character(modelList[[1]]$call$formula[[3]]))
     validateData <- data.e
   }
   predMatrix <- sapply(tmpModelList, function(model) model$curve[[1]](validateData[, model$dataList$names$dName])) 
@@ -27,7 +29,7 @@ computeWeightsFromSplit <- function(trainData, validateData, modelList){
   if(modelList[[1]]$type == "continuous"){
     objective <- CVXR::Minimize(sum((predMatrix %*% alphaHat - validateData[,modelList[[1]]$dataList$names$orName])^2))
   } else if (modelList[[1]]$type == "binomial"){
-    objective <- CVXR::Minimize(sum((predMatrix %*% alphaHat - validateData[,as.character(object$call$formula[[2]][[2]])])^2))
+    objective <- CVXR::Minimize(sum((predMatrix %*% alphaHat - validateData[,as.character(modelList[[1]]$call$formula[[2]][[2]])])^2))
   }
   problem <- CVXR::Problem(objective, constraints = list(alphaHat <= 1, alphaHat >= 0,sum(alphaHat) == 1))
   result <- CVXR::solve(problem)
