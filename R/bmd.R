@@ -19,14 +19,14 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
   if (!(backgType %in% c("modelBased","absolute","hybridSD","hybridPercentile"))) {
     stop(paste("Could not recognize backgType", sep=""))
   }
-  slope <- ifelse(as.numeric(predict(object,data.frame(0))-predict(object,data.frame(Inf)))>0,"decreasing","increasing")
-  if(is.na(predict(object, data.frame(0)))|is.na(predict(object, data.frame(Inf)))){
-  slope <- ifelse(as.numeric(predict(object,data.frame(0.00000001))-predict(object,data.frame(100000000)))>0,"decreasing","increasing")
+  slope <- ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing")
+  if(is.na(object$curve[[1]](0)-object$curve[[1]](Inf))){
+  slope <- ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing")
   }
   if( identical(slope,"increasing" )) {
-  f0 <- ifelse(!is.na(coef(object)["c:(Intercept)"]), coef(object)["c:(Intercept)"], predict(object,data.frame(0)))
+  f0 <- ifelse(!is.na(coef(object)["c:(Intercept)"]), coef(object)["c:(Intercept)"], object$curve[[1]](0))
   } else {
-  f0 <- ifelse(!is.na(coef(object)["d:(Intercept)"]), coef(object)["d:(Intercept)"], predict(object,data.frame(0)))
+  f0 <- ifelse(!is.na(coef(object)["d:(Intercept)"]), coef(object)["d:(Intercept)"], object$curve[[1]](0))
   }
   
   if(def %in% c("hybridAdd","hybridExc")){
