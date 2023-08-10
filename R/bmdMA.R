@@ -124,7 +124,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           }
         }
         
-        boot<-diag(t(matrix(unlist(bootbmdList), ncol = R, byrow = TRUE)) %*% modelWeights0)
+        boot<-diag(t(matrix(unlist(bootbmdList), ncol = R - length(bmd.non.convergence), byrow = TRUE)) %*% modelWeights0[,-bmd.non.convergence])
         boot0<-boot[!is.na(boot)]
         
         if(bootInterval %in% c("percentile","Percentile")){
@@ -411,11 +411,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
       } else {
         if(length(bmd.non.convergence)>0){
           for(i in 1:length(modelList)){
-            bootbmdList<-bootbmdList[[i]][-bmd.non.convergence]
+            bootbmdList[[i]]<-bootbmdList[[i]][-bmd.non.convergence]
           }
         }
         
-        boot<-diag(t(matrix(unlist(bootbmdList), ncol = R, byrow = TRUE)) %*% modelWeights0)
+        boot<-diag(t(matrix(unlist(bootbmdList), ncol = R - length(bmd.non.convergence), byrow = TRUE)) %*% modelWeights0[,-bmd.non.convergence])
         boot0<-boot[!is.na(boot)]
         
         if(bootInterval %in% c("percentile","Percentile")){
@@ -535,18 +535,31 @@ bmdMA <- function(modelList, modelWeights, bmr,
       
       bootbmrList<-list()
       for(i in 1:length(modelList)){
-        bootbmrList[[i]] <- sapply(bootModelList[[i]], function(bootMod){
-          suppressWarnings(bmd(bootMod,
+        bootbmrList[[i]] <- lapply(bootModelList[[i]], function(bootMod){
+          try(bmd(bootMod,
                                bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
-                               display=FALSE, level=level)$bmrScaled)
+                               display=FALSE, level=level)$bmrScaled, silent = TRUE)
         }
         )
       }
       bootbmrListTrans <- lapply(1:length(bootbmrList[[1]]), function(i) sapply(bootbmrList, "[[", i))
       
+      bootbmrErrorList <- list()
+      for(i in 1:length(modelList)){
+        bootbmrErrorList[[i]] <- which(!sapply(bootbmrList[[i]],function(x) class(x)=="numeric"))
+      }
+      
+      bmr.non.convergence<-unique(unlist(bootbmrErrorList))
+      if(length(bmr.non.convergence) > 0){
+        bootbmrListTrans <- bootbmrListTrans[-bmr.non.convergence]
+        modelWeightsList <- modelWeightsList[-bmr.non.convergence]
+        bootModelListTrans <- bootModelListTrans[-bmr.non.convergence]
+      }
+      
       LLimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]]))[2]/10000
       ULimit<-unique(sort(modelList[[1]]$data[[as.character(modelList[[1]]$call$formula)[[3]]]],decreasing=TRUE))[1]
-      funk<-function(x,y,z){bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1]}
+      funk<-function(x,y,z){
+        try(bmdMACurve(x,y,z,searchInterval=c(LLimit,ULimit))$Results[1], silent = TRUE)}
       bmrScaledList<-as.list(rowSums(do.call(rbind,modelWeightsList)*do.call(rbind,bootbmrListTrans)))
       
       boot<-mapply(funk,bootModelListTrans,modelWeightsList,bmrScaledList)
