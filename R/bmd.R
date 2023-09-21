@@ -19,15 +19,15 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
   if (!(backgType %in% c("modelBased","absolute","hybridSD","hybridPercentile"))) {
     stop(paste("Could not recognize backgType", sep=""))
   }
-  slope <- ifelse(as.numeric(predict(object,data.frame(0))-predict(object,data.frame(Inf)))>0,"decreasing","increasing")
-  if(is.na(predict(object, data.frame(0)))|is.na(predict(object, data.frame(Inf)))){
-  slope <- ifelse(as.numeric(predict(object,data.frame(0.00000001))-predict(object,data.frame(100000000)))>0,"decreasing","increasing")
-    }
-    if( identical(slope,"increasing" )) {
-    f0 <- ifelse(!is.na(coef(object)["c:(Intercept)"]), coef(object)["c:(Intercept)"], predict(object,data.frame(0)))
-    } else {
-    f0 <- ifelse(!is.na(coef(object)["d:(Intercept)"]), coef(object)["d:(Intercept)"], predict(object,data.frame(0)))
-    }
+  slope <- drop(ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing"))
+  if(is.na(object$curve[[1]](0)-object$curve[[1]](Inf))){
+    slope <- drop(ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing"))
+  }
+  if( identical(slope,"increasing" )) {
+  f0 <- ifelse(!is.na(coef(object)["c:(Intercept)"]), coef(object)["c:(Intercept)"], object$curve[[1]](0))
+  } else {
+  f0 <- ifelse(!is.na(coef(object)["d:(Intercept)"]), coef(object)["d:(Intercept)"], object$curve[[1]](0))
+  }
   
   if(def %in% c("hybridAdd","hybridExc")){
   useSD <- ifelse(!is.na(controlSD),controlSD,sqrt(summary(object)$resVar))
@@ -52,15 +52,15 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                            1-pnorm(2),
                            1-pnorm((backg-f0)/useSD))
     } 
-    } 
+  } 
   if(identical(slope,"decreasing" )) {
-      if (identical(backgType,"modelBased")) {
-        background <- f0
-        } else if (identical(backgType,"absolute") & !(def %in% c("hybridExc","hybridAdd"))) {
-        background <- ifelse(is.na(backg),1,backg)
-        } else {
-        background <- ifelse(is.na(backg),0.1,backg)
-        }
+    if (identical(backgType,"modelBased")) {
+      background <- f0
+    } else if (identical(backgType,"absolute") & !(def %in% c("hybridExc","hybridAdd"))) {
+      background <- ifelse(is.na(backg),1,backg)
+    } else {
+      background <- ifelse(is.na(backg),0.1,backg)
+    }
     if (identical(backgType,"hybridSD")) {
       background <- ifelse(is.na(backg), pnorm(-2), pnorm(-backg))
     } 
@@ -70,7 +70,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                            pnorm(-2),
                            pnorm((backg-f0)/useSD))
     }
-    }
+  }
     
     def <- match.arg(def)
     respType <- object$type
@@ -149,30 +149,30 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     }
     
     if(interval=="delta"){
-    if(sandwich.vcov==TRUE){
-    resMat <- ED(object, bmrScaled, interval = "delta", 
-                level = 1-2*(1-level), type = typeVal, vcov. = sandwich, display = FALSE)[, 
-                  c("Estimate", "Lower"), drop = FALSE]
-    }
-    if(sandwich.vcov==FALSE){
-    resMat <- ED(object, bmrScaled, interval = interval, 
-                level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[, 
-                  c("Estimate", "Lower"), drop = FALSE]
-    }
-    colnames(resMat) <- c("BMD", "BMDL")
-    rownames(resMat) <- c("")
-    if(sandwich.vcov==TRUE){
-      bmdInterval <- ED(object, bmrScaled, interval = interval, 
-                        level = 1-2*(1-level), type = typeVal, vcov. = sandwich, display = FALSE)[, 
-                                                                                     c("Lower", "Upper"), drop = FALSE]
-    }
-    if(sandwich.vcov==FALSE){
-      bmdInterval <- ED(object, bmrScaled, interval = interval, 
-                        level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[, 
-                                                                                        c("Lower", "Upper"), drop = FALSE]
-    }
-    colnames(bmdInterval) <- c("Lower CI", "Upper CI")
-    rownames(bmdInterval) <- c("")
+      if(sandwich.vcov==TRUE){
+      resMat <- ED(object, bmrScaled, interval = "delta", 
+                  level = 1-2*(1-level), type = typeVal, vcov. = sandwich, display = FALSE)[, 
+                    c("Estimate", "Lower"), drop = FALSE]
+      }
+      if(sandwich.vcov==FALSE){
+      resMat <- ED(object, bmrScaled, interval = interval, 
+                  level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[, 
+                    c("Estimate", "Lower"), drop = FALSE]
+      }
+      colnames(resMat) <- c("BMD", "BMDL")
+      rownames(resMat) <- c("")
+      if(sandwich.vcov==TRUE){
+        bmdInterval <- ED(object, bmrScaled, interval = interval, 
+                          level = 1-2*(1-level), type = typeVal, vcov. = sandwich, display = FALSE)[, 
+                                                                                       c("Lower", "Upper"), drop = FALSE]
+      }
+      if(sandwich.vcov==FALSE){
+        bmdInterval <- ED(object, bmrScaled, interval = interval, 
+                          level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[, 
+                                                                                          c("Lower", "Upper"), drop = FALSE]
+      }
+      colnames(bmdInterval) <- c("Lower CI", "Upper CI")
+      rownames(bmdInterval) <- c("")
     }
     
     if(interval=="inv"){
@@ -187,6 +187,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       colnames(bmdInterval) <- c("Lower CI", "Upper CI")
       rownames(bmdInterval) <- c("")
     }
+    
     bmdSE <- matrix(NA,1,1)
     if(sandwich.vcov==TRUE){
       bmdSE[1,1] <- ifelse(identical(interval,"delta"),

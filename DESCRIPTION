@@ -6,6 +6,8 @@ Date: 2020-19-08
 Author: Signe M.Jensen and Christian Ritz
 Maintainer: Signe M. Jensen <smj@plen.ku.dk>
 Description: Benchmark dose analysis for continuous and quantal dose-response data
+Imports: drc
+Suggests: CVXR
 License: GPL
 Encoding: UTF-8
 LazyData: true

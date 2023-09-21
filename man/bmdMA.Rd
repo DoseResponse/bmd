@@ -13,7 +13,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
 }
 \arguments{
   \item{modelList}{list of models of class \code{drc}}
-  \item{modelWeights}{character string specifying the type of weights used, "AIC" or "BIC", or a vector of the same length as the modelList with user defined weights}
+  \item{modelWeights}{character string specifying the type of weights used, "AIC", "BIC" or "Stack", or a vector of the same length as the modelList with user defined weights}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
