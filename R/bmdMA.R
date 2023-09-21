@@ -25,8 +25,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     } else if(identical(modelWeights,"BIC")){
       modelWeights0<-exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC))))/
         sum(exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))))
-    } else if(identical(modelWeights,"SuL")){
-      modelWeights0<-getSuperLearnerWeights(modelList)
+    } else if(identical(modelWeights,"Stack")){
+      modelWeights0<-getStackingWeights(modelList)
     } else {
       modelWeights0 <- modelWeights
     }
@@ -74,7 +74,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             eval(substitute(drm(formula, data = x, fct = fct0),
                             list(formula = modelList[[i]]$call$formula,
                                  fct0 = modelList[[i]][["fct"]]))
-            ) # Fitting models using substitute is necessary for SuperLearner weights
+            ) # Fitting models using substitute is necessary for Stacking weights
           )
         }
         )
@@ -91,9 +91,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
         BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
         BICtmp <- do.call(rbind,BICList)
         modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
-      } else if(identical(modelWeights, "SuL")){  
-        SuLList <- lapply(bootModelListTrans, getSuperLearnerWeights)
-        modelWeights0 <- do.call(cbind, SuLList)
+      } else if(identical(modelWeights, "Stack")){  
+        StackList <- lapply(bootModelListTrans, getStackingWeights)
+        modelWeights0 <- do.call(cbind, StackList)
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
       }
@@ -208,7 +208,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             eval(substitute(drm(formula, data = x, fct = fct0),
                             list(formula = modelList[[i]]$call$formula,
                                  fct0 = modelList[[i]][["fct"]]))
-            ) # Fitting models using substitute is necessary for SuperLearner weights
+            ) # Fitting models using substitute is necessary for Stacking weights
           )
         }
         )
@@ -224,13 +224,13 @@ bmdMA <- function(modelList, modelWeights, bmr,
         BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
         BICtmp <- do.call(rbind,BICList)
         modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
-      } else if(identical(modelWeights, "SuL")){  
-        modelWeightsList <- lapply(bootModelListTrans, getSuperLearnerWeights)
+      } else if(identical(modelWeights, "Stack")){  
+        modelWeightsList <- lapply(bootModelListTrans, getStackingWeights)
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
       }
       
-      if(!identical(modelWeights, "SuL")){ 
+      if(!identical(modelWeights, "Stack")){ 
         modelWeightsList <- lapply(1:ncol(modelWeights0),function(i) modelWeights0[,i])
       }
       
@@ -316,8 +316,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
     } else if(identical(modelWeights,"BIC")){
       modelWeights0<-exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC))))/
         sum(exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))))
-    } else if(identical(modelWeights,"SuL")){
-      modelWeights0<-getSuperLearnerWeights(modelList)
+    } else if(identical(modelWeights,"Stack")){
+      modelWeights0<-getStackingWeights(modelList)
     } else {
       modelWeights0 <- modelWeights
     }
@@ -365,7 +365,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             eval(substitute(drm(formula, data = x, fct = fct0, type = "binomial"),
                             list(formula = modelList[[i]]$call$formula,
                                  fct0 = modelList[[i]][["fct"]]))
-            ) # Fitting models using substitute is necessary for SuperLearner weights
+            ) # Fitting models using substitute is necessary for Stacking weights
           )
         }
         )
@@ -382,9 +382,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
         BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
         BICtmp <- do.call(rbind,BICList)
         modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
-      } else if(identical(modelWeights, "SuL")){  
-        SuLList <- lapply(bootModelListTrans, getSuperLearnerWeights)
-        modelWeights0 <- do.call(cbind, SuLList)
+      } else if(identical(modelWeights, "Stack")){  
+        StackList <- lapply(bootModelListTrans, getStackingWeights)
+        modelWeights0 <- do.call(cbind, StackList)
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
       }
@@ -523,13 +523,13 @@ bmdMA <- function(modelList, modelWeights, bmr,
         BICList <-lapply(bootData, function(x) sapply(modelList, function(y) suppressWarnings(BIC(my.fun(x,y)))))
         BICtmp <- do.call(rbind,BICList)
         modelWeights0 <- t(t(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp)))))/colSums(exp(-t(BICtmp - do.call(pmin, as.data.frame(BICtmp))))))
-      } else if(identical(modelWeights, "SuL")){  
-        modelWeightsList <- lapply(bootModelListTrans, getSuperLearnerWeights)
+      } else if(identical(modelWeights, "Stack")){  
+        modelWeightsList <- lapply(bootModelListTrans, getStackingWeights)
       } else {
         modelWeights0 <- do.call(cbind,rep(list(modelWeights),R))
       }
       
-      if(!identical(modelWeights, "SuL")){ 
+      if(!identical(modelWeights, "Stack")){ 
         modelWeightsList <- lapply(1:ncol(modelWeights0),function(i) modelWeights0[,i])
       }
       

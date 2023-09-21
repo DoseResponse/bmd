@@ -90,7 +90,7 @@ getDataSplits <- function(object){
   splitList
 }
 
-getSuperLearnerWeights <- function(modelList){
+getStackingWeights <- function(modelList){
   get_w_error <- TRUE
   tries <- 1
   while(get_w_error && (tries<10)){
