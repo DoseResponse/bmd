@@ -7,7 +7,7 @@ citEntry(entry = "Article",
          volume="8",
          pages="e10557",
          year="2020",
-         publisher="PeerJ Inc."
+         publisher="PeerJ Inc.",
 
          textVersion =
          paste("Jensen, S. M., Kluxen, F. M., Streibig, J. C., Cedergreen, N., & Ritz, C. (2020)",
