@@ -1,0 +1,17 @@
+citHeader("To cite the package 'bmd' in publications:")
+
+citEntry(entry = "article",
+         title={bmd: an R package for benchmark dose estimation},
+         author={Jensen, Signe M and Kluxen, Felix M and Streibig, Jens C and Cedergreen, Nina and Ritz, Christian},
+         journal={PeerJ},
+         volume={8},
+         pages={e10557},
+         year={2020},
+         publisher={PeerJ Inc.}
+
+         textVersion =
+         paste("Jensen, S. M., Kluxen, F. M., Streibig, J. C., Cedergreen, N., & Ritz, C. (2020)",
+               "bmd: an R package for benchmark dose estimation",
+               "PeerJ, 8, e10557")
+)
+
