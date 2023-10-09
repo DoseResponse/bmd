@@ -1,0 +1,17 @@
+citHeader("To cite the package 'bmd' in publications:")
+
+citEntry(entry = "Article",
+         title="bmd: an R package for benchmark dose estimation",
+         author=personList(as.person("S. M. Jensen"), as.person("F. M. Kluxen"), as.person("J. C. Streibig"), as.person("N. Cedergreen"), as.person("C. Ritz")),
+         journal="PeerJ",
+         volume="8",
+         pages="e10557",
+         year="2020",
+         publisher="PeerJ Inc.",
+
+         textVersion =
+         paste("Jensen, S. M., Kluxen, F. M., Streibig, J. C., Cedergreen, N., & Ritz, C. (2020)",
+               "bmd: an R package for benchmark dose estimation",
+               "PeerJ, 8, e10557")
+)
+
