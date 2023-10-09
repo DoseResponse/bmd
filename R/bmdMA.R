@@ -120,11 +120,12 @@ bmdMA <- function(modelList, modelWeights, bmr,
       } else {
         if(length(bmd.non.convergence)>0){
           for(i in 1:length(modelList)){
-            bootbmdList<-bootbmdList[[i]][-bmd.non.convergence]
+            bootbmdList[[i]]<-bootbmdList[[i]][-bmd.non.convergence]
+            modelWeights0 <- modelWeights0[,-bmd.non.convergence]
           }
         }
         
-        boot<-diag(t(matrix(unlist(bootbmdList), ncol = R - length(bmd.non.convergence), byrow = TRUE)) %*% modelWeights0[,-bmd.non.convergence])
+        boot<-diag(t(matrix(unlist(bootbmdList), ncol = R - length(bmd.non.convergence), byrow = TRUE)) %*% modelWeights0)
         boot0<-boot[!is.na(boot)]
         
         if(bootInterval %in% c("percentile","Percentile")){
@@ -237,9 +238,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
       bootbmrList<-list()
       for(i in 1:length(modelList)){
         bootbmrList[[i]] <- sapply(bootModelList[[i]], function(bootMod){
-          suppressWarnings(bmd(bootMod,
+          as.numeric(try(bmd(bootMod,
                                bmr, backgType = backgType, backg = backg, def = def, interval = interval, 
-                               display=FALSE, level=level)$bmrScaled)
+                               display=FALSE, level=level)$bmrScaled, silent = TRUE))
         }
         )
       }
