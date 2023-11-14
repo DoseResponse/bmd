@@ -3,11 +3,11 @@ Type: Package
 Title: Benchmark dose estimation for dose-response data
 Version: 2.2.0
 Date: 2020-19-08
-Author: Signe M.Jensen and Christian Ritz
+Author: Signe M.Jensen, Christian Ritz and Jens Riis Baalkilde
 Maintainer: Signe M. Jensen <smj@plen.ku.dk>
 Description: Benchmark dose analysis for continuous and quantal dose-response data
 Imports: drc
-Suggests: CVXR
+Suggests: CVXR, multcomp
 License: GPL
 Encoding: UTF-8
 LazyData: true

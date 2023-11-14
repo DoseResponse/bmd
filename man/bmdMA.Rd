@@ -6,7 +6,7 @@ Model-averaged benchmark dose estimation
 \description{Estimation of benchmark doses and benchmark dose lower limit based on model averaging from a user-defined list of dose response model fits 
 }
 \usage{
-bmd(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
+bmdMA(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
 interval = c("delta","sandwich","inv"),
 type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=1000, level=0.95) 
