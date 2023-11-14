@@ -6,7 +6,7 @@ bmdOrdinalMA <- function(modelList, bmr=0.1, backgType = "modelBased", def="exce
     AICWeights <- exp(-1/2*(AICVals - min(AICVals)))/sum(exp(-1/2*(AICVals - min(AICVals))))
     
     if(MAType == "postBmdEst"){
-      BMD.tmp <- sapply(bmdAllMods, function(object) object$BMD)
+      BMD.tmp <- sapply(bmdAllMods, function(object) object$Results[1])
       bmdVal <- sum(BMD.tmp*AICWeights)
     } else if (MAType == "preBmdEst"){
       bmdEachCat <- sapply(1:length(modelList[[1]]$drmList), function(cat_i){

@@ -12,9 +12,9 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric"){
                                                                                     replace = TRUE))[[2]])), ]
       columns.rem <- colnames(subset(sampled.expand, select=-c(variable,row.num,value,row.orig)))
       df <- reshape2:::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
-      for(j in 1:length(object$categories)){
-        if(!(object$categories[j] %in% colnames(df))){
-          df[,object$categories[j]]<-0
+      for(j in 1:length(object$levels)){
+        if(!(object$levels[j] %in% colnames(df))){
+          df[,object$levels[j]]<-0
         }
       }
       tmp.data[[i]] <- df
@@ -31,17 +31,17 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric"){
       for(j in 1:length(unique(data.e$row.orig))){
         data.size <- length(sampled.expand$variable[data.e$row.orig==j])
         prop0 <- p0[j,-1]
-        prop0[prop0==0] <- (1/length(object$categories)^2)/(data.size+1/length(object$categories)) # (1/4)/(data.size + 1/2)
-        prop0[prop0==1] <- (data.size + 1/length(object$categories)^2)/(data.size+1/length(object$categories)) # (data.size + 1/4)/(data.size+1/2)
+        prop0[prop0==0] <- (1/length(object$levels)^2)/(data.size+1/length(object$levels)) # (1/4)/(data.size + 1/2)
+        prop0[prop0==1] <- (data.size + 1/length(object$levels)^2)/(data.size+1/length(object$levels)) # (data.size + 1/4)/(data.size+1/2)
         sampled.expand$variable[sampled.expand$row.orig==j] <-
-          #rep(unlist(object$categories), as.numeric(rmultinom(1, size = data.size, prob = prop0)))
-          unlist(sample(object$categories, size = data.size, replace = TRUE, prob = prop0))
+          #rep(unlist(object$levels), as.numeric(rmultinom(1, size = data.size, prob = prop0)))
+          unlist(sample(object$levels, size = data.size, replace = TRUE, prob = prop0))
       }
       columns.rem <- colnames(subset(sampled.expand, select=-c(variable,value,row.orig)))
       df <- reshape2:::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
-      for(j in 1:length(object$categories)){
-        if(!(object$categories[j] %in% colnames(df))){
-          df[,object$categories[j]]<-0
+      for(j in 1:length(object$levels)){
+        if(!(object$levels[j] %in% colnames(df))){
+          df[,object$levels[j]]<-0
         }
       }
       tmp.data[[i]] <- df
@@ -52,12 +52,12 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric"){
     tmp.data <- list()
     for (i in 1:R) {
       sampled.expand <- data.e
-      sampled.expand[, "variable"] <- sapply(data.e[,object$dose], function(x) unlist(sample(object$categories, size = 1, replace = TRUE, object$pFun(x))))
+      sampled.expand[, "variable"] <- sapply(data.e[,object$dose], function(x) unlist(sample(object$levels, size = 1, replace = TRUE, object$pFun(x))))
       columns.rem <- colnames(subset(sampled.expand, select=-c(variable,value,row.orig)))
       df <- reshape2:::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
-      for(j in 1:length(object$categories)){
-        if(!(object$categories[j] %in% colnames(df))){
-          df[,object$categories[j]]<-0
+      for(j in 1:length(object$levels)){
+        if(!(object$levels[j] %in% colnames(df))){
+          df[,object$levels[j]]<-0
         }
       }
       tmp.data[[i]] <- df
