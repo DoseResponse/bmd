@@ -30,7 +30,7 @@ bmdOrdinalMA <- function(modelList, bmr=0.1, backgType = "modelBased", def="exce
   bmdBoot <- numeric(R)
   for(i in 1:R){
     modelListBoot <- lapply(modelList, 
-                            function(object) suppressWarnings(try(drmOrdinal(object$categories, object$dose, object$weights, bootData[[i]], object$fct), silent = TRUE))
+                            function(object) suppressWarnings(try(drmOrdinal(object$levels, object$dose, object$weights, bootData[[i]], object$fct), silent = TRUE))
                             )
     bmdBoot[i] <- suppressWarnings(as.numeric(try(MABmdEst(modelListBoot), silent = TRUE)))
   }
