@@ -45,7 +45,13 @@ drmOrdinal(levels, dose, weights, data, fct, p.epsilon = 10^(-16))
 \seealso{
 }
 \examples{
-TO BE ADDED
+library(drcData)
+data(guthion)
+guthionS <- subset(guthion, trt == "S")
+
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
+
+plot(guthionS.LL, xlim = c(15,55)) # uses ggplot
 
 }
 \keyword{models}

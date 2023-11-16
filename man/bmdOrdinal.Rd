@@ -21,7 +21,7 @@ def = c("excess", "additional", "point"), interval = c("delta","bootstrap", "non
     
   \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk.}
   
-  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess", "additional" and "point" are for ordinal response.
+  \item{def}{character string specifying the definition of the benchmark dose to use in the calculations. "excess", "additional" and "point" are available for ordinal response.
   
   "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0). 
   Works for binomial response. BMR should be between 0 and 1.  
@@ -86,8 +86,13 @@ A list of four elements: Results contain the estimated BMD and BMDL, interval gi
 \seealso{
 }
 \examples{
-TO BE ADDED
+library(drcData)
+data(guthion)
 
+guthionS <- subset(guthion, trt == "S")
+
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
+bmdOrdinal(guthionS.LL, bmr = 0.1, backgType = "modelBased", def = "excess")
 }
 \keyword{models}
 \keyword{nonlinear}
