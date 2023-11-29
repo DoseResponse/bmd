@@ -1,2 +1,9 @@
 import(drc)
-export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, getStackingWeights)
+export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal)
+
+## S3 methods
+S3method(logLik, drcOrdinal)
+S3method(AIC, drcOrdinal)
+S3method(plot, drcOrdinal)
+S3method(print, drcOrdinal)
+S3method(print, bmdOrdinal)
