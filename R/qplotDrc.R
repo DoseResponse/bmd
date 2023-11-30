@@ -1,4 +1,4 @@
-ggplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "bars", "none", "obs", "confidence"), 
+qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "bars", "none", "obs", "confidence"), 
                       gridsize = 100, xtrans = "pseudo_log", xlab, xlim, 
                       ytrans = NULL, ylab, ylim, col = FALSE,
                       normal = FALSE, normRef = 1, confidence.level = 0.95){
@@ -73,33 +73,37 @@ ggplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "
     xLimits <- xlim  # if (abs(xLimits[1])<zeroEps) {xLimits[1] <- xLimits[1] + zeroEps}
   }
   
-  # Handling small dose values
-  ## Constructing appropriate break on dose axis
-  if (!is.null(logDose))  # natural logarithm
-  {
-    conLevel <- round(min(dose[is.finite(dose)])) - 1
-  } else {
-    log10cl <- round(log10(min(dose[dose > 0]))) - 1
-    conLevel <- 10^(log10cl)
+  if(logX){
+    xLimits0 <- pmax(xLimits, 1e-8)
   }
   
-  if ((xLimits[1] < conLevel) && (logX || (!is.null(logDose))))
-  {
-    xLimits[1] <- conLevel
-    smallDoses <- (dose < conLevel)
-    dose[smallDoses] <- conLevel
-  }
-  if (xLimits[1] >= xLimits[2]) {stop("Argument 'conLevel' is set too high")}
+  # Handling small dose values
+  ## Constructing appropriate break on dose axis
+  # if (!is.null(logDose))  # natural logarithm
+  # {
+  #   conLevel <- round(min(dose[is.finite(dose)])) - 1
+  # } else {
+  #   log10cl <- round(log10(min(dose[dose > 0]))) - 1
+  #   conLevel <- 10^(log10cl)
+  # }
+  # 
+  # if ((xLimits[1] < conLevel) && (logX || (!is.null(logDose))))
+  # {
+  #   xLimits[1] <- conLevel
+  #   smallDoses <- (dose < conLevel)
+  #   dose[smallDoses] <- conLevel
+  # }
+  # if (xLimits[1] >= xLimits[2]) {stop("Argument 'conLevel' is set too high")}
 
   ## Constructing dose values for plotting
   #    if (doseDim == 1) 
   #    {
   if ((is.null(logDose)) && (logX))
   {
-    dosePts <- exp(seq(log(xLimits[1]), log(xLimits[2]), length = gridsize))
+    dosePts <- c(0,exp(seq(log(xLimits0[1]), log(xLimits0[2]), length = gridsize-1)))
     ## Avoiding that slight imprecision produces dose values outside the dose range
     ## (the model-robust predict method is sensitive to such deviations!)
-    dosePts[1] <- xLimits[1]
+    dosePts[1] <- max(xLimits[1],0)
     dosePts[gridsize] <- xLimits[2]           
   } else {
     dosePts <- seq(xLimits[1], xLimits[2], length = gridsize)
