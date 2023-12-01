@@ -1,5 +1,7 @@
 import(drc)
-export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal)
+export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, 
+       getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal,
+       qplotDrc, qplotBmd)
 
 ## S3 methods
 S3method(logLik, drcOrdinal)
