@@ -138,7 +138,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
   
   if (missing(ylim)) 
   {
-    ylim <- NULL       
+    yLimits <- NULL       
   } else {
     yLimits <- ylim
   }
