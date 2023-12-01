@@ -1,4 +1,4 @@
-import(drc, tidyverse, ggplot2)
+import(drc, tidyverse, dplyr)
 export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, 
        getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal,
        qplotDrc, qplotBmd)

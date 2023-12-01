@@ -200,7 +200,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
                                  shape = eval(parse(text = shapeAes))), 
                              data = data.frame(dose = dose[obsIndices], resp = resp[obsIndices], level = as.character(assayNoOld[obsIndices])) |> 
                                     group_by(dose,level) |> 
-                                    tidyverse:::summarise(dose = first(dose),
+                                    dplyr:::summarise(dose = first(dose),
                                               resp = mean(resp),
                                               level = first(level))),
       "bars"    = ggplot2:::geom_errorbar(aes(x = dose, ymin = Lower, ymax = Upper, 
