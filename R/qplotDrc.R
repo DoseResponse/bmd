@@ -195,24 +195,24 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
   obsLayer <- 
     switch(
       type, 
-      "average" = geom_point(aes(x = dose, y = resp, 
+      "average" = ggplot2:::geom_point(aes(x = dose, y = resp, 
                                  col = eval(parse(text = colorAes)),
                                  shape = eval(parse(text = shapeAes))), 
                              data = data.frame(dose = dose[obsIndices], resp = resp[obsIndices], level = as.character(assayNoOld[obsIndices])) |> 
                                     group_by(dose,level) |> 
-                                    summarise(dose = first(dose),
+                                    tidyverse:::summarise(dose = first(dose),
                                               resp = mean(resp),
                                               level = first(level))),
-      "bars"    = geom_errorbar(aes(x = dose, ymin = Lower, ymax = Upper, 
+      "bars"    = ggplot2:::geom_errorbar(aes(x = dose, ymin = Lower, ymax = Upper, 
                                     col = eval(parse(text = colorAes)),
                                     linetype = eval(parse(text = linetypeAes))),
                                 data = data.frame(dose = dose[obsIndices], predictMat[obsIndices,], level = as.character(assayNoOld[obsIndices]))),
       "none"    = NULL, 
-      "all"     = geom_point(aes(x = dose, y = resp, 
+      "all"     = ggplot2:::geom_point(aes(x = dose, y = resp, 
                                  col = eval(parse(text = colorAes)),
                                  shape = eval(parse(text = shapeAes))),
                              data = data.frame(dose = dose[obsIndices], resp = resp[obsIndices], level = as.character(assayNoOld[obsIndices]))),
-      "obs"     = geom_point(aes(x = dose, y = resp, 
+      "obs"     = ggplot2:::geom_point(aes(x = dose, y = resp, 
                                  col = eval(parse(text = colorAes)),
                                  shape = eval(parse(text = shapeAes))),
                              data = data.frame(dose = dose[obsIndices], resp = resp[obsIndices], level = as.character(assayNoOld[obsIndices])))
@@ -222,7 +222,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
   curveLayer <- NULL
   if (!identical(type, "obs"))
   {
-    curveLayer <- geom_line(aes(x = x, y = y, 
+    curveLayer <- ggplot2:::geom_line(aes(x = x, y = y, 
                                 col = eval(parse(text = colorAes)),
                                 linetype = eval(parse(text = linetypeAes))), 
                             data = data.frame(x = rep(dosePts, lenlev),
@@ -245,7 +245,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
       y <- c(predictMat[,"Upper"], rev(predictMat[,"Lower"]))
       
       confBandData <- data.frame(x,y, level = as.character(level0))
-      geom_polygon(aes(x,y, 
+      ggplot2:::geom_polygon(aes(x,y, 
                        fill = eval(parse(text = colorAes)),
                        linetype = eval(parse(text = linetypeAes))), alpha = 0.5, data = confBandData)
     }
@@ -254,13 +254,13 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
   
   # Final plot
   if(!add){
-    ggplot() +
+    ggplot2:::ggplo() +
       confBandLayer +
       curveLayer +
       obsLayer +
-      scale_x_continuous(trans = xtrans, limits = xLimits) +
-      scale_y_continuous(trans = ytrans, limits = yLimits) +
-      labs(x = xlab, y = ylab, col = "", fill = "", shape = "", linetype = "")
+      ggplot2:::scale_x_continuous(trans = xtrans, limits = xLimits) +
+      ggplot2:::scale_y_continuous(trans = ytrans, limits = yLimits) +
+      ggplot2:::labs(x = xlab, y = ylab, col = "", fill = "", shape = "", linetype = "")
   } else {
     list(
       confBandLayer = confBandLayer,
