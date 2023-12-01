@@ -1,7 +1,7 @@
 Package: bmd
 Type: Package
 Title: Benchmark dose estimation for dose-response data
-Version: 2.3.0
+Version: 2.3.1
 Date: 2020-19-08
 Author: Signe M.Jensen, Christian Ritz and Jens Riis Baalkilde
 Maintainer: Signe M. Jensen <smj@plen.ku.dk>
