@@ -198,8 +198,8 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
       "average" = geom_point(aes(x = dose, y = resp, 
                                  col = eval(parse(text = colorAes)),
                                  shape = eval(parse(text = shapeAes))), 
-                             data = data.frame(dose = dose[obsIndices], resp = resp[obsIndices], level = as.character(assayNoOld[obsIndices])) %>% 
-                                    group_by(dose,level) %>% 
+                             data = data.frame(dose = dose[obsIndices], resp = resp[obsIndices], level = as.character(assayNoOld[obsIndices])) |> 
+                                    group_by(dose,level) |> 
                                     summarise(dose = first(dose),
                                               resp = mean(resp),
                                               level = first(level))),
