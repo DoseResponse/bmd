@@ -29,7 +29,7 @@ qplotBmd <- function(x, ..., interval = c("BMDL", "twosided", "none"), add = FAL
   if(add){
     returnLayers
   } else {
-    ggplotDrc(object$model, ...) +
+    qplotDrc(object$model, ...) +
       returnLayers
   }
 }
