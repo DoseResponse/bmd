@@ -254,7 +254,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
   
   # Final plot
   if(!add){
-    ggplot2:::ggplo() +
+    ggplot2:::ggplot() +
       confBandLayer +
       curveLayer +
       obsLayer +
