@@ -1,8 +1,9 @@
 plot.bmd <- function(x, ..., interval = c("BMDL", "twosided", "none")){
   object <- x
+  model <- object$model
   interval <- match.arg(interval)
   
-  p0 <- plot(object$model, ...)
+  p0 <- plot(model, ...)
   
   xVert <- rep(object$Results[1],2)
   yVert <- c(model$curve[[1]](object$Results[1]), 0)

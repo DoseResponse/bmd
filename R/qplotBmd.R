@@ -1,5 +1,6 @@
 qplotBmd <- function(x, ..., interval = c("BMDL", "twosided", "none"), add = FALSE){
   object <- x
+  model <- object$model
   interval <- match.arg(interval)
   
   xVert <- rep(object$Results[1],2)
@@ -29,7 +30,7 @@ qplotBmd <- function(x, ..., interval = c("BMDL", "twosided", "none"), add = FAL
   if(add){
     returnLayers
   } else {
-    qplotDrc(object$model, ...) +
+    qplotDrc(model, ...) +
       returnLayers
   }
 }
