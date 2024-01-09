@@ -2,7 +2,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = "delta", sandwich.vcov=FALSE, display = TRUE, level=0.95) 
+              interval = c("delta", "inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE, level=0.95, profileGridSize, profileProgressInfo = TRUE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -148,6 +148,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     stop(paste("\"",def, "\" is not available for continuous data", sep=""))
   }
   
+  interval <- match.arg(interval)
   if(interval=="delta"){
     if(sandwich.vcov==TRUE){
     resMat <- ED(object, bmrScaled, interval = "delta", 
@@ -184,6 +185,47 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     bmdInterval <- invBmd(object, bmr, level = 1-2*(1-level), slope=slope, backgType=backgType,
                                 backg=backg, catLev=NA, extFactor=10, def=def, useSD=useSD, sandwich.vcov=sandwich.vcov)[, 
                                                                                                   c("BMDL", "BMDU"), drop = FALSE]
+    colnames(bmdInterval) <- c("Lower CI", "Upper CI")
+    rownames(bmdInterval) <- c("")
+  }
+  
+  if(interval == "profile"){
+    tmpVals <- ED(object, bmrScaled, interval = "delta", 
+                  level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[,c("Estimate", "Lower", "Upper"), drop = FALSE]
+    if(backgType %in% c("modelBased", "absolute") & def %in% c("excess", "additional","relative", "extra", "point") 
+       & substr(object$fct$name,1,2) %in% c("LL", "LN", "W1", "W2")){    
+      if(missing(profileGridSize)){profileGridSize <- 20}
+      tmpInterval <- bmdProfileCI(object, bmr = bmr, backgType = backgType, def = def, level = level, gridSize = profileGridSize, 
+                                   bmdEst = tmpVals[,"Estimate"], lower = tmpVals[,"Lower"], upper = tmpVals[,"Upper"], slope = slope)
+    } else {
+      cat("\nReparametrised model not available for chosen backgType, def and dose-response curve. Proceeding with grid search.\n")
+      if(missing(profileGridSize)){profileGridSize <- 50}
+      tmpInterval <- bmdProfileCIgrid(object, bmr = bmr, backgType = backgType, def = def, level = level, 
+                                      gridSize = profileGridSize, progressInfo = profileProgressInfo)
+    }
+    
+    resMat <- matrix(c(tmpVals[,"Estimate"], tmpInterval[1]), nrow = 1)
+    colnames(resMat) <- c("BMD", "BMDL")
+    rownames(resMat) <- c("")
+    
+    bmdInterval <- matrix(tmpInterval, nrow = 1)
+    colnames(bmdInterval) <- c("Lower CI", "Upper CI")
+    rownames(bmdInterval) <- c("")
+  }
+  
+  if(interval == "profileGrid"){
+    if(missing(profileGridSize)){profileGridSize <- 50}
+    tmpVals <- ED(object, bmrScaled, interval = "delta", 
+                  level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[,c("Estimate", "Lower", "Upper"), drop = FALSE]
+    
+    tmpInterval <- bmdProfileCIgrid(object, bmr = bmr, backgType = backgType, def = def, level = level, 
+                                    gridSize = profileGridSize, progressInfo = profileProgressInfo)
+    
+    resMat <- matrix(c(tmpVals[,"Estimate"], tmpInterval[1]), nrow = 1)
+    colnames(resMat) <- c("BMD", "BMDL")
+    rownames(resMat) <- c("")
+    
+    bmdInterval <- matrix(tmpInterval, nrow = 1)
     colnames(bmdInterval) <- c("Lower CI", "Upper CI")
     rownames(bmdInterval) <- c("")
   }

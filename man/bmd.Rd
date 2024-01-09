@@ -8,7 +8,8 @@ Benchmark dose estimation
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","inv"), sandwich.vcov=FALSE, display = FALSE, level=0.95) 
+              interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = FALSE,
+              level=0.95, profileGridSize = 50, profileProgressInfo = TRUE) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -61,17 +62,25 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
-  \item{interval}{character string specifying the type of confidence interval to use: "delta" (default) or "inv" 
+  \item{interval}{character string specifying the type of confidence interval to use: "delta" (default), "inv", "profile" or "profileGrid"
   
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
   
-  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve}
+  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve
+  
+  "profile" - A profile confidence interval is computed by reparametrising the model. Only available for \code{backgType} in ("modelBased", "absolute"), \code{def} in ("excess", "additional","relative", "extra", "point") and dose-response models with model functions of types Log-Logistic, Log-Normal and Weibull 1 and 2. The limits of the confidence interval are searched for within a grid of size specified by the \code{profileGridSize} argument, however the values of the confidence interval are not limited to the values on the grid. 
+  
+  "profileGrid" - A profile confidence interval is computed by creating a multi-dimensional grid of parameter values for the model. Then, a confidence region for the parameters in the model is estimated, and the BMD is estimated for all combinations of parameter values within the region. The interval for the BMD is then computed as the minimum and maximum values of BMD values within the region. Note that for models with several parameters (3-5), is might take a while to compute the confidence interval using this method. The number of grid points for each parameter can be specified by the \code{profileGridSize} argument.}
   
   \item{sandwich.vcov}{logical. If TRUE BMDL is based on confidence intervals based on robust standard errors from the sandwich covariance matrix} 
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
   
   \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
+  
+  \item{profileGridSize}{integer specifying the number of grid points used for each parameter, when \code{interval} is either "profile" or "profileGridSearch". Defaults to 20 if not specified. }
+  
+  \item{profileProgressInfo}{logical determining if progress info should be printed while computed profile confidence intervals using the \code{profileGrid} method. Defaults to TRUE.}
 }
 
 \details{

@@ -10,8 +10,8 @@ bmdOrdinal <- function(object, bmr=0.1, backgType = "modelBased", backg = NA, de
     bmdBoot <- numeric(R)
     for(i in 1:R){
       modelBoot <- suppressWarnings(try(drmOrdinal(object$levels, object$dose, object$weights, bootData[[i]], object$fct), silent = TRUE))
-      bmdAllBoot <- lapply(modelBoot$drmList, function(mod) try(bmd(mod, bmr = bmr, backgType = backgType, backg = backg, def=def, display=FALSE)$Results[1], silent = TRUE))
-      bmdBoot[i] <- mean(as.numeric(bmdAllBoot))
+      bmdAllBoot <- try(lapply(modelBoot$drmList, function(mod) try(bmd(mod, bmr = bmr, backgType = backgType, backg = backg, def=def, display=FALSE)$Results[1], silent = TRUE)), silent = TRUE)
+      bmdBoot[i] <- suppressWarnings(mean(as.numeric(bmdAllBoot)))
     }
     CI <- quantile(bmdBoot, c(1-level, level), na.rm = TRUE)
   } else {
