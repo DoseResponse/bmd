@@ -6,12 +6,13 @@ Model-average dose-response curves
 \description{Computing weighted average response estimates across multiple dose-response curves.
 }
 \usage{
-MACurve(x, modelList, modelWeights)
+MACurve(x, modelList, modelWeights, stackingSeed = 1)
 }
 \arguments{
   \item{x}{a vector of dose values for which the weighted average of response estimates are to be computed}
   \item{modelList}{list of models of class \code{drc}}
-  \item{modelWeights}{character string specifying the type of weights used, "AIC" or "BIC", or a vector of the same length as the modelList with user defined weights}
+  \item{modelWeights}{character string specifying the type of weights used, "AIC", "BIC" or "Stack", or a vector of the same length as the modelList with user defined weights}
+  \item{stackingSeed}{integer or NULL: Random seed to use in the data split in the estimation of the Stacking Weights, when \code{modelWeights = "Stack"}. The global seed is reset to the initial value after estimation of the weights, so this option does not interfere with a globally set seed.}
 }
 
 \details{

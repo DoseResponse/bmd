@@ -9,7 +9,7 @@ Model-averaged benchmark dose estimation
 bmdMA(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
 interval = c("delta","sandwich","inv"),
-type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=1000, level=0.95) 
+type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=1000, level=0.95, stackingSeed = 1, display = TRUE) 
 }
 \arguments{
   \item{modelList}{list of models of class \code{drc}}
@@ -65,8 +65,6 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
   
   "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the point wise confidence interval of the dose-response curve. Not possible if type = "Buckland"}
-  
-  \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
 
   \item{type}{character string specifying how to estimate BMD and BMDL: "curve", "bootstrap", "Kang" or "Buckland" 
   
@@ -86,6 +84,10 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   \item{R}{number of bootstrap samples to use. Default is 1000}
   
   \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
+  
+  \item{stackingSeed}{integer or NULL: Random seed to use in the data split in the estimation of the Stacking Weights, when \code{modelWeights = "Stack"}. The global seed is reset to the initial value after estimation of the weights, so this option does not interfere with a globally set seed.}
+  
+  \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
   
 }
 
