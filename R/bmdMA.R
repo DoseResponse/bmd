@@ -9,10 +9,14 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   R=1000,
                   bootInterval = "percentile",
                   level=0.95,
+                  stackingSeed = 1,
                   display=TRUE){
   
   bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, 
                                                       interval = interval, display=FALSE, level=level)})  
+  if(sum(type == c("curve","bootstrap","Kang","Buckland")) != 1){
+    cat('Specify model averaging type. Options are "curve", "bootstrap", "Kang" and "Buckland"\n')
+  }
   
   if(identical(modelList[[1]]$type,"continuous")){
     my.fun<-function(x,y){drm(y$call$formula, data = x, fct = y[["fct"]])}
@@ -24,7 +28,23 @@ bmdMA <- function(modelList, modelWeights, bmr,
       modelWeights0<-exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC))))/
         sum(exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))))
     } else if(identical(modelWeights,"Stack")){
-      modelWeights0<-getStackingWeights(modelList)
+      # If stackingSeed supplied, save initial seed for later, and set seed for stacking
+      if (!is.null(stackingSeed)) {
+        sysSeed <- .GlobalEnv$.Random.seed
+        set.seed(stackingSeed, kind = "Mersenne-Twister", normal.kind = "Inversion")
+      }
+      
+      # estimate weights
+      modelWeights0 <- getStackingWeights(modelList)
+      
+      # If stackingSeed supplied, restore initial seed
+      if (!is.null(stackingSeed)) {
+        if (!is.null(sysSeed)) {
+          .GlobalEnv$.Random.seed <- sysSeed 
+        } else {
+          rm(".Random.seed", envir = .GlobalEnv)
+        }
+      }
     } else {
       modelWeights0 <- modelWeights
     }
