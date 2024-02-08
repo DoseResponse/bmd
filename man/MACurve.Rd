@@ -61,4 +61,3 @@ qplotDrc(aconiazide.LL.3, type = "obs") +
 \keyword{model averaging}
 
 \concept{dose-response, MA, Model Averaging}
-}
