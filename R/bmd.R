@@ -403,24 +403,24 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
         
         if(interval=="delta"){
           if(sandwich.vcov==TRUE){
-            resMat[iCurve,] <- ED(object, bmrScaled[iCurve,], interval = "delta", 
+            resMat[iCurve,] <- ED.bmd(object, bmrScaled[iCurve,], interval = "delta", 
                          level = 1-2*(1-level), type = typeVal, vcov. = sandwich, display = FALSE)[iCurve, 
                                                                                                    c("Estimate", "Lower"), drop = FALSE]
           }
           if(sandwich.vcov==FALSE){
-            resMat[iCurve,] <- ED(object, bmrScaled[iCurve,], interval = interval, 
+            resMat[iCurve,] <- ED.bmd(object, bmrScaled[iCurve,], interval = interval, 
                          level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[iCurve, 
                                                                                                c("Estimate", "Lower"), drop = FALSE]
           }
           
           
           if(sandwich.vcov==TRUE){
-            bmdInterval[iCurve,] <- ED(object, bmrScaled[iCurve,], interval = interval, 
+            bmdInterval[iCurve,] <- ED.bmd(object, bmrScaled[iCurve,], interval = interval, 
                               level = 1-2*(1-level), type = typeVal, vcov. = sandwich, display = FALSE)[iCurve, 
                                                                                                         c("Lower", "Upper"), drop = FALSE]
           }
           if(sandwich.vcov==FALSE){
-            bmdInterval[iCurve,] <- ED(object, bmrScaled[iCurve,], interval = interval, 
+            bmdInterval[iCurve,] <- ED.bmd(object, bmrScaled[iCurve,], interval = interval, 
                               level = 1-2*(1-level), type = typeVal, vcov. = vcov, display = FALSE)[iCurve, 
                                                                                                     c("Lower", "Upper"), drop = FALSE]
           }
@@ -432,14 +432,14 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
         
         if(sandwich.vcov==TRUE){
           bmdSE[iCurve,1] <- ifelse(identical(interval,"delta"),
-                               ED(object, bmrScaled[iCurve,], interval = "delta", 
+                               ED.bmd(object, bmrScaled[iCurve,], interval = "delta", 
                                   level = 1-2*(1-level), type = typeVal, vcov. = sandwich, 
                                   display = FALSE)[, c("Std. Error"), drop = FALSE],
                                NA)
         }
         if(sandwich.vcov==FALSE){
           bmdSE[iCurve,1] <- ifelse(identical(interval,"delta"),
-                               ED(object, bmrScaled[iCurve,], interval = "delta", 
+                               ED.bmd(object, bmrScaled[iCurve,], interval = "delta", 
                                   level = 1-2*(1-level), type = typeVal, vcov. = vcov, 
                                   display = FALSE)[, c("Std. Error"), drop = FALSE],
                                NA)
