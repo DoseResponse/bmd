@@ -104,7 +104,7 @@ A list of four elements: Results contain the estimated BMD and BMDL, bmrScaled i
   \emph{Critical Reviews in Toxicology} \bold{32}, 133--153.
 }
 
-\author{ Signe M. Jensen
+\author{ Signe M. Jensen and Jens Riis Baalkilde
 }
 \note{
 }
