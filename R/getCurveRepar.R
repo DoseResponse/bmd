@@ -9,12 +9,11 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   else if (identical(substr(model$fct$name,1,2), "LL")){
     LL4repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      parVec <- model$fct$fixed
+      parVec <- model$fct$fixed[-4]
       parVec[is.na(parVec)] <- par
       b <- parVec[1]
       c <- parVec[2]
       d <- parVec[3]
-      e <- parVec[4]
       
       # Background level
       if(identical(backgType, "modelBased")){
@@ -46,12 +45,11 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   else if (identical(substr(model$fct$name,1,2), "LN")){
     LN4repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      parVec <- model$fct$fixed
+      parVec <- model$fct$fixed[-4]
       parVec[is.na(parVec)] <- par
       b <- parVec[1]
       c <- parVec[2]
       d <- parVec[3]
-      e <- parVec[4]
       
       # Background level
       if(identical(backgType, "modelBased")){
@@ -83,12 +81,11 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   else if (identical(substr(model$fct$name,1,2), "W1")){
     W14repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      parVec <- model$fct$fixed
+      parVec <- model$fct$fixed[-4]
       parVec[is.na(parVec)] <- par
       b <- parVec[1]
       c <- parVec[2]
       d <- parVec[3]
-      e <- parVec[4]
       
       # Background level
       if(identical(backgType, "modelBased")){
@@ -120,12 +117,11 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   else if (identical(substr(model$fct$name,1,2), "W2")){
     W24repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      parVec <- model$fct$fixed
+      parVec <- model$fct$fixed[-4]
       parVec[is.na(parVec)] <- par
       b <- parVec[1]
       c <- parVec[2]
       d <- parVec[3]
-      e <- parVec[4]
       
       # Background level
       if(identical(backgType, "modelBased")){
