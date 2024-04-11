@@ -14,8 +14,7 @@ getBmrScaledRepar <- function(cdVec, slope, bmr, backgType,
     hInv <- function(x) x^2
     dhInv <- function(x) 2*x
   } else if(!identical(respTrans, "none")){
-    cat('respTrans "', respTrans, '" not defined. Options are: "none", "log", and "sqrt".')
-    break
+    stop(paste0('respTrans "', respTrans, '" not defined. Options are: "none", "log", and "sqrt".'))
   }
   
   # useSD
