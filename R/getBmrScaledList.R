@@ -1,9 +1,10 @@
 getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), 
                              backg=NA, controlSD=NA,
                              def = c("excess", "additional", 
-                                     "relative", "extra", "added", "hybridExc", "hybridAdd", "point")){
-  curveLevels <- levels(object$dataList$curveid)
-  nCurves <- length(unique(object$dataList$curveid))
+                                     "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
+                             respTrans = c("none", "log", "sqrt")){
+  curveLevels <- colnames(object$parmMat)
+  nCurves <- ncol(object$parmMat)
   
   bmrScaledMat <- matrix(0, nrow = nCurves, ncol = 1, dimnames = list(curveLevels, NULL))
   dBmrScaledMat <- matrix(0, nrow = nrow(object$parmMat), ncol = ncol(object$parmMat), dimnames = dimnames(object$parmMat))
@@ -11,6 +12,21 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
   backgType <- match.arg(backgType)
   def <- match.arg(def)
   respType <- object$type
+  
+  if(identical(respTrans, "log")){
+    h <- log
+    dh <- function(x) 1/x
+    hInv <- exp
+    dhInv <- exp
+  } else if(identical(respTrans, "sqrt")){
+    h <- sqrt
+    dh <- function(x) 1/(2*sqrt(x))
+    hInv <- function(x) x^2
+    dhInv <- function(x) 2*x
+  } else if(!identical(respTrans, "none")){
+    cat('respTrans "', respTrans, '" not defined. Options are: "none", "log", and "sqrt".')
+    break
+  }
   
   for(iCurve in 1:nCurves){
     # Vectors of parameters
@@ -49,6 +65,9 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
       } 
       if (identical(backgType,"absolute") & 
           (identical(def,"hybridExc") | identical(def,"hybridAdd") )) {
+        if(!identical(respTrans, "none") & !is.na(backg)){
+          backg <- h(backg)
+        }
         background <- ifelse(is.na(backg), 
                              1-pnorm(2),
                              1-pnorm((backg-fullParmVec[2])/useSD))
@@ -56,6 +75,12 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
                              0,
                              dnorm((backg-fullParmVec[2])/useSD)/useSD)
       } 
+
+      # Apply inverse transformation to calculate bmrScaled on original scale
+      if(!identical(respTrans, "none") & !(def %in% c("hybridExc","hybridAdd"))){
+        background <- hInv(background)
+        dBackground <- dhInv(background) * dBackground
+      }
       
       # BMRSCALED
       if (identical(respType, "binomial")) {
@@ -117,6 +142,13 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
       if (identical(respType, "continuous") & (def %in% c("excess", "additional"))) {
         stop(paste("\"",def, "\" is not available for continuous data", sep=""))
       }
+      
+      # Transform back to transformed scale, so bmrScaled is same scale as model
+      if(!identical(respTrans, "none") & !(def %in% c("hybridExc","hybridAdd"))){
+        dFullParmVec <- dh(bmrScaled) * dFullParmVec
+        bmrScaled <- h(bmrScaled)
+      }
+      
     } 
     # DECREASING CURVE
     else if(slope == "decreasing"){
@@ -137,6 +169,9 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
       } 
       if (identical(backgType,"absolute") & 
           (identical(def,"hybridExc") | identical(def,"hybridAdd") )) {
+        if(!identical(respTrans, "none") & !is.na(backg)){
+          backg <- h(backg)
+        }
         background <- ifelse(is.na(backg), 
                              pnorm(-2),
                              pnorm((backg-fullParmVec[3])/useSD))
@@ -144,6 +179,12 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
                                  0,
                                  -dnorm((backg-fullParmVec[3])/useSD)/useSD)
       } 
+      
+      # Apply inverse transformation to calculate bmrScaled on original scale
+      if(!identical(respTrans, "none") & !(def %in% c("hybridExc","hybridAdd"))){
+        background <- hInv(background)
+        dBackground <- dhInv(background) * dBackground
+      }
       
       # BMRSCALED
       if (identical(respType, "binomial")) {
@@ -205,9 +246,14 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
       if (identical(respType, "continuous") & (def %in% c("excess", "additional"))) {
         stop(paste("\"",def, "\" is not available for continuous data", sep=""))
       }
+      
+      # Transform back to transformed scale, so bmrScaled is same scale as model
+      if(!identical(respTrans, "none") & !(def %in% c("hybridExc","hybridAdd"))){
+        dFullParmVec <- dh(bmrScaled) * dFullParmVec
+        bmrScaled <- h(bmrScaled)
+      }
     }
-    
-    
+  
     
     # Set values
     bmrScaledMat[iCurve,] <- bmrScaled

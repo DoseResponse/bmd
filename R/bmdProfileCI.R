@@ -1,4 +1,5 @@
-bmdProfileCI <- function(object, bmr, backgType, backg, controlSD, def, start, level = 0.95, gridSize = 10, bmdEst, lower, upper, slope){
+bmdProfileCI <- function(object, slope, bmr, backgType, backg, # controlSD, 
+                         def, respTrans, start, level = 0.95, gridSize = 10, bmdEst, lower, upper){
   n <- object$sumList$lenData
   dose <- object$dataList$dose
   response <- object$dataList$resp
@@ -6,8 +7,9 @@ bmdProfileCI <- function(object, bmr, backgType, backg, controlSD, def, start, l
     start <- coef(object)[-length(coef(object))]
   }
   
-  curveRepar <- getCurveRepar(object, backgType = backgType, def = def, slope = slope)
-  profileLogLikFixedBmd <- getProfileLogLikFixedBmd(object, curveRepar, bmr, start, slope)
+  curveRepar <- getCurveRepar(object, slope, bmr, backgType, backg, #controlSD, 
+                              def, respTrans)
+  profileLogLikFixedBmd <- getProfileLogLikFixedBmd(object, curveRepar, bmr, start)
   
   quant <- qchisq(p = level, df = 1)
   llMod <- as.numeric(logLik(object))

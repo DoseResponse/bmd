@@ -2,6 +2,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
+               respTrans = c("none", "log", "sqrt"),
               interval = c("delta", "inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE, level=0.95, profileGridSize, profileProgressInfo = TRUE) 
 {
   if (missing(def)) {
@@ -20,7 +21,13 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     stop(paste("Could not recognize backgType", sep=""))
   }
   
+  level <- 1-2*(1-level)
+  
   interval <- match.arg(interval)
+  respTrans <- match.arg(respTrans)
+  # if(!identical(respTrans, "none") & (def %in% c("hybridExc","hybridAdd"))){
+  #   stop(paste("Transformed response not available when using the hybrid method.", sep=""))
+  # }
   
   # Extract information from model
   EDlist <- object$fct[["edfct"]]  
@@ -28,7 +35,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
   nCurves <- ncol(parmMat)
   
   # bmrScaledList
-  bmrScaledList <- getBmrScaledList(object, bmr, backgType, backg, controlSD, def)
+  bmrScaledList <- getBmrScaledList(object, bmr, backgType, backg, controlSD, def, respTrans)
   
   # SINGLE CURVE
   if(nCurves == 1){
@@ -52,29 +59,32 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       dBmdVal <- EDeval[[2]] + bmrScaledList$dBmrScaled[,1] / object$fct$derivx(bmdVal, t(parmMat))[1]
       bmdSEVal <- sqrt(dBmdVal %*% varCov %*% dBmdVal)
       intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
-                                    level = 1-2*(1-level), object$"type", df.residual(object), FALSE)
+                                    level = level, object$"type", df.residual(object), FALSE)
     } else if(interval == "inv"){
       slope <- drop(ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing"))
       if(is.na(object$curve[[1]](0)-object$curve[[1]](Inf))){
         slope <- drop(ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing"))
       }
-      intMat <- invBmd(object, bmr, level = 1-2*(1-level), slope=slope, backgType=backgType,
+      
+      intMat <- invBmd(object, bmr, level = level, slope=slope, backgType=backgType,
                        backg=backg, catLev=NA, extFactor=10, def=def, useSD=useSD, 
                        sandwich.vcov=sandwich.vcov)[,c("BMDL", "BMDU"), drop = FALSE]
     } else if(interval == "profile"){
       tmpVals <- ED(object, bmrScaled, interval = "delta",
-                        level = 1-2*(1-level), type = "absolute", vcov. = vcov, display = FALSE)[,c("Lower", "Upper"), drop = FALSE]
-      if(backgType %in% c("modelBased", "absolute") & def %in% c("excess", "additional","relative", "extra", "point")
+                        level = level, type = "absolute", vcov. = vcov, display = FALSE)[,c("Lower", "Upper"), drop = FALSE]
+      if(backgType %in% c("modelBased", "absolute") & !(def %in% c("hybridExc", "hybridAdd"))
          & substr(object$fct$name,1,2) %in% c("LL", "LN", "W1", "W2")){
         if(missing(profileGridSize)){
           profileGridSize <- 20
         }
+        
         slope <- drop(ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing"))
         if(is.na(object$curve[[1]](0)-object$curve[[1]](Inf))){
           slope <- drop(ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing"))
         }
-        tmpInterval <- bmdProfileCI(object, bmr = bmr, backgType = backgType, def = def, level = level, gridSize = profileGridSize,
-                                    bmdEst = bmdVal, lower = tmpVals[,"Lower"], upper = tmpVals[,"Upper"], slope = slope)
+        
+        tmpInterval <- bmdProfileCI(object, slope, bmr, backgType, backg, def, respTrans, level = level, gridSize = profileGridSize,
+                                    bmdEst = bmdVal, lower = tmpVals[,"Lower"], upper = tmpVals[,"Upper"])
       } else {
         cat("\nReparametrised model not available for chosen backgType, def and dose-response curve. Proceeding with grid search.\n")
         if(missing(profileGridSize)){
@@ -129,7 +139,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
         
         if(interval == "delta"){
           intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
-                                        level = 1-2*(1-level), object$"type", df.residual(object), FALSE)
+                                        level = level, object$"type", df.residual(object), FALSE)
         }
         
         resMat[iCurve,] <- c(bmdVal, intMat[1,1])

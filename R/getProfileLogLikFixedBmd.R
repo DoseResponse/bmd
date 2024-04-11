@@ -1,4 +1,4 @@
-getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start, slope){
+getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start){
   n <- object$sumList$lenData
   dose <- object$dataList$dose
   response <- object$dataList$resp

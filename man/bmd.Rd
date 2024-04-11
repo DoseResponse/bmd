@@ -8,8 +8,9 @@ Benchmark dose estimation
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = FALSE,
-              level=0.95, profileGridSize = 50, profileProgressInfo = TRUE) 
+respTrans = c("none", "log", "sqrt"),
+interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = FALSE,
+level=0.95, profileGridSize = 50, profileProgressInfo = TRUE) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -61,6 +62,9 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   "hybridAdd" - BMR is defined as: BMR = 1 - phi((x0 - f(BMD))/sigma) - p0, 
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
+  
+  \item{respTrans}{if the dose-response model is fitted with a transformed response, specifying this option ensures that the background level for the BMD is computed on the original scale. 
+  Options include "none" (default), "log" (natural logarithm) and "sqrt"(square root)}
   
   \item{interval}{character string specifying the type of confidence interval to use: "delta" (default), "inv", "profile" or "profileGrid"
   
