@@ -64,6 +64,9 @@ bmdBoot(object, bmr, R, bootType = c("nonparametric", "semiparametric", "paramet
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
+  \item{respTrans}{if the dose-response model is fitted with a transformed response, specifying this option ensures that the background level for the BMD is computed on the original scale. 
+  Options include "none" (default), "log" (natural logarithm) and "sqrt"(square root).}
+  
   \item{bootInterval}{character string indicating type of bootstrap interval used for estimating BMDL. "Percentile" (default) or "BCa" (Bias corrected and adjusted)}
 
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
