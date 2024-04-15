@@ -4,6 +4,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
                     controlSD=NA,
                     def = c("excess", "additional", 
                             "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
+                    respTrans = c("none", "log", "sqrt"),
                     bootInterval = c("percentile","BCa"),
                     display=TRUE, level=0.95){
   if (identical(object$type,"binomial") & bootType=="semiparametric") {
@@ -25,7 +26,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   drm.list  <- drm.list.tmp[list.condition]
   
   bmd.list.try <- lapply(drm.list,function(x){
-    try(bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+    try(bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, respTrans = respTrans,
             display=FALSE, level=level)[["Results"]][1],TRUE)}
   )
   bmd.list <- bmd.list.try[sapply(bmd.list.try, function(x) class(x)=="numeric")]
@@ -41,7 +42,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
     drm.list  <- drm.list.tmp[list.condition]
     
     bmd.list <- lapply(drm.list,function(x){
-      bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+      bmd(x, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, respTrans = respTrans,
           display=FALSE, level=level)[["Results"]][1]}
     )
     }
@@ -61,12 +62,12 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       bootJack.drm<- bootJack.drm.tmp[list.condition]
       
       bootJack <- sapply(bootJack.drm, function(x){
-        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, 
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, respTrans = respTrans,
             interval = "delta", display=FALSE, level=level)$Results[1]
       }
       )
       
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, respTrans = respTrans,
                      display=FALSE, level=level)[["Results"]][1]
       BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), bootJack, level=level)[1])
       
@@ -91,12 +92,12 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       bootJack.drm<- bootJack.drm.tmp[list.condition]
       
       bootJack <- sapply(bootJack.drm, function(x){
-        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, 
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, respTrans = respTrans,
             interval = "delta", display=FALSE, level=level)$Results[1]
       }
       )
       
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, respTrans = respTrans,
                      display=FALSE, level=level)[["Results"]][1]
       BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = data.e, unlist(bmd.list), bootJack, level=level)[1])
     }
@@ -114,19 +115,19 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       bootJack.drm<- bootJack.drm.tmp[list.condition]
       
       bootJack <- sapply(bootJack.drm, function(x){
-        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, interval = "delta", 
+        bmd(x, bmr, backgType = backgType, backg = backg, def = def, controlSD=controlSD, interval = "delta", respTrans = respTrans,
             display=FALSE, level=level)$Results[1]
       }
       )
       
-      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+      use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, respTrans = respTrans,
                      display=FALSE, level=level)[["Results"]][1]
       BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, bootSample=unlist(bmd.list), 
                                 bootjack=bootJack, level=level)[1])
     }
   }
   if(bmdType == "orig"){
-    use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, 
+    use.bmd <- bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, respTrans = respTrans,
                    display=FALSE, level=level)[["Results"]][1]
   } else if(bmdType == "mean"){
     use.bmd <- mean(unlist(bmd.list))

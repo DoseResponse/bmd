@@ -1,4 +1,4 @@
-getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start, slope){
+getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start){
   n <- object$sumList$lenData
   dose <- object$dataList$dose
   response <- object$dataList$resp
@@ -31,18 +31,17 @@ getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start, slope){
   # define profile log-likelihood
   if(identical(object$type, "continuous")){
     profileLogLikFixedBmd <- function(BMD){
-      weights0 <- weights / sum(weights) * n
-      fn0 <- function(par){sum(weights0*(response - curveRepar(BMD, par, bmr)(dose))^2)}
+      fn0 <- function(par){sum(((response - curveRepar(BMD, par, bmr)(dose))/weights)^2)}
       constrOptim0 <- constrOptim(theta=start, 
                                   f = fn0,
                                   grad = NULL,
                                   ui = ui,
                                   ci = ci)
-      
       SSD <- constrOptim0$value
-      sigmaSqHat <- SSD/n
+      #sigmaSqHat <- object$fit$value/n  # 
       
-      llVal <- -n/2 * log(2*pi*sigmaSqHat) - SSD / (2*sigmaSqHat)
+      #llVal <- -n/2 * log(2*pi*sigmaSqHat) - SSD / (2*sigmaSqHat)
+      llVal <- -(n/2)*(log(2*pi)+log(SSD)-log(n)+1)
       llVal
     }
   } else if(identical(object$type, "binomial")){

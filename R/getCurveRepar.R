@@ -1,5 +1,7 @@
-getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
-  model <- x
+getCurveRepar <- function(object, slope, bmr, backgType, backg, #controlSD, 
+                          def, respTrans){
+  model <- object
+  respType <- object$type
   
   if(!is.na(model$fct$fixed[4])){
     cat("Reparametrisation not defined for fixed parameter e.\n")
@@ -9,39 +11,33 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   else if (identical(substr(model$fct$name,1,2), "LL")){
     LL4repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      b <- model$fct$fixed[1]
-      if(is.na(b)){ 
-        b <- par[1]
-        par <- par[-c(1)]
-      }
-      c <- model$fct$fixed[2]
-      if(is.na(c)){
-        c <- par[1]
-        par <- par[-c(1)]
-      }
-      d <- model$fct$fixed[3]
-      if(is.na(d)){ 
-        d <- par[1]
-      }
+      parVec <- model$fct$fixed[-4]
+      parVec[is.na(parVec)] <- par
+      b <- parVec[1]
+      c <- parVec[2]
+      d <- parVec[3]
       
-      # Background level
-      if(identical(backgType, "modelBased")){
-        p0 <- ifelse(identical(slope, "increasing"), c, d)
-      } else {
-        p0 <- background
-      }
+      # # Background level
+      # if(identical(backgType, "modelBased")){
+      #   p0 <- ifelse(identical(slope, "increasing"), c, d)
+      # } else {
+      #   p0 <- background
+      # }
+      # 
+      # if(identical(def, "excess")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
+      # } else if(identical(def, "additional")){
+      #   z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
+      # } else if(identical(def, "point")){
+      #   z0 <- bmr
+      # } else if(identical(def, "relative")){
+      #   z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
+      # } else if(identical(def, "extra")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
+      # }
       
-      if(identical(def, "excess")){
-        z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
-      } else if(identical(def, "additional")){
-        z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
-      } else if(identical(def, "point")){
-        z0 <- bmr
-      } else if(identical(def, "relative")){
-        z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
-      } else if(identical(def, "extra")){
-        z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
-      }
+      z0 <- getBmrScaledRepar(c(c,d), slope, bmr, backgType, backg, #controlSD,
+                              def, respTrans, respType)
       e0 <- BMD * ( ( z0 - c) / (d - z0) )^(1/b)
       
       function(x){
@@ -54,39 +50,33 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   else if (identical(substr(model$fct$name,1,2), "LN")){
     LN4repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      b <- model$fct$fixed[1]
-      if(is.na(b)){ 
-        b <- par[1]
-        par <- par[-c(1)]
-      }
-      c <- model$fct$fixed[2]
-      if(is.na(c)){
-        c <- par[1]
-        par <- par[-c(1)]
-      }
-      d <- model$fct$fixed[3]
-      if(is.na(d)){ 
-        d <- par[1]
-      }
+      parVec <- model$fct$fixed[-4]
+      parVec[is.na(parVec)] <- par
+      b <- parVec[1]
+      c <- parVec[2]
+      d <- parVec[3]
       
-      # Background level
-      if(identical(backgType, "modelBased")){
-        p0 <- ifelse(identical(slope, "increasing"), c, d)
-      } else {
-        p0 <- background
-      }
-      
-      if(identical(def, "excess")){
-        z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
-      } else if(identical(def, "additional")){
-        z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
-      } else if(identical(def, "point")){
-        z0 <- bmr
-      } else if(identical(def, "relative")){
-        z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
-      } else if(identical(def, "extra")){
-        z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
-      }
+      # # Background level
+      # if(identical(backgType, "modelBased")){
+      #   p0 <- ifelse(identical(slope, "increasing"), c, d)
+      # } else {
+      #   p0 <- background
+      # }
+      # 
+      # if(identical(def, "excess")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
+      # } else if(identical(def, "additional")){
+      #   z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
+      # } else if(identical(def, "point")){
+      #   z0 <- bmr
+      # } else if(identical(def, "relative")){
+      #   z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
+      # } else if(identical(def, "extra")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
+      # }
+      # 
+      z0 <- getBmrScaledRepar(c(c,d), slope, bmr, backgType, backg, #controlSD,
+                              def, respTrans, respType)
       e0 <- BMD / exp( qnorm( (z0 - c) / (d-c) )/b)
       
       function(x){
@@ -99,39 +89,33 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   else if (identical(substr(model$fct$name,1,2), "W1")){
     W14repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      b <- model$fct$fixed[1]
-      if(is.na(b)){ 
-        b <- par[1]
-        par <- par[-c(1)]
-      }
-      c <- model$fct$fixed[2]
-      if(is.na(c)){
-        c <- par[1]
-        par <- par[-c(1)]
-      }
-      d <- model$fct$fixed[3]
-      if(is.na(d)){ 
-        d <- par[1]
-      }
+      parVec <- model$fct$fixed[-4]
+      parVec[is.na(parVec)] <- par
+      b <- parVec[1]
+      c <- parVec[2]
+      d <- parVec[3]
       
-      # Background level
-      if(identical(backgType, "modelBased")){
-        p0 <- ifelse(identical(slope, "increasing"), c, d)
-      } else {
-        p0 <- background
-      }
+      # # Background level
+      # if(identical(backgType, "modelBased")){
+      #   p0 <- ifelse(identical(slope, "increasing"), c, d)
+      # } else {
+      #   p0 <- background
+      # }
+      # 
+      # if(identical(def, "excess")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
+      # } else if(identical(def, "additional")){
+      #   z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
+      # } else if(identical(def, "point")){
+      #   z0 <- bmr
+      # } else if(identical(def, "relative")){
+      #   z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
+      # } else if(identical(def, "extra")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
+      # }
       
-      if(identical(def, "excess")){
-        z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
-      } else if(identical(def, "additional")){
-        z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
-      } else if(identical(def, "point")){
-        z0 <- bmr
-      } else if(identical(def, "relative")){
-        z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
-      } else if(identical(def, "extra")){
-        z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
-      }
+      z0 <- getBmrScaledRepar(c(c,d), slope, bmr, backgType, backg, #controlSD,
+                              def, respTrans, respType)
       e0 <- BMD / (-log( (z0 - c) / (d - c)))^(1/b)
       
       function(x){
@@ -142,41 +126,35 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
   } 
   # Weibull 2 model
   else if (identical(substr(model$fct$name,1,2), "W2")){
-    W14repar <- function(BMD, par, bmr){
+    W24repar <- function(BMD, par, bmr){
       # Handling fixed parameters first
-      b <- model$fct$fixed[1]
-      if(is.na(b)){ 
-        b <- par[1]
-        par <- par[-c(1)]
-      }
-      c <- model$fct$fixed[2]
-      if(is.na(c)){
-        c <- par[1]
-        par <- par[-c(1)]
-      }
-      d <- model$fct$fixed[3]
-      if(is.na(d)){ 
-        d <- par[1]
-      }
+      parVec <- model$fct$fixed[-4]
+      parVec[is.na(parVec)] <- par
+      b <- parVec[1]
+      c <- parVec[2]
+      d <- parVec[3]
       
-      # Background level
-      if(identical(backgType, "modelBased")){
-        p0 <- ifelse(identical(slope, "increasing"), c, d)
-      } else {
-        p0 <- background
-      }
+      # # Background level
+      # if(identical(backgType, "modelBased")){
+      #   p0 <- ifelse(identical(slope, "increasing"), c, d)
+      # } else {
+      #   p0 <- background
+      # }
+      # 
+      # if(identical(def, "excess")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
+      # } else if(identical(def, "additional")){
+      #   z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
+      # } else if(identical(def, "point")){
+      #   z0 <- bmr
+      # } else if(identical(def, "relative")){
+      #   z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
+      # } else if(identical(def, "extra")){
+      #   z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
+      # }
       
-      if(identical(def, "excess")){
-        z0 <- ifelse(identical(slope, "increasing"), (1-p0)*bmr + p0, -(1-p0)*bmr + p0)
-      } else if(identical(def, "additional")){
-        z0 <- ifelse(identical(slope, "increasing"), bmr + p0, -bmr + p0)
-      } else if(identical(def, "point")){
-        z0 <- bmr
-      } else if(identical(def, "relative")){
-        z0 <- ifelse(identical(slope, "increasing"), p0 + p0*bmr, p0 - p0*bmr)
-      } else if(identical(def, "extra")){
-        z0 <- ifelse(identical(slope, "increasing"), (d-p0)*bmr + p0, (c-p0)*bmr + p0)
-      }
+      z0 <- getBmrScaledRepar(c(c,d), slope, bmr, backgType, backg, #controlSD,
+                              def, respTrans, respType)
       e0 <- BMD / (-log(1 - (z0 - c) / (d - c) ))^(1/b)
       
       
@@ -184,7 +162,7 @@ getCurveRepar <- function(x, backgType, background, controlSD, def, slope){
         c + (d-c) * (1-exp(-exp(b*(log(x)-log(e0)))))
       }
     }
-    W14repar
+    W24repar
   } 
   # Remaining models not reparametrised
   else{cat("Reparametrised curve not defined for model of type", model$fct$name, "\n")}

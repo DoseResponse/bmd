@@ -8,8 +8,9 @@ Benchmark dose estimation
 \usage{
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-              interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = FALSE,
-              level=0.95, profileGridSize = 50, profileProgressInfo = TRUE) 
+respTrans = c("none", "log", "sqrt"),
+interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = FALSE,
+level=0.95, profileGridSize = 50, profileProgressInfo = TRUE) 
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -62,11 +63,14 @@ def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybr
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
+  \item{respTrans}{if the dose-response model is fitted with a transformed response, specifying this option ensures that the background level for the BMD is computed on the original scale. 
+  Options include "none" (default), "log" (natural logarithm) and "sqrt"(square root).}
+  
   \item{interval}{character string specifying the type of confidence interval to use: "delta" (default), "inv", "profile" or "profileGrid"
   
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
   
-  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve
+  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the pointwise confidence interval of the dose-response curve. Currently not available for a transformed response variable. 
   
   "profile" - A profile confidence interval is computed by reparametrising the model. Only available for \code{backgType} in ("modelBased", "absolute"), \code{def} in ("excess", "additional","relative", "extra", "point") and dose-response models with model functions of types Log-Logistic, Log-Normal and Weibull 1 and 2. The limits of the confidence interval are searched for within a grid of size specified by the \code{profileGridSize} argument, however the values of the confidence interval are not limited to the values on the grid. 
   
@@ -104,7 +108,7 @@ A list of four elements: Results contain the estimated BMD and BMDL, bmrScaled i
   \emph{Critical Reviews in Toxicology} \bold{32}, 133--153.
 }
 
-\author{ Signe M. Jensen
+\author{ Signe M. Jensen and Jens Riis Baalkilde
 }
 \note{
 }
