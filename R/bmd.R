@@ -61,13 +61,14 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
                                     level = level, object$"type", df.residual(object), FALSE)
     } else if(interval == "inv"){
+      if(!identical(respTrans, "none")){stop("inverse regression interval not available for transformed response.")}
       slope <- drop(ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing"))
       if(is.na(object$curve[[1]](0)-object$curve[[1]](Inf))){
         slope <- drop(ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing"))
       }
       
       intMat <- invBmd(object, bmr, level = level, slope=slope, backgType=backgType,
-                       backg=backg, catLev=NA, extFactor=10, def=def, useSD=useSD, 
+                       backg=backg, catLev=NA, extFactor=10, def=def, useSD=useSD,
                        sandwich.vcov=sandwich.vcov)[,c("BMDL", "BMDU"), drop = FALSE]
     } else if(interval == "profile"){
       tmpVals <- ED(object, bmrScaled, interval = "delta",
