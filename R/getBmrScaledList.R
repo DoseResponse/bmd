@@ -88,7 +88,7 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
                             additional = bmr + background, 
                             point = bmr)
         dFullParmVec <- switch(def, 
-                            excess = bmr * (1 - dBackground) + dBackground, 
+                            excess = bmr * ( - dBackground) + dBackground, 
                             additional = dBackground, 
                             point = rep(0, length(fullParmVec)))
       }
@@ -193,7 +193,7 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
                             point = bmr)
         dFullParmVec <- switch(def, 
                                excess = dBackground - bmr * dBackground, 
-                               additional = dBackground - bmr, 
+                               additional = dBackground, 
                                point = rep(0, length(fullParmVec)))
       }
       if (identical(respType, "binomial") & (def %in% c("relative","added","extra", "hybridExc","hybridAdd"))) {
