@@ -77,8 +77,8 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
 
       # Apply inverse transformation to calculate bmrScaled on original scale
       if(!identical(respTrans, "none") & !(def %in% c("hybridExc","hybridAdd"))){
-        background <- hInv(background)
         dBackground <- dhInv(background) * dBackground
+        background <- hInv(background)
       }
       
       # BMRSCALED
@@ -177,19 +177,13 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
         dBackground[3] <- ifelse(is.na(backg), 
                                  0,
                                  -dnorm((backg-fullParmVec[3])/useSD)/useSD)
-      } 
-      
-      print(background)
-      print(dBackground)
+      }
       
       # Apply inverse transformation to calculate bmrScaled on original scale
       if(!identical(respTrans, "none") & !(def %in% c("hybridExc","hybridAdd"))){
         dBackground <- dhInv(background) * dBackground
         background <- hInv(background)
       }
-      
-      print(background)
-      print(dBackground)
       
       # BMRSCALED
       if (identical(respType, "binomial")) {
@@ -252,16 +246,11 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
         stop(paste("\"",def, "\" is not available for continuous data", sep=""))
       }
       
-      print(bmrScaled)
-      print(dFullParmVec)
-      
       # Transform back to transformed scale, so bmrScaled is same scale as model
       if(!identical(respTrans, "none") & !(def %in% c("hybridExc","hybridAdd"))){
         dFullParmVec <- dh(bmrScaled) * dFullParmVec
         bmrScaled <- h(bmrScaled)
       }
-      print(bmrScaled)
-      print(dFullParmVec)
     }
   
     
