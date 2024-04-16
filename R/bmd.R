@@ -46,7 +46,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     bmdInterval <- matrix(NA, nrow = 1, ncol = 2, dimnames = list("", c("Lower", "Upper")))
     bmdSE <- matrix(NA, nrow = 1, ncol = 1, dimnames = list("", "SE"))
     
-    EDeval <- EDlist(parmMat[, 1], bmrScaled[1,], type = "absolute")
+    EDeval <- EDlist(parmMat[, 1], bmrScaled[1,], type = "absolute", reference = "control")
     bmdVal <- EDeval[[1]]
     bmdSEVal <- NA
     
@@ -133,7 +133,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
         parmChosen <- parmMat[, iCurve]
         varCov <- pmodelsMatrixList[[iCurve]] %*% vcMat %*% t(pmodelsMatrixList[[iCurve]])
         
-        EDeval <- EDlist(parmChosen, bmrScaled[iCurve,], type = "absolute") 
+        EDeval <- EDlist(parmChosen, bmrScaled[iCurve,], type = "absolute", reference = "control") 
         bmdVal <- EDeval[[1]]
         dBmdVal <- EDeval[[2]] + bmrScaledList$dBmrScaled[,iCurve] / object$fct$derivx(bmdVal, t(parmMat))[iCurve]
         bmdSEVal <- sqrt(dBmdVal %*% varCov %*% dBmdVal)
