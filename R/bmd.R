@@ -30,7 +30,8 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
   # }
   
   # Extract information from model
-  EDlist <- object$fct[["edfct"]]  
+  # EDlist <- object$fct[["edfct"]] # Change after drc package has been updated with with edfct 
+  EDlist <- bmd.edfct(object)
   parmMat <- object$parmMat
   nCurves <- ncol(parmMat)
   
