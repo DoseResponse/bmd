@@ -1,5 +1,5 @@
 bmd.edfct <- function(object){
-  if(class(object$fct) %in% c("llogistic", "log-normal", "Weibull-1", "Weibull-2", "Boltzmann")){
+  if(class(object$fct) %in% c("llogistic", "log-normal", "Weibull-1", "Weibull-2", "Boltzmann", "braincousens", "fp-logistic")){
     ## Handling 'fixed' argument
     numParm <- length(object$fct$fixed)
     notFixed <- is.na(object$fct$fixed)
@@ -238,47 +238,51 @@ bmd.edfct <- function(object){
         return(list(EDp, EDder[notFixed]))
       }
     }
-  } else if(identical(class(object$fct), "fp-logistic")){
-    edfct <- function(parm, respl, reference, type, loged = FALSE, ...)
-    {
-      parmVec[notFixed] <- parm
-      p <- drc:::EDhelper2(parmVec, respl, reference, type, parmVec[1] > 0)
-      
-      invfp <- function(resp, b, e)
+    
+    if(identical(class(object$fct), "fp-logistic")){
+      p1 <- as.numeric(unlist(strsplit(object$fct$name, split = "[,()]+"))[2])
+      p2 <- as.numeric(unlist(strsplit(object$fct$name, split = "[,()]+"))[3])
+      edfct <- function(parm, respl, reference, type, loged = FALSE, ...)
       {
-        fct0 <- function(x){resp - (b*(log(x+1)^p1) + e*(log(x+1)^p2))}
-        uniroot(fct0, c(0.001, 5000))$root
+        parmVec[notFixed] <- parm
+        p <- drc:::EDhelper2(parmVec, respl, reference, type, parmVec[1] > 0)
+        
+        invfp <- function(resp, b, e)
+        {
+          fct0 <- function(x){resp - (b*(log(x+1)^p1) + e*(log(x+1)^p2))}
+          uniroot(fct0, c(0.001, 5000))$root
+        }
+        
+        EDfct <- function(b, c, d, e) 
+        {
+          invfp(log((100-p)/p), b, e)
+        }
+        
+        EDfct0 <- function(par) 
+        {
+          p <- drc:::EDhelper2(par, respl, reference, type, par[1] > 0)
+          invfp(log((100-p)/p), par[1], par[4])
+        }
+        
+        EDp <- EDfct(parmVec[1], parmVec[2], parmVec[3], parmVec[4])
+        
+        logEDp <- log(EDp+1)
+        denVal <- parmVec[1] * p1 * (logEDp)^(p1-1) + parmVec[4] * p2 * (logEDp)^(p2-1)
+        derVec <- (EDp+1) * c(logEDp^p1, logEDp^p2) / denVal
+        EDder <- -c(derVec[1], 0, 0, derVec[2])
+        
+        # Addition by Jens Riis Baalkilde
+        if(type == "absolute"){
+          EDder[2:3] <- numDeriv::jacobian(EDfct0, parmVec)[2:3]
+        }
+        
+        # if(loged) 
+        # {
+        #   EDder <- EDder / EDp
+        #   EDp <- log(EDp)
+        # }
+        return(list(EDp, EDder[notFixed]))
       }
-      
-      EDfct <- function(b, c, d, e) 
-      {
-        invfp(log((100-p)/p), b, e)
-      }
-      
-      EDfct0 <- function(par) 
-      {
-        p <- EDhelper2(par, respl, reference, type, par[1] > 0)
-        invfp(log((100-p)/p), par[1], par[4])
-      }
-      
-      EDp <- EDfct(parmVec[1], parmVec[2], parmVec[3], parmVec[4])
-      
-      logEDp <- log(EDp+1)
-      denVal <- parmVec[1] * p1 * (logEDp)^(p1-1) + parmVec[4] * p2 * (logEDp)^(p2-1)
-      derVec <- (EDp+1) * c(logEDp^p1, logEDp^p2) / denVal
-      EDder <- -c(derVec[1], 0, 0, derVec[2])
-      
-      # Addition by Jens Riis Baalkilde
-      if(type == "absolute"){
-        EDder[2:3] <- numDeriv::jacobian(EDfct0, parmVec)[2:3]
-      }
-      
-      if (loged) 
-      {
-        EDder <- EDder / EDp
-        EDp <- log(EDp)
-      }
-      return(list(EDp, EDder[notFixed]))
     }
   } else {
     edfct <- object$fct[["edfct"]]
