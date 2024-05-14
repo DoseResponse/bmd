@@ -35,9 +35,10 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
     dFullParmVec <- numeric(length(fullParmVec))
     
     # SLOPE
-    slope <- drop(ifelse(object$curve[[1]](0)[,iCurve]-object$curve[[1]](Inf)[,iCurve]>0,"decreasing","increasing"))
-    if(is.na(object$curve[[1]](0)[,iCurve]-object$curve[[1]](Inf)[,iCurve])){
-      slope <- drop(ifelse(object$curve[[1]](0.00000001)[,iCurve]-object$curve[[1]](100000000)[,iCurve]>0,"decreasing","increasing"))
+    curveMatColIndex <- unique(object$dataList$curveid) == colnames(object$parmMat)[iCurve]
+    slope <- drop(ifelse(object$curve[[1]](0)[,curveMatColIndex]-object$curve[[1]](Inf)[,curveMatColIndex]>0,"decreasing","increasing"))
+    if(is.na(object$curve[[1]](0)[,curveMatColIndex]-object$curve[[1]](Inf)[,curveMatColIndex])){
+      slope <- drop(ifelse(object$curve[[1]](0.00000001)[,curveMatColIndex]-object$curve[[1]](100000000)[,curveMatColIndex]>0,"decreasing","increasing"))
     }
     
     # useSD
