@@ -1,15 +1,14 @@
 computeWeightsFromSplit <- function(trainData, validateData, modelList){
-  
   # Fit models to training data
   if(is.null(modelList[[1]]$call$pmodels)){
     tmpModelList <- lapply(modelList, function(model){
       try(#update(model, data = trainData),
         eval(substitute(drm(model$call$formula, weights = weights0, curveid = curveid0,
                             data = trainData, type = model$type, fct = model$fct, control = drmc(noMessage = TRUE)),
-         list(weights0 = model$call$weights,
-              curveid0 = model$call$curveid)
-         )),
-          silent = TRUE)
+                        list(weights0 = model$call$weights,
+                             curveid0 = model$call$curveid)
+        )),
+        silent = TRUE)
     })
   } else {
     tmpModelList <- lapply(modelList, function(model){
@@ -28,15 +27,6 @@ computeWeightsFromSplit <- function(trainData, validateData, modelList){
   convError <- sapply(tmpModelList, function(mod_try) inherits(mod_try, "try-error"))
   tmpModelList <- tmpModelList[!convError]
   
-  # Treat data differently for binomial data
-  if(modelList[[1]]$type == "binomial"){
-    data.e<-expandBinomial(validateData, 
-                           number = as.character(modelList[[1]]$call$formula[[2]][[2]]),
-                           total = as.character(modelList[[1]]$call$formula[[2]][[3]]),
-                           dose = as.character(modelList[[1]]$call$formula[[3]]))
-    validateData <- data.e
-  }
-  
   if(ncol(modelList[[1]]$parmMat) == 1){
     predMatrix <- sapply(tmpModelList, function(model) model$curve[[1]](validateData[[model$dataList$names$dName]]))
     predMatrix <- matrix(predMatrix, ncol = length(tmpModelList))
@@ -53,7 +43,7 @@ computeWeightsFromSplit <- function(trainData, validateData, modelList){
     predMatrix <- sapply(tmpModelList, 
                        function(model){ predVec(model, 
                                                 validateData[[model$dataList$names$dName]], 
-                                                validateData[[model$call$curveid]])
+                                                validateData[[as.character(model$call$curveid)]])
                          }
     )
   }
@@ -121,35 +111,89 @@ getDataSplits <- function(object, nSplits){
     }
     splitList <- split(object$origData, splitNum)
   } else if(object$type == "binomial"){
-    data.str <- object$data
-    data.str[["number"]] <- data.str[,2]*data.str[["weights"]]
-    data.e<-expandBinomial(data.str, 
-                           number = "number",
-                           total = "weights",
-                           dose = as.character(object$call$formula[[3]]))
-    data.e$rowNum <-1:nrow(data.e)
+    if(ncol(object$parmMat) == 1){
+      data.str <- object$data
+      data.str[["number"]] <- data.str[,2]*data.str[["weights"]]
+      data.e<-expandBinomial(data.str, 
+                             number = "number",
+                             total = "weights",
+                             dose = as.character(object$call$formula[[3]]))
+      df <- data.frame(data.e[,as.character(object$call$formula[[3]])],
+                       data.e[,"number"],
+                       data.e[,"weights"])
+      colnames(df) <- c(as.character(object$call$formula[[3]]),
+                        as.character(object$call$formula[[2]])[[2]],
+                        as.character(object$call$formula[[2]])[[3]])
+      df$rowNum <-1:nrow(df)
+    } else {
+      data.str <- object$data
+      data.str[["number"]] <- data.str[,2]*data.str[["weights"]]
+      data.e<-expandBinomial(data.str, 
+                             number = "number",
+                             total = "weights",
+                             dose = as.character(object$call$formula[[3]]),
+                             curveid = as.character(object$call$curveid))
+      df <- data.frame(data.e[,as.character(object$call$formula[[3]])],
+                       data.e[,"number"],
+                       data.e[,"weights"],
+                       data.e[,as.character(object$call$curveid)])
+      colnames(df) <- c(as.character(object$call$formula[[3]]),
+                        as.character(object$call$formula[[2]])[[2]],
+                        as.character(object$call$formula[[2]])[[3]],
+                        as.character(object$call$curveid))
+      df$rowNum <-1:nrow(df)
+      
+      # 
+      # split1_indices <- aggregate(
+      #   data.e$rowNum, list(data.e[,as.character(object$call$formula[[3]])]),
+      #   FUN = function(rowNum){
+      #     # if uneven number of repetitions, choose randomly if floor(rep/2) or ceiling(rep/2) is chosen.
+      #     tmpSize <- sample(c(floor(length(rowNum)/2),ceiling(length(rowNum)/2)), 1) 
+      #     sample(rowNum, size = tmpSize)
+      #   })$x |> unlist()
+      # 
+      # data.e.splitList <- list(data.e.split1 = data.e[split1_indices,],
+      #                          data.e.split2 = data.e[-split1_indices,])
+      # 
+      # splitList <- lapply(data.e.splitList,
+      #                     function(data){
+      #                       tmp <- aggregate(data[,c("number", "weights")], 
+      #                                        by = list(data[,as.character(object$call$formula[[3]])],
+      #                                                  data[,as.character(object$call$curveid)]), 
+      #                                        sum)
+      #                       colnames(tmp) <- c(as.character(object$call$formula[[3]]),
+      #                                          as.character(object$call$curveid),
+      #                                          as.character(object$call$formula[[2]])[[2]],
+      #                                          as.character(object$call$formula[[2]])[[3]])
+      #                       tmp
+      #                     })
+    }
     
-    split1_indices <- aggregate(
-      data.e$rowNum, list(data.e[,as.character(object$call$formula[[3]])]),
-      FUN = function(rowNum){
-        # if uneven number of repetitions, choose randomly if floor(rep/2) or ceiling(rep/2) is chosen.
-        tmpSize <- sample(c(floor(length(rowNum)/2),ceiling(length(rowNum)/2)), 1) 
-        sample(rowNum, size = tmpSize)
-      })$x |> unlist()
+    rowNum <- df$rowNum
+    splitAvailable <- table(rep(sample(1:nSplits), ceiling(nrow(df)/nSplits))[1:nrow(df)])
     
-    data.e.splitList <- list(data.e.split1 = data.e[split1_indices,],
-                      data.e.split2 = data.e[-split1_indices,])
+    curveLevels <- sample(unique(object$dataList$curveid))
+    doseLevels <- sample(unique(object$dataList$dose))
     
-    splitList <- lapply(data.e.splitList,
-                            function(data){
-                              tmp <- aggregate(data[,c("number", "weights")], 
-                                               by = list((data[,as.character(object$call$formula[[3]])])), 
-                                               sum)
-                              colnames(tmp) <- c(as.character(object$call$formula[[3]]),
-                                                 as.character(object$call$formula[[2]])[[2]],
-                                                 as.character(object$call$formula[[2]])[[3]])
-                              tmp
-                            })
+    splitNum <- integer(nrow(df))
+    
+    for(iCurve in 1:length(curveLevels)){
+      for(jDose in 1:length(doseLevels)){
+        rowNumDoseCurve <- rowNum[(df[[as.character(object$call$formula[[3]])]] == doseLevels[jDose]) & (df[[as.character(object$call$curveid)]] == curveLevels[iCurve])]
+        splitsAssigned <- integer(0)
+        missingVals <- length(rowNumDoseCurve)
+        while(missingVals > 0){
+          splitsToSample <- names(splitAvailable[splitAvailable == max(unique(splitAvailable))])
+          addVals <- sample(splitsToSample, size = min(missingVals, length(splitsToSample)))
+          splitAvailable[names(table(addVals))] <- splitAvailable[names(table(addVals))] - table(addVals)
+          splitsAssigned <- c(splitsAssigned, as.numeric(addVals))
+          missingVals <- length(rowNumDoseCurve) - length(splitsAssigned)
+        }
+        
+        splitNum[rowNumDoseCurve] <- splitsAssigned
+      }
+    }
+    splitList <- split(df, splitNum)
   }
   
   splitList
@@ -161,9 +205,6 @@ getStackingWeights <- function(modelList, nSplits = 2){
   while(get_w_error && (tries<10)){
     dataSplits <- getDataSplits(modelList[[1]], nSplits)
     
-    # weightsT1V2 <- computeWeightsFromSplit(dataSplits[[1]], dataSplits[[2]], modelList) |> try(silent = TRUE)
-    # weightsT2V1 <- computeWeightsFromSplit(dataSplits[[2]], dataSplits[[1]], modelList) |> try(silent = TRUE)
-    # get_w_error <- any(c(inherits(weightsT1V2, "try-error"), inherits(weightsT2V1, "try-error")))
     weightList <- lapply(1:nSplits, 
                          function(i) {
                            computeWeightsFromSplit(do.call(rbind, dataSplits[-i]), 

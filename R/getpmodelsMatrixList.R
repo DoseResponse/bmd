@@ -1,6 +1,6 @@
 getpmodelsMatrixList <- function(object){
-  curveLevels <- levels(object$dataList$curveid)
-  numLevels <- length(unique(object$dataList$curveid))
+  curveLevels <- colnames(object$parmMat)
+  numLevels <- ncol(object$parmMat)
   parNames <- object$parNames
   numCurvePar <- length(unique(parNames[[2]]))
   numPar <- length(coef(object))

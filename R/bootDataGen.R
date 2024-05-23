@@ -6,7 +6,8 @@ bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE
       data.e<-expandBinomial(data.str, 
                           number = "number",
                           total = "weights",
-                          dose = as.character(object$call$formula[[3]]))
+                          dose = as.character(object$call$formula[[3]]),
+                          curveid = as.character(object$call$curveid))
   data.e[,"row.num"]<-1:dim(data.e)[1]
   tmp.data <- list()
   for(i in 1:R){
@@ -21,12 +22,24 @@ bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE
                       as.character(object$call$formula[[2]])[[3]])
     tmp.data[[i]] <- df
     } else {
-      df <- data.frame(sampled.expand[,as.character(object$call$formula[[3]])],
-                  sampled.expand[,"number"],
-                  sampled.expand[,"weights"])
-      colnames(df) <- c(as.character(object$call$formula[[3]]),
-                        as.character(object$call$formula[[2]])[[2]],
-                        as.character(object$call$formula[[2]])[[3]])
+      if(is.null(object$call$curveid)){
+        df <- data.frame(sampled.expand[,as.character(object$call$formula[[3]])],
+                    sampled.expand[,"number"],
+                    sampled.expand[,"weights"])
+        colnames(df) <- c(as.character(object$call$formula[[3]]),
+                          as.character(object$call$formula[[2]])[[2]],
+                          as.character(object$call$formula[[2]])[[3]])
+      } else {
+        df <- data.frame(sampled.expand[,as.character(object$call$formula[[3]])],
+                         sampled.expand[,"number"],
+                         sampled.expand[,"weights"],
+                         sampled.expand[,as.character(object$call$curveid)]
+                         )
+        colnames(df) <- c(as.character(object$call$formula[[3]]),
+                          as.character(object$call$formula[[2]])[[2]],
+                          as.character(object$call$formula[[2]])[[3]],
+                          as.character(object$call$curveid))
+      }
       tmp.data[[i]] <- df
     }
   }
