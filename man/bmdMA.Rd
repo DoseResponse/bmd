@@ -158,7 +158,6 @@ bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="AIC",
       backgType = "hybridSD",
       def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
 
-}
 
 ## Model-averaged BMD using the Stacking Weights
 bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="Stack", bmr=0.05, 
