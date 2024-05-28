@@ -7,9 +7,9 @@ Model-averaged benchmark dose estimation
 }
 \usage{
 bmdMA(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
-def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
+def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),respTrans = c("none", "log", "sqrt"),
 interval = c("delta","sandwich","inv"),
-type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=1000, level=0.95, stackingSeed = 1, display = TRUE) 
+type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInterval, level=0.95, stackingSeed, stackingSplits, display = TRUE, progressInfo = TRUE) 
 }
 \arguments{
   \item{modelList}{list of models of class \code{drc}}
@@ -60,6 +60,9 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group. 
   Works for continuous response}
   
+  \item{respTrans}{if the dose-response model is fitted with a transformed response, specifying this option ensures that the background level for the BMD is computed on the original scale. 
+  Options include "none" (default), "log" (natural logarithm) and "sqrt"(square root).}
+  
   \item{interval}{character string specifying the type of confidence interval to use: "delta" (default), "sandwich" or "inv" 
   
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
@@ -85,7 +88,9 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, bootInterval, R=
   
   \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
   
-  \item{stackingSeed}{integer or NULL: Random seed to use in the data split in the estimation of the Stacking Weights, when \code{modelWeights = "Stack"}. The global seed is reset to the initial value after estimation of the weights, so this option does not interfere with a globally set seed.}
+  \item{stackingSeed}{integer or NULL: Random seed to use in the data split in the estimation of the Stacking Weights when \code{modelWeights = "Stack"}. The global seed is reset to the initial value after estimation of the weights, so this option does not interfere with a globally set seed.}
+  
+  \item{stackingSplits}{integer or "LOO": When \code{modelWeights = "Stack"}, the Stacking Weights are estimated, which are based on V-fold cross-validation. The stackingSplits argument sets the number V of data splits used in the cross validation. The "LOO" (Leave one out) is a shortcut to setting V equal to the number of observations in the data set. }
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
   
@@ -150,6 +155,13 @@ ryegrass.m4<-drm(rootl~conc, data=ryegrass, fct=LN.4())
 
 ## Model-averaged BMD and bootstrap BMDL for bmr=5% and using the hybrid approach to estimate the background risk.  
 bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="AIC", bmr=0.05, 
+      backgType = "hybridSD",
+      def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
+
+}
+
+## Model-averaged BMD using the Stacking Weights
+bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="Stack", bmr=0.05, 
       backgType = "hybridSD",
       def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
 

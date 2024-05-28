@@ -200,6 +200,11 @@ getDataSplits <- function(object, nSplits){
 }
 
 getStackingWeights <- function(modelList, nSplits = 2){
+  if(nSplits %in% c("LOO")){
+    nSplits <- ifelse(modelList[[1]]$type == "binomial", sum(modelList[[1]]$data$weights), modelList[[1]]$sumList$lenData)
+  } else if(!is.numeric(nSplits)){
+    stop('nSplits must either be a numeric, or "LOO" for Leave one out cross validation.')
+  }
   get_w_error <- TRUE
   tries <- 1
   while(get_w_error && (tries<10)){
@@ -216,7 +221,7 @@ getStackingWeights <- function(modelList, nSplits = 2){
   }
   if(get_w_error){return(rep(NA, length(modelList)))}
   else{
-    returnWeights <- colSums(do.call(rbind, weightList)) / nSplits  # drop(weightsT1V2 + weightsT2V1) / 2
+    returnWeights <- colSums(do.call(rbind, weightList)) / nSplits
     returnWeights
   }
 }

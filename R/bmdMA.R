@@ -10,7 +10,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   R=1000,
                   bootInterval = "percentile",
                   level=0.95,
-                  stackingSeed = 1, stackingSplits = 2,
+                  stackingSeed = NULL, stackingSplits = 2,
                   display=TRUE, progressInfo = TRUE){
   nCurves <- ncol(modelList[[1]]$parmMat)
   bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
@@ -1105,7 +1105,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             
             bmdEst <- try(bmdMA(bootModelList, bootModelWeights, bmr = bmr, backgType = backgType, 
                                 backg = backg, def = def, respTrans = respTrans, interval = "delta", 
-                                type = "Kang", stackingSplits = stackingSplits, display = FALSE)$Results[,1], silent = TRUE)
+                                type = "Kang", stackingSplits = stackingSplits, display = FALSE)$Results[colnames(modelList[[1]]$parmMat),1], silent = TRUE)
             as.numeric(bmdEst)
           }
           
@@ -1220,7 +1220,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             
             bootBmrScaled0 <- colSums(bootModelWeights0 * t(sapply(bootBmdList, function(x){x$bmrScaled})))
             
-            bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[,1], silent = TRUE)
+            bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[colnames(modelList[[1]]$parmMat),1], silent = TRUE)
             as.numeric(bootBmdEst)
           }
           
@@ -1341,7 +1341,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             
             bmdEst <- try(bmdMA(bootModelList, bootModelWeights, bmr = bmr, backgType = backgType, 
                                 backg = backg, def = def, respTrans = respTrans, interval = "delta", 
-                                type = "Kang", stackingSplits = stackingSplits, display = FALSE)$Results[,1], silent = TRUE)
+                                type = "Kang", stackingSplits = stackingSplits, display = FALSE)$Results[colnames(modelList[[1]]$parmMat),1], silent = TRUE)
             as.numeric(bmdEst)
           }
           
@@ -1472,7 +1472,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             
             bootBmrScaled0 <- colSums(bootModelWeights0 * t(sapply(bootBmdList, function(x){x$bmrScaled})))
             
-            bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[,1], silent = TRUE)
+            bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[colnames(modelList[[1]]$parmMat),1], silent = TRUE)
             as.numeric(bootBmdEst)
           }
           
