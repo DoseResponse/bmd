@@ -82,9 +82,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
         # if(!oldbootstrap){
           bmdMAboot <- function(data){
             bootModelList <- lapply(modelList, function(model) try(
-              eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0),
+              eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0),
                               list(formula0 = model$call$formula, 
-                                   weights0 = model$call$weights))),
+                                   weights0 = model$call$weights,
+                                   start0 = coef(model)))),
               silent = TRUE))
             
             modelConvergenceError <- sapply(bootModelList, function(mod_try) inherits(mod_try, "try-error"))
@@ -292,9 +293,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
           bmdMACurveboot <- function(data){
             bootModelList <- lapply(modelList, function(model){try(
               eval(substitute(
-                drm(formula = formula0, data = data, fct = model$fct, weights = weights0, type = model$type),
+                drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type),
                 list(formula0 = model$call$formula, 
-                     weights0 = model$call$weights))),
+                     weights0 = model$call$weights,
+                     start0 = coef(model)))),
               silent = TRUE)
             })
             
@@ -303,8 +305,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
             bootModelList <- bootModelList[!modelConvergenceError]
             bootBmdList <- lapply(bootModelList, 
                                   function(object){
-                                    bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
-                                        interval = "delta", display=FALSE)})
+                                    try(bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
+                                        interval = "delta", display=FALSE), silent = TRUE)})
             
             # Estimate weights
             if(identical(modelWeights,"AIC")){
@@ -531,9 +533,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
         # if(!oldbootstrap){
           bmdMAboot <- function(data){
             bootModelList <- lapply(modelList, function(model) try(
-              eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, type = "binomial"),
+              eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = "binomial"),
                               list(formula0 = model$call$formula, 
-                                   weights0 = model$call$weights))),
+                                   weights0 = model$call$weights,
+                                   start0 = coef(model)))),
               silent = TRUE))
             
             modelConvergenceError <- sapply(bootModelList, function(mod_try) inherits(mod_try, "try-error"))
@@ -759,9 +762,10 @@ bmdMA <- function(modelList, modelWeights, bmr,
           bmdMACurveboot <- function(data){
             bootModelList <- lapply(modelList, function(model){try(
               eval(substitute(
-                drm(formula = formula0, data = data, fct = model$fct, weights = weights0, type = model$type),
+                drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type),
                 list(formula0 = model$call$formula, 
-                     weights0 = model$call$weights))),
+                     weights0 = model$call$weights,
+                     start0 = coef(model)))),
               silent = TRUE)
             })
             
@@ -770,8 +774,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
             bootModelList <- bootModelList[!modelConvergenceError]
             bootBmdList <- lapply(bootModelList, 
                                   function(object){
-                                    bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
-                                        interval = "delta", display=FALSE)})
+                                    try(bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
+                                        interval = "delta", display=FALSE), silent = TRUE)})
             
             # Estimate weights
             if(identical(modelWeights,"AIC")){
@@ -1073,22 +1077,24 @@ bmdMA <- function(modelList, modelWeights, bmr,
             if(is.null(modelList[[1]]$call$pmodels)){
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, 
+                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, 
                       curveid = model$call$curveid, type = model$type, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula, 
                        weights0 = model$call$weights,
-                       curveid0 = model$call$curveid))),
+                       curveid0 = model$call$curveid,
+                       start0 = coef(model)))),
                 silent = TRUE)
               })
             } else {
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0,
+                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0, start = start0,
                       data = data, type = model$type, fct = model$fct, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula,
                        weights0 = model$call$weights,
                        curveid0 = model$call$curveid,
-                       pmodels0 = model$call$pmodels)
+                       pmodels0 = model$call$pmodels,
+                       start0 = coef(model))
                 )),
                 silent = TRUE)
               })
@@ -1176,22 +1182,24 @@ bmdMA <- function(modelList, modelWeights, bmr,
             if(is.null(modelList[[1]]$call$pmodels)){
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, 
-                      curveid = curveid0, type = model$type, control = drmc(noMessage = TRUE)),
+                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, 
+                      curveid = model$call$curveid, type = model$type, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula, 
                        weights0 = model$call$weights,
-                       curveid0 = model$call$curveid))),
+                       curveid0 = model$call$curveid,
+                       start0 = coef(model)))),
                 silent = TRUE)
               })
             } else {
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0,
+                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0, start = start0,
                       data = data, type = model$type, fct = model$fct, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula,
                        weights0 = model$call$weights,
                        curveid0 = model$call$curveid,
-                       pmodels0 = model$call$pmodels)
+                       pmodels0 = model$call$pmodels,
+                       start0 = coef(model))
                 )),
                 silent = TRUE)
               })
@@ -1201,8 +1209,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
             bootModelList <- bootModelList[!modelConvergenceError]
             bootBmdList <- lapply(bootModelList, 
                                   function(object){
-                                    bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
-                                        interval = "delta", display=FALSE)})
+                                    try(bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
+                                        interval = "delta", display=FALSE), silent = TRUE)})
             
             # Estimate weights
             if(identical(modelWeights,"AIC")){
@@ -1218,7 +1226,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
               bootModelWeights0 <- modelWeights[!modelConvergenceError]
             }
             
-            bootBmrScaled0 <- colSums(bootModelWeights0 * t(sapply(bootBmdList, function(x){x$bmrScaled})))
+            bootBmrScaled0 <- try(colSums(bootModelWeights0 * t(sapply(bootBmdList, function(x){x$bmrScaled[colnames(modelList[[1]]$parmMat),1]}))), silent = TRUE)
             
             bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[colnames(modelList[[1]]$parmMat),1], silent = TRUE)
             as.numeric(bootBmdEst)
@@ -1309,22 +1317,24 @@ bmdMA <- function(modelList, modelWeights, bmr,
             if(is.null(modelList[[1]]$call$pmodels)){
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, 
+                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, 
                       curveid = curveid0, type = model$type, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula, 
                        weights0 = model$call$weights,
-                       curveid0 = model$call$curveid))),
+                       curveid0 = model$call$curveid,
+                       start0 = coef(model)))),
                 silent = TRUE)
               })
             } else {
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0,
+                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0, start = start0,
                       data = data, type = model$type, fct = model$fct, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula,
                        weights0 = model$call$weights,
                        curveid0 = model$call$curveid,
-                       pmodels0 = model$call$pmodels)
+                       pmodels0 = model$call$pmodels,
+                       start0 = coef(model))
                 )),
                 silent = TRUE)
               })
@@ -1428,22 +1438,24 @@ bmdMA <- function(modelList, modelWeights, bmr,
             if(is.null(modelList[[1]]$call$pmodels)){
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, 
+                  drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0,
                       curveid = curveid0, type = model$type, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula, 
                        weights0 = model$call$weights,
-                       curveid0 = model$call$curveid))),
+                       curveid0 = model$call$curveid,
+                       start0 = coef(model)))),
                 silent = TRUE)
               })
             } else {
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
-                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0,
+                  drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0, start = start0,
                       data = data, type = model$type, fct = model$fct, control = drmc(noMessage = TRUE)),
                   list(formula0 = model$call$formula,
                        weights0 = model$call$weights,
                        curveid0 = model$call$curveid,
-                       pmodels0 = model$call$pmodels)
+                       pmodels0 = model$call$pmodels,
+                       start0 = coef(model))
                 )),
                 silent = TRUE)
               })
@@ -1453,8 +1465,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
             bootModelList <- bootModelList[!modelConvergenceError]
             bootBmdList <- lapply(bootModelList, 
                                   function(object){
-                                    bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
-                                        interval = "delta", display=FALSE)})
+                                    try(bmd(object, bmr = bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
+                                        interval = "delta", display=FALSE), silent = TRUE)})
             
             # Estimate weights
             if(identical(modelWeights,"AIC")){
@@ -1470,7 +1482,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
               bootModelWeights0 <- modelWeights[!modelConvergenceError]
             }
             
-            bootBmrScaled0 <- colSums(bootModelWeights0 * t(sapply(bootBmdList, function(x){x$bmrScaled})))
+            bootBmrScaled0 <- colSums(bootModelWeights0 * t(sapply(bootBmdList, function(x){x$bmrScaled[colnames(modelList[[1]]$parmMat),1]})))
             
             bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[colnames(modelList[[1]]$parmMat),1], silent = TRUE)
             as.numeric(bootBmdEst)

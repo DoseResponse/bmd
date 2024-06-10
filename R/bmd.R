@@ -152,7 +152,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
       # CURVES ARE FITTED INDEPENDENTLY
       bmdCall <- function(object){
         bmd(object, bmr, backgType, backg, controlSD,
-            def, respTrans, interval, sandwich.vcov, display = FALSE, level, profileGridSize, profileProgressInfo)
+            def, respTrans, interval, sandwich.vcov, display = FALSE, level = 1 + (level-1)/2, profileGridSize, profileProgressInfo)
       }
       
       bmdList <- lapply(object$objList, bmdCall)

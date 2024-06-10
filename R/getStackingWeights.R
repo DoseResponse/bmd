@@ -46,6 +46,7 @@ computeWeightsFromSplit <- function(trainData, validateData, modelList){
                                                 validateData[[as.character(model$call$curveid)]])
                          }
     )
+    predMatrix <- matrix(predMatrix, ncol = length(tmpModelList))
   }
   
   # Convex optimization over the weights using CVXR
