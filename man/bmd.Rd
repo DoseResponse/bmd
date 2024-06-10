@@ -9,9 +9,10 @@ Benchmark dose estimation
 bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
 respTrans = c("none", "log", "sqrt"),
-interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = FALSE,
-level=0.95, profileGridSize = 50, profileProgressInfo = TRUE) 
+interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE,
+level=0.95, profileGridSize = 20, profileProgressInfo = TRUE) 
 }
+
 \arguments{
   \item{object}{object of class \code{drc}}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
@@ -84,7 +85,7 @@ level=0.95, profileGridSize = 50, profileProgressInfo = TRUE)
   
   \item{profileGridSize}{integer specifying the number of grid points used for each parameter, when \code{interval} is either "profile" or "profileGridSearch". Defaults to 20 if not specified. }
   
-  \item{profileProgressInfo}{logical determining if progress info should be printed while computed profile confidence intervals using the \code{profileGrid} method. Defaults to TRUE.}
+  \item{profileProgressInfo}{logical. If TRUE, progress info is be printed while computed profile confidence intervals using the \code{profileGrid} method. Default is TRUE.}
 }
 
 \details{

@@ -1,9 +1,9 @@
-bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
+bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
                respTrans = c("none", "log", "sqrt"),
-              interval = c("delta", "inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE, level=0.95, profileGridSize, profileProgressInfo = TRUE) 
+              interval = c("delta", "inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE, level=0.95, profileGridSize = NA, profileProgressInfo = TRUE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -76,7 +76,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
                         level = level, type = "absolute", vcov. = vcov, display = FALSE)[,c("Lower", "Upper"), drop = FALSE]
       if(backgType %in% c("modelBased", "absolute") & !(def %in% c("hybridExc", "hybridAdd"))
          & substr(object$fct$name,1,2) %in% c("LL", "LN", "W1", "W2")){
-        if(missing(profileGridSize)){
+        if(is.na(profileGridSize)){
           profileGridSize <- 20
         }
         
@@ -99,7 +99,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
     }
     
   if(interval == "profileGrid"){
-    if(missing(profileGridSize)){profileGridSize <- 50}
+    if(is.na(profileGridSize)){profileGridSize <- 50}
     tmpInterval <- bmdProfileCIgrid(object, bmr = bmr, backgType = backgType, def = def, level = level,
                                     gridSize = profileGridSize, progressInfo = profileProgressInfo)
     intMat <- matrix(tmpInterval, ncol = 2)
@@ -152,7 +152,7 @@ bmd<-function (object, bmr, backgType = c("modelBased", "absolute", "hybridSD", 
       # CURVES ARE FITTED INDEPENDENTLY
       bmdCall <- function(object){
         bmd(object, bmr, backgType, backg, controlSD,
-            def, interval, sandwich.vcov, display = FALSE, level, profileGridSize, profileProgressInfo)
+            def, respTrans, interval, sandwich.vcov, display = FALSE, level = 1 + (level-1)/2, profileGridSize, profileProgressInfo)
       }
       
       bmdList <- lapply(object$objList, bmdCall)
