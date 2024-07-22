@@ -1,5 +1,5 @@
 qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "bars", "none", "obs", "confidence"), 
-                      gridsize = 100, xtrans = "pseudo_log", xlab, xlim, 
+                      gridsize = 250, xtrans = "pseudo_log", xlab, xlim, 
                       ytrans = NULL, ylab, ylim, col = FALSE,
                       normal = FALSE, normRef = 1, confidence.level = 0.95){
   object <- x
@@ -233,21 +233,41 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
   # Confidence band
   if (identical(type, "confidence"))
   {
-    confBandprLevel <- function(level0){
-      newdata <- data.frame(DOSE=dosePts, CURVE=rep(level0, length(dosePts)))
-      colnames(newdata) <- c(doseName, cNames)
-      predictMat <- predict(object,
-                            newdata=newdata,
-                            interval = "confidence",
-                            level=confidence.level)
-      
-      x <- c(dosePts, rev(dosePts))
-      y <- c(predictMat[,"Upper"], rev(predictMat[,"Lower"]))
-      
-      confBandData <- data.frame(x,y, level = as.character(level0))
-      geom_polygon(aes(x,y, 
-                       fill = eval(parse(text = colorAes)),
-                       linetype = eval(parse(text = linetypeAes))), alpha = 0.5, data = confBandData)
+    if(is.null(object$objList)){
+      confBandprLevel <- function(level0){
+        newdata <- data.frame(DOSE=dosePts, CURVE=rep(level0, length(dosePts)))
+        colnames(newdata) <- c(doseName, cNames)
+        predictMat <- predict(object,
+                              newdata=newdata,
+                              interval = "confidence",
+                              level=confidence.level)
+        
+        x <- c(dosePts, rev(dosePts))
+        y <- c(predictMat[,"Upper"], rev(predictMat[,"Lower"]))
+        
+        confBandData <- data.frame(x,y, level = as.character(level0))
+        geom_polygon(aes(x,y, 
+                         fill = eval(parse(text = colorAes)),
+                         linetype = eval(parse(text = linetypeAes))), alpha = 0.5, data = confBandData)
+      }
+    }
+    else {
+      confBandprLevel <- function(level0){
+        newdata <- data.frame(DOSE=dosePts)
+        colnames(newdata) <- c(doseName)
+        predictMat <- predict(object$objList[[level0]],
+                              newdata=newdata,
+                              interval = "confidence",
+                              level=confidence.level)
+        
+        x <- c(dosePts, rev(dosePts))
+        y <- c(predictMat[,"Upper"], rev(predictMat[,"Lower"]))
+        
+        confBandData <- data.frame(x,y, level = as.character(level0))
+        geom_polygon(aes(x,y, 
+                         fill = eval(parse(text = colorAes)),
+                         linetype = eval(parse(text = linetypeAes))), alpha = 0.5, data = confBandData)
+      }
     }
     confBandLayer <- lapply(level, confBandprLevel)
   } else {confBandLayer <- NULL}
