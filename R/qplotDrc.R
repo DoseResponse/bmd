@@ -47,7 +47,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
     assayNoOld <- as.vector(curveid)
   }
   uniAss <- unique(assayNoOld) 
-  numAss <- length(uniAss) 
+  numAss <- length(uniAss)
 
   
   doPlot <- is.null(level) || any(uniAss %in% level)
