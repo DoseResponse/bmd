@@ -323,7 +323,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             }
             
             # bootBmrScaled0 <- colSums(bootModelWeights0 * t(sapply(bootBmdList, function(x){x$bmrScaled})))
-            bootBmrScaled0 <- sum(sapply(bootBmdList, function(x){x$bmrScaled})*bootModelWeights0)
+            bootBmrScaled0 <- sum(sapply(bootBmdList, function(x){as.numeric(try(x$bmrScaled, TRUE))})*bootModelWeights0)
             
             # bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[,1], silent = TRUE)
             bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[1], silent = TRUE)
@@ -791,7 +791,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
               bootModelWeights0 <- modelWeights[!modelConvergenceError]
             }
             
-            bootBmrScaled0 <- sum(sapply(bootBmdList, function(x){x$bmrScaled})*bootModelWeights0)
+            
+            bootBmrScaled0 <- sum(sapply(bootBmdList, function(x){as.numeric(try(x$bmrScaled, TRUE))})*bootModelWeights0)
             
             bootBmdEst <- try(bmdMACurve(bootModelList,bootModelWeights0,bootBmrScaled0)$Results[1], silent = TRUE)
             as.numeric(bootBmdEst)
