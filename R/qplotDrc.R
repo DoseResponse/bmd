@@ -154,8 +154,15 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
   ## Calculating predicted values for error bars
   if (identical(type, "bars"))
   {
-    predictMat <- predict(object, interval = "confidence",
-                          level = confidence.level)[, c("Lower", "Upper")]
+    if(is.null(object$objList)){
+      predictMat <- predict(object, interval = "confidence",
+                            level = confidence.level)[, c("Lower", "Upper")]
+    } else {
+      predictMatList <- lapply(object$objList, function(x){
+        predict(x, interval = "confidence", level = confidence.level)[, c("Lower", "Upper")]
+      })
+      predictMat <- do.call(rbind, predictMatList)
+    }
 
     if(normal) {
       names(predictMat) <- seq(length(predictMat))
