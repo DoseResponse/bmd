@@ -8,7 +8,7 @@ Model-averaged benchmark dose estimation
 \usage{
 bmdMA(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),respTrans = c("none", "log", "sqrt"),
-interval = c("delta","sandwich","inv"),
+interval = c("delta","sandwich","inv", “profile”),
 type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInterval, level=0.95, stackingSeed, stackingSplits, display = TRUE, progressInfo = TRUE) 
 }
 \arguments{
@@ -63,11 +63,15 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInte
   \item{respTrans}{if the dose-response model is fitted with a transformed response, specifying this option ensures that the background level for the BMD is computed on the original scale. 
   Options include "none" (default), "log" (natural logarithm) and "sqrt"(square root).}
   
-  \item{interval}{character string specifying the type of confidence interval to use: "delta" (default), "sandwich" or "inv" 
+  \item{interval}{character string specifying the type of confidence interval to use for the individual models (no effect when type = "bootstrap" or "curve"): "delta" (default), "sandwich", "inv" or "profile"
   
   "delta" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method
   
-  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the point wise confidence interval of the dose-response curve. Not possible if type = "Buckland"}
+  "sandwich" - BMDL is based on the lower limit of a Wald confidence interval based on the delta method where the sandwich covariance matrix is used
+  
+  "inv" - BMDL is based on inverse regression, that is the dose associated with the upper limit of the point wise confidence interval of the dose-response curve. Not possible if type = "Buckland"
+  
+  "profile" - BMDL is based on the lower limit of a profile likelihood confidence interval. Not possible if type = "Buckland"}
 
   \item{type}{character string specifying how to estimate BMD and BMDL: "curve", "bootstrap", "Kang" or "Buckland" 
   
@@ -86,7 +90,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInte
   
   \item{R}{number of bootstrap samples to use. Default is 1000}
   
-  \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
+  \item{level}{numeric value specifying the level of the confidence interval underlying BMDL. Default is 0.95. Note that the full CI is also computed. The full CI has level 1-2*(1-level)}
   
   \item{stackingSeed}{integer or NULL: Random seed to use in the data split in the estimation of the Stacking Weights when \code{modelWeights = "Stack"}. The global seed is reset to the initial value after estimation of the weights, so this option does not interfere with a globally set seed.}
   
@@ -121,7 +125,7 @@ A list of three elements: Results contain the estimated BMD and BMDL, Boot.sampl
   \emph{Critical Reviews in Toxicology} \bold{32}, 133--153.
 }
 
-\author{ Signe M. Jensen
+\author{ Signe M. Jensen and Jens Riis Baalkilde
 }
 \note{
 }
