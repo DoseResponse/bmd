@@ -1,5 +1,5 @@
-bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric"){
-  if(!(bootType %in% c("nonparametric", "parametric", "model"))) cat("\n", "Error: bootType not defined", "\n")
+bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric", block){
+  if(!(bootType %in% c("nonparametric", "parametric", "model", "hierarchical"))) cat("\n", "Error: bootType not defined", "\n")
   if (bootType == "nonparametric") {
     data.e <- expandOrdinal(object)
     data.e[, "row.num"] <- 1:nrow(data.e)
@@ -62,6 +62,15 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric"){
       }
       tmp.data[[i]] <- df
     }
+  }
+  if(bootType == "hierarchical"){
+    if(missing(block)){
+      stop('Argument "block" needs to be specified for hierarchical resampling.')
+      # cat("\n", 'Argument "block" needs to be specified for hierarchical resampling.', "\n")
+      # tmp.data <- NULL
+    } 
+    tmp.data <- NULL
+    
   }
   tmp.data
 }

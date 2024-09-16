@@ -58,6 +58,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
       }
       
       if(identical(type,"Buckland")){
+        if(!(interval %in% c("delta", "sandwich"))){
+          stop('Buckland CI can only be estimated for interval type "delta" or "sandwich".')
+        }
         estBMD <- sapply(bmdList, function(x){x$Results[,1]})
         seBMD <- sapply(bmdList, function(x){x$SE})
         maBMD <- sum(modelWeights0 * estBMD)
@@ -510,6 +513,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
       }
       
       if(identical(type,"Buckland")){
+        if(!(interval %in% c("delta", "sandwich"))){
+          stop('Buckland CI can only be estimated for interval type "delta" or "sandwich".')
+        }
         estBMD <- sapply(bmdList, function(x){x$Results[,1]})
         seBMD <- sapply(bmdList, function(x){x$SE})
         maBMD <- sum(modelWeights0 * estBMD)
@@ -1051,6 +1057,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
         }
         
         if(identical(type,"Buckland")){
+          if(!(interval %in% c("delta", "sandwich"))){
+            stop('Buckland CI can only be estimated for interval type "delta" or "sandwich".')
+          }
           estBMD <- sapply(bmdList, function(x) x$Results[,1]) #sapply(bmdList, function(x){x$Results[,1]})
           seBMD <- sapply(bmdList, function(x){x$SE})
           maBMD <- colSums(modelWeights0 * t(estBMD))
@@ -1292,6 +1301,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
         }
         
         if(identical(type,"Buckland")){
+          if(!(interval %in% c("delta", "sandwich"))){
+            stop('Buckland CI can only be estimated for interval type "delta" or "sandwich".')
+          }
           estBMD <- sapply(bmdList, function(x) x$Results[,1]) #sapply(bmdList, function(x){x$Results[,1]})
           seBMD <- sapply(bmdList, function(x){x$SE})
           maBMD <- colSums(modelWeights0 * t(estBMD))

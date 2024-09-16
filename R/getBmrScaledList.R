@@ -27,6 +27,12 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
     stop(paste0('respTrans "', respTrans, '" not defined. Options are: "none", "log", and "sqrt".'))
   }
   
+  zero_one_vector <- function(onePos, vecLength){
+    vec <- numeric(vecLength)
+    vec[onePos] <- 1
+    vec
+  }
+  
   for(iCurve in 1:nCurves){
     # Vectors of parameters
     fullParmVec <- object$fct$fixed
@@ -50,9 +56,10 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
     if(slope == "increasing"){
       # BACKGROUND
       dBackground <- numeric(length(fullParmVec))
+      f0_par_ind <- which.min(fullParmVec[2:3]) + 1
       if (identical(backgType,"modelBased")) {
-        background <- fullParmVec[2] # c parameter
-        dBackground[2] <- 1
+        background <- fullParmVec[f0_par_ind]
+        dBackground[f0_par_ind] <- 1
       } else if (identical(backgType,"absolute") & !(def %in% c("relative","extra"))) {
         background <- backg
       } else if (identical(backgType,"absolute") & !(def %in% c("hybridExc","hybridAdd"))) {
@@ -70,10 +77,10 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
         }
         background <- ifelse(is.na(backg), 
                              1-pnorm(2),
-                             1-pnorm((backg-fullParmVec[2])/useSD))
-        dBackground[2] <- ifelse(is.na(backg), 
+                             1-pnorm((backg-fullParmVec[f0_par_ind])/useSD))
+        dBackground[f0_par_ind] <- ifelse(is.na(backg), 
                              0,
-                             dnorm((backg-fullParmVec[2])/useSD)/useSD)
+                             dnorm((backg-fullParmVec[f0_par_ind])/useSD)/useSD)
       } 
 
       # Apply inverse transformation to calculate bmrScaled on original scale
@@ -100,12 +107,12 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
         bmrScaled <- switch(def, 
                             relative = bmr * background + background,
                             added = bmr + background,
-                            extra = bmr*diff(fullParmVec[2:3]) + background,
+                            extra = bmr*abs(diff(fullParmVec[2:3])) + background,
                             point = bmr)
         dFullParmVec <- switch(def, 
                             relative = bmr * dBackground + dBackground,
                             added = dBackground,
-                            extra = bmr*c(0,-1,1, rep(0,length(fullParmVec)-3)) + dBackground,
+                            extra = bmr*ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))) + dBackground,
                             point = rep(0, length(fullParmVec)))
       }
       if (respType %in% c("Poisson","negbin1","negbin2") & (def %in% c("excess","additional","hybridExc","hybridAdd"))) {
@@ -119,24 +126,24 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
                              relative = bmr * background + background, 
                              added = bmr + background,
                              point = bmr,
-                             extra = bmr*diff(fullParmVec[2:3]) + background,
+                             extra = bmr*abs(diff(fullParmVec[2:3])) + background,
                              hybridAdd = useSD * 
                                (qnorm(1 - background) - qnorm(1 - (background + bmr))) + 
-                              fullParmVec[2],
+                              fullParmVec[f0_par_ind],
                              hybridExc = useSD * 
                                (qnorm(1 - background) - qnorm(1 - background - (1 - background)*bmr)) + 
-                              fullParmVec[2])
+                              fullParmVec[f0_par_ind])
         dFullParmVec <- switch(def, 
                              relative = bmr * dBackground + dBackground, 
                              added = dBackground,
                              point = rep(0, length(fullParmVec)),
-                             extra = bmr*c(0,-1,1, rep(0,length(fullParmVec)-3)) + dBackground,
+                             extra = bmr*ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))) + dBackground,
                              hybridAdd = useSD * 
                                (-dBackground/dnorm(qnorm(1 - background)) + dBackground/dnorm(qnorm(1 - (background + bmr)))) + 
-                               c(0,1, rep(0,length(fullParmVec)-2)),
+                               zero_one_vector(f0_par_ind, length(fullParmVec)),
                              hybridExc = useSD * 
                                (-dBackground/dnorm(qnorm(1 - background)) + (1-bmr)*dBackground/dnorm(qnorm(1 - background - (1 - background)*bmr))) + 
-                               c(0,1, rep(0,length(fullParmVec)-2)))
+                               zero_one_vector(f0_par_ind, length(fullParmVec)))
       }
       
       if (identical(respType, "continuous") & (def %in% c("excess", "additional"))) {
@@ -154,9 +161,11 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
     else if(slope == "decreasing"){
       # BACKGROUND
       dBackground <- numeric(length(fullParmVec))
+      f0_par_ind <- which.max(fullParmVec[2:3]) + 1
+      
       if (identical(backgType,"modelBased")) {
-        background <- fullParmVec[3] # d parameter
-        dBackground[3] <- 1
+        background <- fullParmVec[f0_par_ind] # d parameter
+        dBackground[f0_par_ind] <- 1
       } else if (identical(backgType,"absolute") & !(def %in% c("relative","extra"))) {
         background <- backg
       } else if (identical(backgType,"absolute") & !(def %in% c("hybridExc","hybridAdd"))) {
@@ -174,10 +183,10 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
         }
         background <- ifelse(is.na(backg), 
                              pnorm(-2),
-                             pnorm((backg-fullParmVec[3])/useSD))
-        dBackground[3] <- ifelse(is.na(backg), 
+                             pnorm((backg-fullParmVec[f0_par_ind])/useSD))
+        dBackground[f0_par_ind] <- ifelse(is.na(backg), 
                                  0,
-                                 -dnorm((backg-fullParmVec[3])/useSD)/useSD)
+                                 -dnorm((backg-fullParmVec[f0_par_ind])/useSD)/useSD)
       }
       
       # Apply inverse transformation to calculate bmrScaled on original scale
@@ -204,12 +213,12 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
         bmrScaled <- switch(def, 
                             relative = background - bmr * background,
                             added = background - bmr,
-                            extra = background - bmr*diff(fullParmVec[2:3]),
+                            extra = background - bmr*abs(diff(fullParmVec[2:3])),
                             point = bmr)
         dFullParmVec <- switch(def, 
                                relative = dBackground - bmr * dBackground,
                                added = dBackground,
-                               extra = dBackground - bmr*c(0,-1,1, rep(0,length(fullParmVec)-3)),
+                               extra = dBackground - bmr* ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))),
                                point = rep(0, length(fullParmVec)))
       }
       if (respType %in% c("Poisson","negbin1","negbin2") & (def %in% c("excess","additional","hybridExc","hybridAdd"))) {
@@ -223,24 +232,24 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
                             relative = background - bmr * background, 
                             added = background - bmr,
                             point = bmr,
-                            extra = background - bmr*diff(fullParmVec[2:3]),
+                            extra = background - bmr*abs(diff(fullParmVec[2:3])),
                             hybridAdd = useSD * 
                               (qnorm(background) - qnorm(background + bmr)) + 
-                              fullParmVec[3],
+                              fullParmVec[f0_par_ind],
                             hybridExc = useSD * 
                               (qnorm(background) - qnorm(bmr + (1-bmr) * background)) + 
-                              fullParmVec[3])
+                              fullParmVec[f0_par_ind])
         dFullParmVec <- switch(def, 
                                relative =  dBackground - bmr * dBackground, 
                                added = dBackground,
                                point = rep(0, length(fullParmVec)),
-                               extra = dBackground - bmr*c(0,-1,1, rep(0,length(fullParmVec)-3)),
+                               extra = dBackground - bmr*ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))),
                                hybridAdd = useSD * 
                                  (dBackground/dnorm(qnorm(background)) - dBackground/dnorm(qnorm(background + bmr))) + 
-                                 c(0,0,1, rep(0,length(fullParmVec)-3)),
+                                 zero_one_vector(f0_par_ind, length(fullParmVec)),
                                hybridExc = useSD * 
                                  (dBackground/dnorm(qnorm(background)) - (1-bmr)*dBackground/dnorm(qnorm(bmr + (1-bmr) * background))) + 
-                                 c(0,0,1, rep(0,length(fullParmVec)-3)))
+                                 zero_one_vector(f0_par_ind, length(fullParmVec)))
       }
       
       if (identical(respType, "continuous") & (def %in% c("excess", "additional"))) {

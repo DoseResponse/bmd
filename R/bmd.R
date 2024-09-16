@@ -3,7 +3,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
                def = c("excess", "additional", 
                        "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
                respTrans = c("none", "log", "sqrt"),
-              interval = c("delta", "inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE, level=0.95, profileGridSize = NA, profileProgressInfo = TRUE) 
+              interval = c("delta", "sandwich", "inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE, level=0.95, profileGridSize = NA, profileProgressInfo = TRUE) 
 {
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -23,6 +23,10 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   
   level <- 1-2*(1-level)
   
+  if(interval == "sandwich"){
+    sandwich.vcov <- TRUE
+    interval <- "delta"
+  }
   interval <- match.arg(interval)
   respTrans <- match.arg(respTrans)
   # if(!identical(respTrans, "none") & (def %in% c("hybridExc","hybridAdd"))){
@@ -37,6 +41,12 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   
   # bmrScaledList
   bmrScaledList <- getBmrScaledList(object, bmr, backgType, backg, controlSD, def, respTrans)
+  
+  fctDerivx <- object$fct$derivx
+  if(is.null(fctDerivx)){
+    fctDerivx <- getFctDerivx(object)
+    if(is.null(fctDerivx) & (interval == "delta")) stop(paste0("Derivative of dose-response curve not defined for model: ", object$fct$name, "\nDelta confidence interval not available."))
+  }
   
   # SINGLE CURVE
   if(nCurves == 1){
@@ -57,7 +67,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
       } else {
         varCov <- vcov(object)
       }
-      dBmdVal <- EDeval[[2]] + bmrScaledList$dBmrScaled[,1] / object$fct$derivx(bmdVal, t(parmMat))[1]
+      dBmdVal <- EDeval[[2]] + bmrScaledList$dBmrScaled[,1] / fctDerivx(bmdVal, t(parmMat))[1]
       bmdSEVal <- sqrt(dBmdVal %*% varCov %*% dBmdVal)
       intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
                                     level = level, object$"type", df.residual(object), FALSE)
@@ -136,7 +146,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
         
         EDeval <- EDlist(parmChosen, bmrScaled[iCurve,], type = "absolute", reference = "control") 
         bmdVal <- EDeval[[1]]
-        dBmdVal <- EDeval[[2]] + bmrScaledList$dBmrScaled[,iCurve] / object$fct$derivx(bmdVal, t(parmMat))[iCurve]
+        dBmdVal <- EDeval[[2]] + bmrScaledList$dBmrScaled[,iCurve] / fctDerivx(bmdVal, t(parmMat))[iCurve]
         bmdSEVal <- sqrt(dBmdVal %*% varCov %*% dBmdVal)
         
         if(interval == "delta"){
