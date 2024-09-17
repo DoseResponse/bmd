@@ -23,11 +23,11 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   
   level <- 1-2*(1-level)
   
+  interval <- match.arg(interval)
   if(interval == "sandwich"){
     sandwich.vcov <- TRUE
     interval <- "delta"
   }
-  interval <- match.arg(interval)
   respTrans <- match.arg(respTrans)
   # if(!identical(respTrans, "none") & (def %in% c("hybridExc","hybridAdd"))){
   #   stop(paste("Transformed response not available when using the hybrid method.", sep=""))
