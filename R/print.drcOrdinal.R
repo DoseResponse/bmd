@@ -1,12 +1,22 @@
 print.drcOrdinal <- function(object, ..., digits = max(3, getOption("digits") - 3)) 
 {
   classList <- class(object)
-  cat("\n", "A 'drcOrdinal' model.", "\n", 
-      "Levels: ", paste(object$levels, collapse = ", "), "\n",
-      "Dose: ", object$dose, "\n", 
-      "Weights: ", object$weights, "\n",
-      "Function: ", object$drmList[[1]]$fct$name, "\n\n",
-      "This 'drcOrdinal' model is composed of the following 'drc' models:", sep="")
+  if(is.null(object$blocks)){
+    cat("A 'drcOrdinal' model.", "\n", 
+        "Levels: ", paste(object$levels, collapse = ", "), "\n",
+        "Dose: ", object$dose, "\n", 
+        "Weights: ", object$weights, "\n",
+        "Function: ", object$drmList[[1]]$fct$name, "\n\n",
+        "This 'drcOrdinal' model is composed of the following 'drc' models:", sep="")
+  } else {
+    cat("A 'drcOrdinal' model.", "\n", 
+        "Levels: ", paste(object$levels, collapse = ", "), "\n",
+        "Dose: ", object$dose, "\n", 
+        "Weights: ", object$weights, "\n",
+        "Blocks: ", object$blocks, "\n",
+        "Function: ", object$drmList[[1]]$fct$name, "\n\n",
+        "This 'drcOrdinal' model is composed of the following 'drc' models:", sep="")
+  }
   
   lapply(1:length(object$drmList),
          function(i){

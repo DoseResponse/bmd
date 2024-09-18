@@ -15,6 +15,8 @@ drmOrdinal(levels, dose, weights, data, fct, p.epsilon = 10^(-16))
   
   \item{weights}{a character string specifying the column containing the number of observations pr. group}
   
+  \item{blocks}{a character string specifying the column containing the blocks of the experiment, if available (optional)}
+  
   \item{data}{a dataframe containing the observations}
   
   \item{fct}{a list with three or more elements specifying the non-linear

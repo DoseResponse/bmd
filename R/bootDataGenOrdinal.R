@@ -1,5 +1,6 @@
-bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric", block){
-  if(!(bootType %in% c("nonparametric", "parametric", "model", "hierarchical"))) cat("\n", "Error: bootType not defined", "\n")
+bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical")){
+  bootType <- match.arg(bootType)
+  
   if (bootType == "nonparametric") {
     data.e <- expandOrdinal(object)
     data.e[, "row.num"] <- 1:nrow(data.e)
@@ -64,13 +65,32 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = "nonparametric", bloc
     }
   }
   if(bootType == "hierarchical"){
-    if(missing(block)){
-      stop('Argument "block" needs to be specified for hierarchical resampling.')
+    if(is.null(object$blocks)){
+      stop('ordinal dose-response model does not include blocks. Hierarchical resampling is not possible.')
       # cat("\n", 'Argument "block" needs to be specified for hierarchical resampling.', "\n")
       # tmp.data <- NULL
     } 
-    tmp.data <- NULL
     
+    resample_fun <- function(levels, dose, weights, blocks, data){
+      data %>%
+        dplyr::mutate(row.orig = 1:n()) %>% 
+        dplyr::group_by(.data[[dose]]) %>% 
+        dplyr::slice_sample(prop = 1, weight_by = eval(parse(text=weights)), replace = TRUE) %>% 
+        tidyr::pivot_longer(levels) %>% 
+        dplyr::group_by(row.orig) %>% 
+        tidyr::uncount(value) %>% 
+        dplyr::group_by(row.orig) %>% 
+        dplyr::slice_sample(prop = 1, replace = TRUE) %>% 
+        dplyr::group_by(.data[[dose]], .data[[weights]], .data[[blocks]], row.orig) %>% 
+        dplyr::count(name) %>% 
+        dplyr::mutate(total = sum(n)) %>% 
+        tidyr::pivot_wider(names_from = name, values_from = n, values_fill = 0)
+    }
+    
+    tmp.data <- list()
+    for (i in 1:R){
+      tmp.data[[i]] <- resample_fun(object$levels, object$dose, object$weights, object$blocks, object$data)
+    }
   }
   tmp.data
 }
