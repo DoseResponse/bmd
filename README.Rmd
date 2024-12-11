@@ -1,0 +1,205 @@
+---
+title: "README"
+author: "Jens Riis Baalkilde"
+date: "December 11, 2024"
+output: 
+  md_document:
+      variant: gfm
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+
+bmd
+========================================================
+
+This is an R package for benchmark dose (BMD) estimation, which expands upon the functionality of the drc package. 
+
+This package is currently maintained by Jens Riis Baalkilde and Signe Marie Jensen, Department of Plant and Environmental Sciences, University of Copenhagen.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(drcData)
+library(drc)
+library(bmd)
+```
+
+
+Installation
+-------------------------
+
+Install the bmd package from GitHub. The bmd package works best with the drc package installed from GitHub as well.
+
+```{r installation, eval=FALSE}
+install.packages("devtools")
+devtools::install_github("DoseResponse/drcData")
+devtools::install_github("DoseResponse/drc")
+devtools::install_github("DoseResponse/bmd")
+```
+
+Key features
+-------------------------
+
+The bmd package is a natural extension of the drc package. Key features of the bmd package includes:
+
+- Benchmark dose (BMD) estimation for quantal, continuous, count and ordinal data for a wide range of definitions of BMD.
+  - A range of confidence intervals for BMD estimates, including Wald, Profile and Bootstrap intervals.
+  - BMD estimation based on model averaging.
+  - BMD estimation for multiple dose-response curves.
+- Utility functions for plotting dose-response curves and BMD estimates.
+
+Example usage
+-------------------------
+
+In the following it is demonstrated how to use the functions in the bmd package on two data sets with a continuous response variable and one data set with a quantal response.
+
+### Example 1 (secalonic)
+
+First, the data set from the drcData package is loaded, and a dose-response model is fitted. 
+
+```{r secalonic}
+data("secalonic")
+secalonic.LL.4 <- drm(rootl ~ dose, data = secalonic, fct = LL.4())
+```
+
+Users familiar with the drc package already know how straight-forward it is to plot dose-response models using the plot() function. The qplotDrc() function in the bmd package mimics the same functionality based on ggplot2. 
+
+```{r secalonic_plot}
+plot(secalonic.LL.4, main = "Secalonic model plotted by basic R plotting")
+
+qplotDrc(secalonic.LL.4) + ggplot2::labs(title = "Secalonic model plotted by ggplot2")
+```
+
+Similar to the old method of plotting dose-response curves, qplotDrc() features several options for customisation.
+```{r secalonic_plot_features}
+qplotDrc(secalonic.LL.4, type = "all")
+qplotDrc(secalonic.LL.4, type = "obs")
+qplotDrc(secalonic.LL.4, type = "bars")
+qplotDrc(secalonic.LL.4, type = "confidence")
+```
+
+
+#### Example 1: BMD estimation
+
+A wide range of BMD definitions are implemented in the bmd package. In the following, the BMD and BMDL based on the "relative risk" definition recommended by EFSA, with a BMR = 10% are computed.
+
+```{r secalonic_bmd}
+bmd(secalonic.LL.4, bmr = 0.1, backgType = "modelBased", def = "relative")
+```
+
+The default interval is a Wald type confidence interval. If a profile likelihood confidence interval is preferred, this can be specified by the "interval" argument.
+
+```{r secalonic_bmd_profile}
+bmd(secalonic.LL.4, bmr = 0.1, backgType = "modelBased", def = "relative", interval = "profile")
+```
+
+
+The current state-of-the-art definition of the BMD is the hybrid definition. In the following, the BMD and BMDL based on the "excess risk" definition based on the hybrid method with BMR = 10%, and adverse background level set to the estimated background level minus 1SD is calculated.
+
+```{r secalonic_bmd_hybrid}
+bmd(secalonic.LL.4, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc")
+```
+
+For technical reasons, profile intervals for BMD estimates based on the hybrid method, are not currently available. 
+
+#### Example 1: BMD plotting
+
+The qplotBmd() function ca be used to plot BMD along with the dose-response curve.
+
+```{r secalonic_bmd_plot}
+qplotBmd(bmd(secalonic.LL.4, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE)) # display = FALSE hides output from bmd function
+```
+
+
+#### Example 1: BMD estimation using MA
+
+An additional set of dose-response models are fitted.
+
+```{r}
+secalonic.LL.3 <- drm(rootl ~ dose, data = secalonic, fct = LL.3())
+secalonic.LN.3 <- drm(rootl ~ dose, data = secalonic, fct = LN.3())
+secalonic.LN.4 <- drm(rootl ~ dose, data = secalonic, fct = LN.4())
+secalonic.W1.3 <- drm(rootl ~ dose, data = secalonic, fct = W1.3())
+secalonic.W1.4 <- drm(rootl ~ dose, data = secalonic, fct = W1.4())
+secalonic.W2.3 <- drm(rootl ~ dose, data = secalonic, fct = W2.3())
+secalonic.W2.4 <- drm(rootl ~ dose, data = secalonic, fct = W2.4())
+
+secalonic.modelList <- list(secalonic.LL.3, secalonic.LL.4, secalonic.LN.3, secalonic.LN.4,
+                            secalonic.W1.3, secalonic.W1.4, secalonic.W2.3, secalonic.W2.4)
+```
+
+BMD can now be estimated by MA by using the function bmdMA. Type of model weights need to be specified as well as MA type. 
+
+```{r secalonic_bmdMA, warning=FALSE}
+bmdMA(secalonic.modelList, modelWeights = "AIC", type = "Buckland", bmr = 0.1, backgType = "modelBased", def = "relative")
+
+set.seed(123)
+bmdMA(secalonic.modelList, modelWeights = "AIC", type = "bootstrap", bmr = 0.1, backgType = "modelBased", def = "relative", R = 500, progressInfo = FALSE)
+bmdMA(secalonic.modelList, modelWeights = "AIC", type = "Buckland", bmr = 0.1, backgType = "hybridSD", def = "hybridExc", backg = 1)
+```
+
+
+
+
+### Example 2 (S.alba.comp, two dose-response curves)
+
+An experiment was conducted where some pots were treated with the herbicide Bentazone, and other pots were treated with Glyphosate. A model with separate curves for each herbicide is fitted as follows.
+
+```{r S.alba.comp, warning=FALSE}
+data("S.alba.comp")
+S.alba.comp.LL.4 <- drm(drymatter ~ dose, curveid = herbicide, data = S.alba.comp, fct = LL.4())
+```
+
+To plot the function, qplotDrc can be used:
+```{r S.alba.comp_plot}
+qplotDrc(S.alba.comp.LL.4)
+qplotDrc(S.alba.comp.LL.4, col = TRUE, type = "confidence") +
+  qplotDrc(S.alba.comp.LL.4, col = TRUE, type = "obs", add = TRUE)$obsLayer
+```
+
+This also illustrates how qplotDrc() can be layered to produce custom plots, by using the argument "add = TRUE", and choosing either the layer of observations ("obsLayer"), the layer with the dose-response curve ("curveLayer"), or the layer with the confidence band around the curves ("confBandLayer").
+
+#### Example 2: BMD estimation.
+
+BMD and BMDL can be estimated for the individual curves:
+
+```{r S.alba.comp_bmd}
+bmd(S.alba.comp.LL.4, bmr = 0.1, backgType = "modelBased", def = "relative")
+bmd(S.alba.comp.LL.4, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc")
+```
+
+
+### Example 3 (acute.inh, binomial response)
+
+20 animals were exposed to 4 doses of an unknown substance, 5 animals per dose. The number of dead animals for each dose were recorded. In the following, the data is loaded, and a 2-parameter is fitted to the data. Subsequently, a plot of the resulting dose-response curve is created using qplotDrc().
+
+```{r acute.inh, warning=FALSE}
+data("acute.inh")
+acute.inh.LL.2 <- drm(num.dead/total ~ dose, weights = total, data = acute.inh, fct = LL.2(), type = "binomial")
+
+qplotDrc(acute.inh.LL.2)
+```
+
+
+
+
+#### Example 3: BMD Estimation
+
+For binomial response data, the "excess" and "additional" BMD definitions are available. When the background response is $0$, they are identical:
+
+```{r acute.inh_bmd}
+bmd(acute.inh.LL.2, bmr = 0.1, backgType = "modelBased", def = "additional")
+bmd(acute.inh.LL.2, bmr = 0.1, backgType = "modelBased", def = "excess")
+```
+
+
+
+```{r acute.inh_bmd_plot}
+qplotBmd(bmd(acute.inh.LL.2, bmr = 0.1, backgType = "modelBased", def = "additional", display = FALSE)) +
+  ggplot2::scale_x_continuous(limits = c(0,2100), trans = scales::transform_pseudo_log(2000))
+```
+
+
+
+
