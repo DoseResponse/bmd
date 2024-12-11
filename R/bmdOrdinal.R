@@ -1,12 +1,28 @@
-bmdOrdinal <- function(object, bmr=0.1, backgType = "modelBased", backg = NA, def="excess", interval = "delta", level = 0.95, R = 500, bootType = "nonparametric", display = TRUE, progressInfo = TRUE){
-  bmdList <- lapply(object$drmList, function(mod) bmd(mod, bmr = bmr, backgType = backgType, backg = backg, def=def, display=FALSE))
-  BMD <- sapply(bmdList, FUN=function(x) x$Results[1])
+bmdOrdinal <- function(object, bmr=0.1, backgType = "modelBased", backg = NA, def="excess", interval = c("delta", "sandwich", "profile", "bootstrap"), level = 0.95, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical"), display = TRUE, progressInfo = TRUE){
+  interval <- match.arg(interval)
+  if(is.null(object$blocks)){
+    bootType <- match.arg(bootType)
+  } else if(length(bootType)!=1){
+    bootType <- "hierarchical"
+  }
+  if(!is.null(object$blocks)){
+    if(interval %in% c("delta", "profile")){
+      cat('interval types "delta" and "profile" not recommended for ordinal dose-response models with blocks. "sandwich" or "bootstrap" with bootType = "hierarchical" is recommended.\n')
+    }
+    if((interval == "bootstrap") & (bootType != "hierarchical")){
+      cat('bootType = "hierarchical" is recommended for ordinal dose-response models with blocks.\n')
+    }
+  }
   
-  if(interval %in% c("delta", "profile")){
+  if(interval %in% c("delta", "sandwich", "profile")){
     # CI <- bmdOrdinalDeltaCI(object = object, bmr = bmr, backgType = backgType, backg = backg, def = def, level = level)
     bmdList <- lapply(object$drmList, function(mod) bmd(mod, bmr = bmr, backgType = backgType, backg = backg, def=def, interval = interval, level = level, display=FALSE))
+    BMD <- sapply(bmdList, FUN=function(x) x$Results[1])
     CI <- t(sapply(bmdList, FUN=function(x) x$interval))
   } else if(interval == "bootstrap") {
+    bmdList <- lapply(object$drmList, function(mod) bmd(mod, bmr = bmr, backgType = backgType, backg = backg, def=def, display=FALSE))
+    BMD <- sapply(bmdList, FUN=function(x) x$Results[1])
+    
     bootData <- bootDataGenOrdinal(object, R=R, bootType = bootType)
     
     if(progressInfo){
@@ -15,7 +31,7 @@ bmdOrdinal <- function(object, bmr=0.1, backgType = "modelBased", backg = NA, de
     }
     bmdBootVal <- matrix(NA, nrow = R, ncol = length(object$levelsMerged))
     for(i in 1:R){
-      modelBoot <- suppressWarnings(try(drmOrdinal(object$levels, object$dose, object$weights, bootData[[i]], object$fct), silent = TRUE))
+      modelBoot <- suppressWarnings(try(drmOrdinal(levels = object$levels, dose = object$dose, weights = object$weights, data = bootData[[i]], fct = object$fct), silent = TRUE))
       bmdAllBoot <- try(lapply(modelBoot$drmList, function(mod) try(bmd(mod, bmr = bmr, backgType = backgType, backg = backg, def=def, display=FALSE)$Results[,1], silent = TRUE)), silent = TRUE)
       bmdBootVal[i,] <- suppressWarnings(sapply(bmdAllBoot, as.numeric))
       if(progressInfo) setTxtProgressBar(pb, i)

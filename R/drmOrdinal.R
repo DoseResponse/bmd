@@ -1,4 +1,7 @@
-drmOrdinal <- function(levels, dose, weights, data, fct, p.epsilon = 10^(-16)){
+drmOrdinal <- function(levels, dose, weights, blocks, data, fct, p.epsilon = 10^(-16)){
+  if(missing(blocks)){
+    blocks = NULL
+  }
   # list of merged levels
   levelsMerged <- list()
   for(i in 2:(length(levels))){
@@ -32,8 +35,8 @@ drmOrdinal <- function(levels, dose, weights, data, fct, p.epsilon = 10^(-16)){
   }
   
     
-  res.list <- list(drmList, levels, levelsMerged, dose, weights, data, fct, pFun)
-  names(res.list) <- c("drmList", "levels", "levelsMerged", "dose", "weights", "data", "fct", "pFun")
+  res.list <- list(drmList, levels, levelsMerged, dose, weights, blocks, data, fct, pFun)
+  names(res.list) <- c("drmList", "levels", "levelsMerged", "dose", "weights", "blocks", "data", "fct", "pFun")
   class(res.list) <- "drcOrdinal"
   
   res.list
