@@ -53,4 +53,4 @@ print(result)
   D. J. Bartholomew (1961). "Ordered tests in the analysis of variance."
   OECD (2006). Rapport No. 54, Annexes.
 }
-\keywords{monotonicity, trend test}
+\keyword{monotonicity, trend test}

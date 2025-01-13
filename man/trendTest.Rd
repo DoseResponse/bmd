@@ -53,4 +53,4 @@ print(result)
 \author{
   Jens Riis Baalkilde
 }
-\keywords{trend, statistical test}
+\keyword{trend, statistical test}
