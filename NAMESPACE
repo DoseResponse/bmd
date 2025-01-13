@@ -1,7 +1,7 @@
 import(drc, ggplot2, dplyr)
 export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, 
        getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal,
-       qplotDrc, qplotBmd, MACurve)
+       qplotDrc, qplotBmd, MACurve, monotonicityTest, trendTest)
 
 ## S3 methods
 S3method(logLik, drcOrdinal)
