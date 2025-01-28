@@ -1,7 +1,7 @@
 import(drc, ggplot2, dplyr)
 export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, 
        getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal,
-       qplotDrc, qplotBmd, MACurve, monotonicityTest, trendTest, bmdHetVar, sigmaFun)
+       qplotDrc, qplotBmd, MACurve, monotonicityTest, trendTest, bmdHetVar, drmHetVar)
 
 ## S3 methods
 S3method(logLik, drcOrdinal)
@@ -10,4 +10,4 @@ S3method(plot, drcOrdinal)
 S3method(print, drcOrdinal)
 S3method(print, bmdOrdinal)
 S3method(plot, bmd)
-S3method(plot, drc.sigma.fun)
+S3method(plot, drcHetVar)

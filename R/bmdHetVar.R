@@ -1,16 +1,11 @@
-bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"), R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE){
+bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"), R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE){
   ### Assertions ###
   # object
-  if(!identical(class(object),"drc")){
-    stop('object must be a dose-response model of class "drc" ')
+  if(!identical(class(object),"drcHetVar")){
+    stop('object must be a dose-response model with a heterogeneous variance structure of class "drcHetVar" ')
   }
-  if(length(unique(object$dataList$curveid)) != 1){
+  if(length(unique(object$model$dataList$curveid)) != 1){
     stop("dose-response models with multiple curves not supported for heteroscedasticity analysis")
-  }
-  
-  # var.formula
-  if(!identical(class(var.formula), "formula")){
-    stop('argument "formula" must be of class "formula"')
   }
   
   # bmr
@@ -38,13 +33,13 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
   level <- 1-2*(1-level)
   
   # SLOPE
-  slope <- drop(ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing"))
-  if(is.na(object$curve[[1]](0)-object$curve[[1]](Inf))){
-    slope <- drop(ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing"))
+  slope <- drop(ifelse(object$model$curve[[1]](0)-object$model$curve[[1]](Inf)>0,"decreasing","increasing"))
+  if(is.na(object$model$curve[[1]](0)-object$model$curve[[1]](Inf))){
+    slope <- drop(ifelse(object$model$curve[[1]](0.00000001)-object$model$curve[[1]](100000000)>0,"decreasing","increasing"))
   }
   
   # sigmaFun
-  sigmaFun0 <- sigmaFun(object, var.formula)
+  sigmaFun0 <- object$sigmaFun # sigmaFun(object, var.formula)
   
   # bmrScaled
   if(slope == "increasing"){
@@ -53,7 +48,7 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
       if(is.na(backg)){
         stop('backgType = absolute, but backg not supplied')
       }
-      p0 <- 1 - pnorm((backg - object$curve[[1]](0)) / sigmaFun0$ret.fun(0))
+      p0 <- 1 - pnorm((backg - object$model$curve[[1]](0)) / sigmaFun0(0))
     }
     if(identical(backgType, "hybridPercentile")) {
       p0 <- ifelse(is.na(backg),1-0.9,1-backg)
@@ -65,10 +60,10 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
     # BMRSCALED
     bmrScaled <- switch(
       def,
-      hybridExc = function(x){ sigmaFun0$ret.fun(x) * 
-          (qnorm(1 - p0) - qnorm(1 - p0 - (1 - p0)*bmr)) + object$curve[[1]](0)},
-      hybridAdd = function(x){ sigmaFun0$ret.fun(x) * 
-          (qnorm(1 - p0) - qnorm(1 - (p0 + bmr))) + object$curve[[1]](0)}
+      hybridExc = function(x){ sigmaFun0(x) * 
+          (qnorm(1 - p0) - qnorm(1 - p0 - (1 - p0)*bmr)) + object$model$curve[[1]](0)},
+      hybridAdd = function(x){ sigmaFun0(x) * 
+          (qnorm(1 - p0) - qnorm(1 - (p0 + bmr))) + object$model$curve[[1]](0)}
     ) 
   } else {
     # BACKGROUND
@@ -76,7 +71,7 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
       if(is.na(backg)){
         stop('backgType = absolute, but backg not supplied')
       }
-      p0 <- pnorm((backg - object$curve[[1]](0)) / sigmaFun0$ret.fun(0))
+      p0 <- pnorm((backg - object$model$curve[[1]](0)) / sigmaFun0(0))
     }
     if(identical(backgType, "hybridPercentile")) {
       p0 <- ifelse(is.na(backg),0.1,backg)
@@ -88,16 +83,16 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
     # BMRSCALED
     bmrScaled <- switch(
       def,
-      hybridExc = function(x){ sigmaFun0$ret.fun(x) * 
-          (qnorm(p0) - qnorm(bmr + (1-bmr) * p0)) + object$curve[[1]](0)},
-      hybridAdd = function(x){ sigmaFun0$ret.fun(x) * 
-          (qnorm(p0) - qnorm(bmr + p0)) + object$curve[[1]](0)}
+      hybridExc = function(x){ sigmaFun0(x) * 
+          (qnorm(p0) - qnorm(bmr + (1-bmr) * p0)) + object$model$curve[[1]](0)},
+      hybridAdd = function(x){ sigmaFun0(x) * 
+          (qnorm(p0) - qnorm(bmr + p0)) + object$model$curve[[1]](0)}
     ) 
   }
   
   # BMD ESTIMATION
-  f0 <- function(x) object$curve[[1]](x) - bmrScaled(x)
-  interval0 <- range(object$dataList$dose, na.rm = TRUE)
+  f0 <- function(x) object$model$curve[[1]](x) - bmrScaled(x)
+  interval0 <- range(object$model$dataList$dose, na.rm = TRUE)
   uniroot0 <- try(uniroot(f = f0, interval = interval0), silent = TRUE)
   
   if(inherits(uniroot0, "try-error")){
@@ -113,11 +108,12 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
     BMDL <- NA
     BMDU <- NA
   } else {
-    bootDataList <- bootDataGen(object, R=R, bootType="nonparametric",aggregated=TRUE)
+    bootDataList <- bootDataGen(object$model, R=R, bootType="nonparametric",aggregated=TRUE)
     
     bmdHetVarBoot <- function(bootData){
-      bootObject <- update(object, data = bootData)
-      bootBmdEst <- bmdHetVar(object = bootObject, var.formula = var.formula, bmr = bmr, 
+      bootMod <- update(object$model, data = bootData)
+      bootModHetVar <- drmHetVar(bootMod, object$var.formula)
+      bootBmdEst <- bmdHetVar(object = bootModHetVar, bmr = bmr, 
                               backgType = backgType, backg = backg, def = def, interval = "none", display = FALSE)$Results[,1]
       bootBmdEst
     }
@@ -146,7 +142,7 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
   }
   
   resMat <- matrix(c(bmdEst, BMDL), nrow = 1, ncol = 2, dimnames = list(NULL, c("BMD", "BMDL")))
-  bmrScaled <- matrix(object$curve[[1]](bmdEst), nrow = 1, ncol = 1, dimnames = list("", "bmrScaled"))
+  bmrScaled <- matrix(object$model$curve[[1]](bmdEst), nrow = 1, ncol = 1, dimnames = list("", "bmrScaled"))
   bmdInterval <- matrix(c(BMDL, BMDU), nrow = 1, ncol = 2, dimnames = list("", c("Lower", "Upper")))
   
   # GATHER RESULTS
@@ -157,7 +153,6 @@ bmdHetVar <- function(object, var.formula, bmr, backgType = c("absolute", "hybri
   resBMD<-list(Results = resMat,
                bmrScaled = bmrScaled,
                interval = bmdInterval,
-               sigmaFun = sigmaFun0,
                model = object)
   class(resBMD) <- "bmdHetVar"
   invisible(resBMD) 

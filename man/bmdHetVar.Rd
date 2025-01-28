@@ -6,14 +6,13 @@ Benchmark dose estimation with heterogeneous variance
 \description{Estimation of benchmark doses and benchmark dose lower limit based on the hybrid method from dose response model fits with the option to specify a heterogeneous variance structure, where the variance depends on the dose level and/or the fitted values
 }
 \usage{
-bmdHetVar(object, var.formula, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), 
+bmdHetVar(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), 
           backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"),
           R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
 }
 
 \arguments{
-  \item{object}{object of class \code{drc}}
-  \item{var.formula}{object of class \code{drc}}
+  \item{object}{dose-response model with a heterogeneous variance structure of class \code{drcHetVar}}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "modelBased","absolute", "hybridSD" and "hybridPercentile". For count data (Poisson, negbin1 or negbin2) the options are "modelBased" and "absolute".
 
@@ -83,27 +82,32 @@ library(bmd)
 # ryegrass data
 ryegrass.LL.4 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
 set.seed(123)
-plot(sigmaFun(ryegrass.LL.4, ~ fitted + I(fitted^2)))
-bmdHetVar(ryegrass.LL.4, var.formula = ~ fitted + I(fitted^2), bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(ryegrass.LL.4, var.formula = ~ fitted + I(fitted^2), bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+ryegrass.LL.4.hetVar <- drmHetVar(ryegrass.LL.4, ~ fitted + I(fitted^2))
+plot(ryegrass.LL.4.hetVar)
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
 
 # barley data
 barley.LL.4 <- drm(weight ~ Dose, data = barley, fct = LL.4())
 set.seed(123)
-plot(sigmaFun(barley.LL.4, ~ fitted + I(fitted^2)))
-bmdHetVar(barley.LL.4, var.formula = ~ fitted + I(fitted^2), bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(barley.LL.4, var.formula = ~ fitted + I(fitted^2), bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+barley.LL.4.hetVar <- drmHetVar(barley.LL.4, ~ fitted + I(fitted^2))
+plot(barley.LL.4.hetVar)
+bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
 
 # GiantKelp data
 GiantKelp.LL.4 <- drm(tubeLength ~ dose, data = GiantKelp, fct = LL.4())
 set.seed(123)
-plot(sigmaFun(GiantKelp.LL.4, ~ fitted + I(fitted^2)))
-bmdHetVar(GiantKelp.LL.4, var.formula = ~ fitted + I(fitted^2), bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(GiantKelp.LL.4, var.formula = ~ fitted + I(fitted^2), bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+GiantKelp.LL.4.hetVarSq <- drmHetVar(GiantKelp.LL.4, ~ fitted + I(fitted^2))
+plot(GiantKelp.LL.4.hetVarSq)
+bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
 
-plot(sigmaFun(GiantKelp.LL.4, ~ log(dose+1) + I(log(dose+1)^2) ))
-bmdHetVar(GiantKelp.LL.4, var.formula = ~ log(dose+1) + I(log(dose+1)^2), bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(GiantKelp.LL.4, var.formula = ~ log(dose+1) + I(log(dose+1)^2), bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+GiantKelp.LL.4.hetVarLogSq <- drmHetVar(GiantKelp.LL.4, ~ log(dose+1) + I(log(dose+1)^2))
+plot(GiantKelp.LL.4.hetVarLogSq)
+bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+
 
 
 }
