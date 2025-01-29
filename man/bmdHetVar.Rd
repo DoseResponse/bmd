@@ -1,5 +1,5 @@
-\name{bmd}
-\alias{bmd}
+\name{bmdHetVar}
+\alias{bmdHetVar}
 \title{
 Benchmark dose estimation with heterogeneous variance
 }

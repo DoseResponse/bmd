@@ -5,6 +5,11 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
                respTrans = c("none", "log", "sqrt"),
               interval = c("delta", "sandwich", "inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE, level=0.95, profileGridSize = NA, profileProgressInfo = TRUE) 
 {
+  if (missing(object)){
+    stop(paste("object is missing", sep=""))
+  } else {
+    if(!inherits(object, "drc")){ stop('object must be of type "drc"')}
+  }
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
   }

@@ -1,3 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 cache/
+README.Rmd
+README.md
+README_files/

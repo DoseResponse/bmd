@@ -1,5 +1,5 @@
-\name{bmd}
-\alias{bmd}
+\name{drmHetVar}
+\alias{drmHetVar}
 \title{
 Dose response modeling with heterogeneous variance
 }

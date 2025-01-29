@@ -7,7 +7,12 @@ Author: Signe M.Jensen, Christian Ritz and Jens Riis Baalkilde
 Maintainer: Signe M. Jensen <smj@plen.ku.dk>
 Description: Benchmark dose analysis for continuous, quantal, count and ordinal dose-response data
 Imports: drc, ggplot2, dplyr
-Suggests: CVXR, multcomp, gridExtra
+Suggests: 
+    CVXR,
+    multcomp,
+    gridExtra,
+    testthat (>= 3.0.0)
 License: GPL
 Encoding: UTF-8
 LazyData: true
+Config/testthat/edition: 3
