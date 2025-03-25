@@ -1,5 +1,8 @@
 plot.drcHetVar <- function(object, gridsize = 300){
   # Add assertion of gridExtra
+  if(!require("gridExtra")){
+    stop('package "gridExtra" must be installed to plot drcHetVar object')
+  }
   
   dName <- colnames(object$data.agg)[2]
   

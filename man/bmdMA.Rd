@@ -8,7 +8,7 @@ Model-averaged benchmark dose estimation
 \usage{
 bmdMA(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
 def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),respTrans = c("none", "log", "sqrt"),
-interval = c("delta","sandwich","inv", “profile”),
+interval = c("delta","sandwich","inv", "profile"),
 type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInterval, level=0.95, stackingSeed, stackingSplits, display = TRUE, progressInfo = TRUE) 
 }
 \arguments{

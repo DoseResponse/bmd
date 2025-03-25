@@ -8,7 +8,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   if (missing(object)){
     stop(paste("object is missing", sep=""))
   } else {
-    if(!inherits(object, "drc")){ stop('object must be of type "drc"')}
+    if(!inherits(object, "drc")){ stop('object must be of class "drc"')}
   }
   if (missing(def)) {
     stop(paste("def is missing", sep=""))
@@ -33,10 +33,18 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
     sandwich.vcov <- TRUE
     interval <- "delta"
   }
+  if(sandwich.vcov & !require("sandwich")){
+    stop('package "sandwich" must be installed to compute sandwich confidence intervals')
+  }
   respTrans <- match.arg(respTrans)
-  # if(!identical(respTrans, "none") & (def %in% c("hybridExc","hybridAdd"))){
-  #   stop(paste("Transformed response not available when using the hybrid method.", sep=""))
-  # }
+  
+  if(class(object$fct) == "braincousens" & is.null(object$fct$fixed)){
+    if(object$fct$name == "BC.4"){
+      object$fct$fixed <- c(NA, 0, NA, NA, NA)
+    } else if(object$fct$name == "BC.5"){
+      object$fct$fixed <- c(NA, NA, NA, NA, NA)
+    }
+  }
   
   # Extract information from model
   # EDlist <- object$fct[["edfct"]] # Change after drc package has been updated with with edfct 
@@ -68,7 +76,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
     
     if(interval == "delta"){
       if(sandwich.vcov){
-        varCov <- sandwich(object)
+        varCov <- sandwich::sandwich(object)
       } else {
         varCov <- vcov(object)
       }
@@ -81,6 +89,10 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
       slope <- drop(ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing"))
       if(is.na(object$curve[[1]](0)-object$curve[[1]](Inf))){
         slope <- drop(ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing"))
+      }
+      # useSD
+      if(def %in% c("hybridAdd","hybridExc")){
+        useSD <- ifelse(!is.na(controlSD),controlSD,sqrt(summary(object)$resVar))
       }
       
       intMat <- invBmd(object, bmr, level = level, slope=slope, backgType=backgType,
@@ -131,7 +143,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
       # CURVES ARE NOT FITTED INDEPENDENTLY
       curveNames <- colnames(parmMat)
       if(sandwich.vcov){
-        vcMat <- sandwich(object)
+        vcMat <- sandwich::sandwich(object)
       } else {
         vcMat <- vcov(object)
       }

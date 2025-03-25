@@ -1,4 +1,8 @@
 plot.drcOrdinal <- function(object, col_pal = NULL, xlim = NULL){
+  if(!require("scales")){
+    stop('package "scales" must be installed to plot drcOrdinal object')
+  }
+  
   if(is.null(col_pal)){
     col_pal <- scales::grey_pal(start = 0.9, end = 0)(length(object$levels))
   }

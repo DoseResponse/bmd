@@ -1,13 +1,13 @@
-MACurve <- function(x, modelList, modelWeights, stackingSeed = 1){
+MACurve <- function(x, modelList, modelWeights, stackingSeed = 1, stackingSplits = 2){
   
   
   # compute weights
   if(identical(modelWeights,"AIC")){
-    modelWeights0<-exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC))))/
-      sum(exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC)))))
+    modelWeights0<-exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC)))/2)/
+      sum(exp(-(sapply(modelList,AIC)-min(sapply(modelList,AIC)))/2))
   } else if(identical(modelWeights,"BIC")){
-    modelWeights0<-exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC))))/
-      sum(exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))))
+    modelWeights0<-exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))/2)/
+      sum(exp(-(sapply(modelList,BIC)-min(sapply(modelList,BIC)))/2))
   } else if(identical(modelWeights, "Stack")){
     # If stackingSeed supplied, save initial seed for later, and set seed for stacking
     if (!is.null(stackingSeed)) {
@@ -16,7 +16,7 @@ MACurve <- function(x, modelList, modelWeights, stackingSeed = 1){
     }
     
     # estimate weights
-    modelWeights0 <- getStackingWeights(modelList)
+    modelWeights0 <- getStackingWeights(modelList, nSplits = stackingSplits)
     
     # If stackingSeed supplied, restore initial seed
     if (!is.null(stackingSeed)) {

@@ -11,6 +11,10 @@ drmHetVar <- function(object, var.formula){
     stop('argument "formula" must be of class "formula"')
   }
   
+  if(!require("dplyr")){
+    stop('package "dplyr" must be installed to fit dose-response model with heterogeneous variance')
+  }
+  
   # Add fitted values and residuals to data
   data <- object$data |>
     dplyr::mutate(fitted = fitted(object),

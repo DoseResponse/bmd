@@ -21,13 +21,18 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
   
   # backgType
   if (missing(backgType)) {
-    stop(paste("backgType is missing", sep=""))
-  }
-  if (!(def %in% c("hybridExc", "hybridAdd"))) {
-    stop(paste("Could not recognize def", sep=""))
+    stop('backgType is missing. Options are "absolute", "hybridSD" or "hybridPercentile"')
   }
   if (!(backgType %in% c("absolute","hybridSD","hybridPercentile"))) {
-    stop(paste("Could not recognize backgType", sep=""))
+    stop('Could not recognize backgType. Options are "absolute", "hybridSD" or "hybridPercentile"')
+  }
+  
+  # def
+  if(missing(def)){
+    stop('def is missing. Options are "hybridExc" or "hybridAdd"')
+  }
+  if(!def %in% c("hybridExc", "hybridAdd")){
+    stop('Could not recognize def. Options are "hybridExc" or "hybridAdd"')
   }
   
   level <- 1-2*(1-level)

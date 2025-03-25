@@ -1,6 +1,13 @@
 bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical")){
   bootType <- match.arg(bootType)
   
+  if(!require("reshape2")){
+    stop('package "reshape2" must be installed to use bootstrapping with ordinal dose-response model')
+  }
+  if(!require("dplyr")){
+    stop('package "dplyr" must be installed to use bootstrapping with ordinal dose-response model')
+  }
+  
   if (bootType == "nonparametric") {
     data.e <- expandOrdinal(object)
     data.e[, "row.num"] <- 1:nrow(data.e)

@@ -7,17 +7,59 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
                     respTrans = c("none", "log", "sqrt"),
                     bootInterval = c("percentile","BCa"),
                     display=TRUE, level=0.95){
+  # Assertions
+  if (missing(object)){
+    stop(paste("object is missing", sep=""))
+  } else {
+    if(!inherits(object, "drc")){ stop('object must be of class "drc"')}
+  }
+  if (missing(def)) {
+    stop(paste("def is missing", sep=""))
+  }
+  if(def=="point"){
+    backgType <- "modelBased"
+  } 
+  if (missing(backgType)) {
+    stop(paste("backgType is missing", sep=""))
+  }
+  if (!(def %in% c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"))) {
+    stop(paste("Could not recognize def", sep=""))
+  }
+  if (!(backgType %in% c("modelBased","absolute","hybridSD","hybridPercentile"))) {
+    stop(paste("Could not recognize backgType", sep=""))
+  }
+  
   if (identical(object$type,"binomial") & bootType=="semiparametric") {
-    stop(paste("\"Semiparametric bootstrap does not work for quantal data\"", sep=""))
+    stop(paste("\"Semiparametric bootstrap does not work for quantal data", sep=""))
   }
   if (object$type %in% c("Poisson","negbin1","negbin2") & bootType!="nonparametric") {
-    stop(paste("\"",object$type,"\" only works with nonparametric bootstrap\"", sep=""))
+    stop(paste("\"",object$type,"\" only works with nonparametric bootstrap", sep=""))
   }
+  
+  respTrans <- match.arg(respTrans)
+  
+  if(class(object$fct) == "braincousens" & is.null(object$fct$fixed)){
+    if(object$fct$name == "BC.4"){
+      object$fct$fixed <- c(NA, 0, NA, NA, NA)
+    } else if(object$fct$name == "BC.5"){
+      object$fct$fixed <- c(NA, NA, NA, NA, NA)
+    }
+  }
+  
+  # Set level
+  level <- 1-2*(1-level)
+  
+  # bmd on original data
+  bmd0 <- bmd(object = object, bmr = bmr, backgType = backgType,
+              backg=backg, controlSD=controlSD, def = def, respTrans = respTrans,
+              interval = "delta", display = FALSE)
   
   get.drm.list <- function(tmp.data){
     if(ncol(object$parmMat) == 1){
       drm.list.tmp <- lapply(tmp.data, function(x){
-        try(drm(object$call$formula, data = x, type = object$type, fct = object[["fct"]]), TRUE)
+        try(eval(substitute(drm(formula0, data = x, type = object$type, fct = object[["fct"]]),
+                            list(formula0 = object$call$formula)
+                            )), TRUE)
       }
       )
     } else if(is.null(object$call$pmodels)){
@@ -39,9 +81,10 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
           x[[as.character(object$call$curveid)]] <- x[[paste0("orig.", as.character(object$call$curveid))]]
         }
         try(
-          eval(substitute(drm(object$call$formula, weights = weights0, curveid = curveid0,pmodels = pmodels0,
+          eval(substitute(drm(formula0, weights = weights0, curveid = curveid0,pmodels = pmodels0,
                               data = x, type = object$type, fct = object$fct, control = drmc(noMessage = TRUE)),
-                          list(weights0 = object$call$weights,
+                          list(formula0 = object$call$formula,
+                               weights0 = object$call$weights,
                                curveid0 = object$call$curveid,
                                pmodels0 = object$call$pmodels)
           )),
@@ -69,7 +112,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
     drm.list  <- drm.list.tmp[list.condition]
     
     bmd.list.try <- lapply(drm.list,get.bmd)
-    bmd.list <- bmd.list.try[!sapply(bmd.list.try, function(x) any(is.na(x)))]
+    bmd.list <- suppressWarnings(bmd.list.try[!sapply(bmd.list.try, function(x) any(is.na(as.numeric(x))))])
   }
   
   if (object$type %in% c("Poisson","negbin1","negbin2")) {
@@ -169,12 +212,13 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       
       jackData <- list()
       for(i in 1:(dim(data.e)[1])){
-        jackData[[i]] <- data.e[-i,]
+        # jackData[[i]] <- data.e[-i,]
+        jackData[[i]] <- df[-i,]
       }
       
-      bootJack.drm.tmp <- lapply(jackData, function(x){
-        try(drm(number~dose, data = x, type = "binomial", fct = object[["fct"]]),TRUE)
-      })
+      # bootJack.drm.tmp <- lapply(jackData, function(x){
+      #   try(drm(as.formula(paste0("number~", as.character(object$call$formula[[3]]))), data = x, type = "binomial", fct = object[["fct"]]),TRUE) # number~dose
+      # })
       bootJack.drm.tmp <- get.drm.list(jackData)
       list.condition <- sapply(bootJack.drm.tmp, function(x) class(x)=="drc")
       bootJack.drm<- bootJack.drm.tmp[list.condition]
@@ -194,9 +238,9 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       
       use.bmd <- get.bmd(object)
       if(ncol(object$parmMat)==1){
-        BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = object$data, unlist(bmd.list), unlist(bootJack.list), level=level)[1])
+        BCaBMDL <- as.numeric(BCa(obs = use.bmd, data = df, unlist(bmd.list), unlist(bootJack.list), level=level)[1])
       } else {
-        BCaBMDL <- sapply(1:ncol(object$parmMat), function(i) as.numeric(BCa(obs = use.bmd[i], data = object$data, 
+        BCaBMDL <- sapply(1:ncol(object$parmMat), function(i) as.numeric(BCa(obs = use.bmd[i], data = df, 
                                                                              sapply(bmd.list, function(x) x[i]), 
                                                                              sapply(bootJack.list, function(x) x[i]), level = level)[1]))
       }
@@ -240,7 +284,11 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
     }
   }
   if(bmdType == "orig"){
-    use.bmd <- get.bmd(object) # bmd(object, bmr = bmr, backgType = backgType, backg=backg, def=def, controlSD=controlSD, respTrans = respTrans, display=FALSE, level=level)[["Results"]][,1]
+    if(ncol(object$parmMat) == 1){
+      use.bmd <- bmd0[["Results"]][1]
+    } else {
+      use.bmd <- bmd0[["Results"]][colnames(object$parmMat), 1]
+    }
   } else if(bmdType == "mean"){
     if(ncol(object$parmMat) == 1){
       use.bmd <- mean(unlist(bmd.list))
@@ -282,18 +330,25 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   if(ncol(object$parmMat) == 1){
     rownames(resMat) <- c("")
     rownames(intMat) <- c("")
+    bootEst = unlist(bmd.list)
+    used.Boot <- sum(!is.na(bootEst))
   } else {
     rownames(resMat) <- colnames(object$parmMat)
     rownames(intMat) <- colnames(object$parmMat)
+    bootEst <- matrix(unlist(bmd.list), byrow = TRUE, ncol = ncol(object$parmMat), dimnames = list(NULL, colnames(object$parmMat)))
+    used.Boot <- sum(sapply(bmd.list, function(x) all(!is.na(x))))
   }
   
   if(display){
     print(resMat)
   }
   
+  used.Boot <- sum(sapply(bmd.list, function(x) all(!is.na(x))))
+  
   resBMD<-list(Results = resMat,
-               bootEst = unlist(bmd.list),
-               Interval = intMat)
+               Boot.samples.used = used.Boot,
+               bootEst = bootEst,
+               interval = intMat)
   class(resBMD) <- "bmd"
   invisible(resBMD)
 }
