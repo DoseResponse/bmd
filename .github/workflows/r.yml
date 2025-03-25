@@ -47,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: |
           install.packages(c("sandwich", "CVXR", "multcomp", "gridExtra", "isotone", 
-          "reshape2", "dplyr", "car", "Matrix", "RLRsim", "scales"))
+          "reshape2", "dplyr", "car", "Matrix", "RLRsim", "scales", "remotes"))
           remotes::install_github("doseresponse/drcData")
           remotes::install_github("doseresponse/drc")
         shell: Rscript {0}
