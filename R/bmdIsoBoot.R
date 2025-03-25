@@ -67,11 +67,11 @@ bmdIsoBoot <- function(object, data, type, bmr, R=1000, boot="resample",
     bmdIso(object, data=x, type=type, bmr = bmr, backgType = backgType, backg=backg,def=def)})
   
     resMat <- matrix(NA,1,2)
-    resMat[1,] <- quantile(unlist(bmd.list),c(0.5,0.05))
+    resMat[1,1] <- bmdIso(object, data=data, type=type, bmr = bmr, backgType = backgType, backg=backg,def=def) # quantile(unlist(bmd.list),0.5)
+    resMat[1,2] <- quantile(unlist(bmd.list),0.05)
     colnames(resMat) <- c("BMD", "BMDL")
     rownames(resMat) <- c("")
     cat("\n\n")
     resMat    
-   
 }
 

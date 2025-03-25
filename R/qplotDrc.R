@@ -77,27 +77,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
     xLimits0 <- pmax(xLimits, 1e-8)
   }
   
-  # Handling small dose values
-  ## Constructing appropriate break on dose axis
-  # if (!is.null(logDose))  # natural logarithm
-  # {
-  #   conLevel <- round(min(dose[is.finite(dose)])) - 1
-  # } else {
-  #   log10cl <- round(log10(min(dose[dose > 0]))) - 1
-  #   conLevel <- 10^(log10cl)
-  # }
-  # 
-  # if ((xLimits[1] < conLevel) && (logX || (!is.null(logDose))))
-  # {
-  #   xLimits[1] <- conLevel
-  #   smallDoses <- (dose < conLevel)
-  #   dose[smallDoses] <- conLevel
-  # }
-  # if (xLimits[1] >= xLimits[2]) {stop("Argument 'conLevel' is set too high")}
-
-  ## Constructing dose values for plotting
-  #    if (doseDim == 1) 
-  #    {
+  # Constructing dose values for plotting
   if ((is.null(logDose)) && (logX))
   {
     dosePts <- c(0,exp(seq(log(xLimits0[1]), log(xLimits0[2]), length = gridsize-1)))

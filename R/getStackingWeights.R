@@ -201,6 +201,10 @@ getDataSplits <- function(object, nSplits){
 }
 
 getStackingWeights <- function(modelList, nSplits = 2){
+  if(!require("CVXR")){
+    stop('package "CVXR" must be installed to estimate stacking weights')
+  }
+  
   if(nSplits %in% c("LOO")){
     nSplits <- ifelse(modelList[[1]]$type == "binomial", sum(modelList[[1]]$data$weights), modelList[[1]]$sumList$lenData)
   } else if(!is.numeric(nSplits)){

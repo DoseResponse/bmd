@@ -91,6 +91,7 @@ bmdProfileCIgrid <- function(object, bmr, backgType = c("modelBased", "absolute"
     names(object0$coefficients) <- coefNames
     object0$curve[[1]] <- object$pfFct(parmMat = matrix(par, nrow = 1))
     object0$parmMat <- matrix(par, nrow = length(par))
+    colnames(object0$parmMat) <- 1
     
     bmd(object0, bmr = bmr, backgType = backgType, backg = backg, controlSD = controlSD, def = def, interval = "delta", display = FALSE)
   }
