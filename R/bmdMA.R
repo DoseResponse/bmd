@@ -101,7 +101,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         bmdMAboot <- function(data){
           bootModelList <- lapply(modelList, function(model) try(
-            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0),
+            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0,
+                                control = drmc(noMessage = TRUE)),
                             list(formula0 = model$call$formula, 
                                  weights0 = model$call$weights,
                                  start0 = coef(model)))),
@@ -185,7 +186,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         bmdMACurveboot <- function(data){
           bootModelList <- lapply(modelList, function(model){try(
             eval(substitute(
-              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type),
+              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type,
+                  control = drmc(noMessage = TRUE)),
               list(formula0 = model$call$formula, 
                    weights0 = model$call$weights,
                    start0 = coef(model)))),
@@ -306,7 +308,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         bmdMAboot <- function(data){
           bootModelList <- lapply(modelList, function(model) try(
-            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = "binomial"),
+            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = "binomial",
+                                control = drmc(noMessage = TRUE)),
                             list(formula0 = model$call$formula, 
                                  weights0 = model$call$weights,
                                  start0 = coef(model)))),
@@ -403,7 +406,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
         bmdMACurveboot <- function(data){
           bootModelList <- lapply(modelList, function(model){try(
             eval(substitute(
-              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type),
+              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type,
+                  control = drmc(noMessage = TRUE)),
               list(formula0 = model$call$formula, 
                    weights0 = model$call$weights,
                    start0 = coef(model)))),

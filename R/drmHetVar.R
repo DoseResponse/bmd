@@ -1,58 +1,117 @@
-drmHetVar <- function(object, var.formula){
-  # Assertions
-  if(!class(object) == "drc"){
-    stop('object must be a dose-response model of class "drc" ')
-  }
-  if(length(unique(object$dataList$curveid)) != 1){
-    stop("dose-response models with multiple curves not supported for heteroscedasticity analysis")
+drmHetVar <- function(formula, var.formula, data, fct) {
+  call <- match.call()
+  
+  if(class(formula) != "formula"){
+    stop('argument "formula" must be of class "formula"')
   }
   
   if(class(var.formula) != "formula"){
-    stop('argument "formula" must be of class "formula"')
+    stop('argument "var.formula" must be of class "formula"')
+  }
+  
+  if(missing(data)){
+    stop('argument "data" must be supplied')
+  }
+  
+  if(missing(fct)){
+    stop('argument "fct" must be supplied')
   }
   
   if(!require("dplyr")){
     stop('package "dplyr" must be installed to fit dose-response model with heterogeneous variance')
   }
   
-  # Add fitted values and residuals to data
-  data <- object$data |>
-    dplyr::mutate(fitted = fitted(object),
-                  residuals = residuals(object))
+  # Extract response and dose
+  mf <- model.frame(formula, data)
+  mf <- mf[complete.cases(mf),]
+  rName <- as.character(formula)[2]
+  dName <- as.character(formula)[3]
+  resp <- mf[[rName]]
+  dose <- mf[[dName]]
   
-  # Aggregate data
-  data.agg <- data |>
-    dplyr::group_by(fitted) |>
-    dplyr::summarise(dose0 = mean(.data[[object$dataList$names$dName]]),
-                     sigma0 = sqrt(mean(residuals^2)))
-  colnames(data.agg)[2] <- object$dataList$names$dName
+  dataList <- list(dose = dose, resp = resp, names = list(dName = dName, rName = rName))
   
+  # Define curve function (mean)
+  curveFun <- function(x, par) {
+    fct$fct(x, t(par))
+  }
   
-  formula <- as.formula(var.formula)
-  formula0 <- reformulate(attr(terms(formula), "term.labels"), response = "sigma0")
+  # Define tau function constructor
+  makeTauFun <- function(var.formula) {
+    function(x, tauPar, curvePar) {
+      fitted <- curveFun(x, curvePar)
+      env <- data.frame(x = x, "fitted" = fitted)
+      colnames(env)[1] <- dName
+      design_matrix <- model.matrix(var.formula, data = env)
+      as.vector(design_matrix %*% tauPar)
+    }
+  }
   
-  sigma.mod <- lm(formula0, data = data.agg)
+  # Build tau function
+  tauFun <- makeTauFun(var.formula)
   
-  sigma.fun <- function(x){
-    newdata0 <- data.frame(dose0 = x, fitted = object$curve[[1]](x))
-    colnames(newdata0)[1] <- object$dataList$names$dName
+  # Total number of parameters:
+  # - Mean model (from fct, usually fixed length)
+  # - Variance model (length depends on model matrix)
+  # tmp_design_matrix <- model.matrix(var.formula, data = data.frame(dName = dose, "fitted" = resp))
+  # n_var_par <- ncol(tmp_design_matrix)
+  n_mean_par <- sum(is.na(fct$fixed)) # length(fct$names)
+  
+  # Negative log-likelihood
+  negLogLik <- function(par) {
+    curvePar <- par[1:n_mean_par]
+    tauPar <- par[-(1:n_mean_par)] 
     
-    predict(sigma.mod, newdata0)
+    mu <- curveFun(dose, curvePar)
+    sigma <- tauFun(dose, tauPar, curvePar)
+    sigmaSq <- sigma^2
+    
+    if (any(sigma <= 0)) return(1e10)  # enforce positivity
+    
+    sum(log(sigmaSq)) + sum( (resp - mu)^2 / sigmaSq)
   }
   
-  # Checking for roots.
-  # NOT STABLE IF THERE ARE MULTIPLE ROOTS IN DOSE RANGE!
-  interval0 <- range(data[[object$dataList$names$dName]], na.rm = TRUE)
-  root.try <- try(uniroot(ret.fun, 
-                          interval = interval0), silent = TRUE)
+  # Initial values (somewhat naive)
+  # start_curve <- coef(drm(formula, data = data, fct = fct)) # rep(mean(y), n_mean_par)
+  # start_tau <- rep(sd(y), n_var_par)
+  # start <- c(start_curve, 0.05)# start_tau)
+  start <- unlist(drmHetVarSelfStarter(formula, var.formula, data, fct))
   
-  if(!inherits(root.try, "try-error")){
-    stop("Root detected in variance function. Choose a different model for the variance. \n")
-  }
+  fit <- optim(start, negLogLik, method = "BFGS", hessian = TRUE)
   
-  # Return object
-  ret.list <- list(model = object, sigmaFun = sigma.fun, var.formula = var.formula, sigmaMod = sigma.mod, data.agg = data.agg)
-  class(ret.list) <- "drcHetVar"
-  ret.list
+  # Unpack results
+  curvePar <- fit$par[1:n_mean_par]
+  names(curvePar) <- fct$names
+  sigmaPar <- fit$par[-(1:n_mean_par)]
+  tmp_env <- data.frame(dName = dose, "fitted" = resp)
+  colnames(tmp_env)[1] <- dName
+  names(sigmaPar) <- colnames(model.matrix(var.formula, data = tmp_env))
+  
+  # Define sigmaFun
+  curve <- function(x) curveFun(x, par = curvePar)
+  sigmaFun <- function(x) tauFun(x, tauPar = sigmaPar, curvePar = curvePar)
+  
+  # Output
+  object <- list(
+    curvePar = curvePar,
+    sigmaPar = sigmaPar,
+    value = fit$value,
+    convergence = fit$convergence,
+    message = fit$message,
+    hessian = fit$hessian,
+    curve = curve,
+    sigmaFun = sigmaFun,
+    formula = formula,
+    var.formula = var.formula,
+    fct = fct,
+    data = data,
+    dataList = dataList,
+    call = call,
+    fitted.values = curveFun(dose, fit$par[1:n_mean_par]),
+    residuals = resp - curveFun(dose, fit$par[1:n_mean_par])
+  )
+  
+  class(object) <- c("drcHetVar", "drc")
+  
+  return(object)
 }
-

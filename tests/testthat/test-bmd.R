@@ -14,6 +14,9 @@
 # - TCDD model (binomial)
 #   - correct bmd estimate (excess + additional)
 #   - delta and inv intervals
+# - Chlorac model (binomial)
+#   - correct bmd estimate (excess + additional)
+#   - delta, profile and inv intervals
 # - Lemna model (count)
 #   - correct bmd estimate (all definitions)
 #   - delta, inv and profile intervals
@@ -26,6 +29,7 @@
 # - Decreasing binomial model with multiple curves
 #   - correct bmd estimate (point, extra, hybridExc)
 #   - delta
+# - Meta analytic model (drmMMRE)
 
 
 # Arguments and structure -------------------------------------------------
@@ -725,6 +729,142 @@ test_that("bmd function computes BMD (additional) correctly for TCDD model", {
 
 
 
+# Chlorac results ---------------------------------------------------------
+
+test_that("bmd function computes BMD (point) correctly for Chlorac model", {
+  object0 <- drm(num.dead/total ~ conc, weights = total, data = drcData::chlorac, fct = LN.3u(), type = "binomial")
+  
+  result <- bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", display = FALSE)
+  resultSandwich <- bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
+  resultProfile <- suppressWarnings(bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", interval = "profile", display = FALSE))
+  resultProfileGrid <- suppressWarnings(bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", interval = "profileGrid", profileGridSize = 20, profileProgressInfo = FALSE, display = FALSE))
+  expect_error(bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", interval = "inv", display = FALSE),
+               "Inverse regression not possible for def=point")
+  
+  # Expected results based on manual calculation (checked in v2.6.7)
+  # result
+  expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
+  expect_true(!is.na(result$Results[1, "BMD"]))
+  expect_equal(result$Results[1, "BMD"], 22.2271415904074)
+  expect_equal(result$bmrScaled[1,1], 0.22)
+  expect_equal(unname(result$interval[1,]), c(18.292131969707,26.1621512111078))
+  
+  # resultSandwich
+  expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
+  expect_equal(resultSandwich$Results[1, "BMD"], 22.2271415904074)
+  expect_equal(resultSandwich$bmrScaled[1,1], 0.22)
+  expect_equal(unname(resultSandwich$interval[1,]), c(21.7141651046908,22.740118076124))
+  expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
+  
+  # resultProfile
+  expect_true(!is.na(resultProfile$Results[1, "BMD"]))
+  expect_equal(resultProfile$Results[1, "BMD"], 22.2271415904074)
+  expect_equal(resultProfile$bmrScaled[1,1], 0.22)
+  expect_equal(unname(resultProfile$interval[1,]), c(19.0428644039017,39.9999389661972))
+  
+  # resultProfileGrid
+  expect_true(!is.na(resultProfileGrid$Results[1, "BMD"]))
+  expect_equal(resultProfileGrid$Results[1, "BMD"], 22.2271415904074)
+  expect_equal(resultProfileGrid$bmrScaled[1,1], 0.22)
+  expect_equal(unname(resultProfileGrid$interval[1,]), c(19.2099579670753,28.9585965214678))
+})
+
+test_that("bmd function computes BMD (excess) correctly for Chlorac model", {
+  object0 <- drm(num.dead/total ~ conc, weights = total, data = drcData::chlorac, fct = LN.3u(), type = "binomial")
+  
+  result <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", display = FALSE)
+  resultSandwich <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
+  resultInv <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", interval = "inv", display = FALSE)
+  resultProfile <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", interval = "profile", display = FALSE)
+  resultProfileGrid <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", interval = "profileGrid", profileGridSize = 20, profileProgressInfo = FALSE, display = FALSE)
+  
+  # Expected results based on manual calculation (checked in v2.6.7)
+  # result
+  expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
+  expect_true(!is.na(result$Results[1, "BMD"]))
+  expect_equal(result$Results[1, "BMD"], 19.7922909180127)
+  expect_equal(result$bmrScaled[1,1], 0.144988275510254)
+  expect_equal(unname(result$interval[1,]), c(15.1507479878497,24.4338338481757))
+  
+  # resultSandwich
+  expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
+  expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
+  expect_equal(resultSandwich$Results[1, "BMD"], 19.7922909180127)
+  expect_equal(resultSandwich$bmrScaled[1,1], 0.144988275510254)
+  expect_equal(unname(resultSandwich$interval[1,]), c(18.5884627205015,20.9961191155239))
+  
+  # resultInv
+  expect_equal(resultInv$bmrScaled[1,1], drop(object0$curve[[1]](resultInv$Results[1, "BMD"])))
+  expect_true(!is.na(resultInv$Results[1, "BMD"]))
+  expect_equal(resultInv$Results[1, "BMD"], 19.7922909180127)
+  expect_equal(resultInv$bmrScaled[1,1], 0.144988275510254)
+  expect_equal(unname(resultInv$interval[1,]), c(17.2530174112536,25.3502935604775))
+  
+  # resultProfile
+  expect_equal(resultProfile$bmrScaled[1,1], drop(object0$curve[[1]](resultProfile$Results[1, "BMD"])))
+  expect_true(!is.na(resultProfile$Results[1, "BMD"]))
+  expect_equal(resultProfile$Results[1, "BMD"], 19.7922909180127)
+  expect_equal(resultProfile$bmrScaled[1,1], 0.144988275510254)
+  expect_equal(unname(resultProfile$interval[1,]), c(16.1933316166892,39.9999273156964))
+  
+  # resultProfileGrid
+  expect_equal(resultProfileGrid$bmrScaled[1,1], drop(object0$curve[[1]](resultProfileGrid$Results[1, "BMD"])))
+  expect_true(!is.na(resultProfileGrid$Results[1, "BMD"]))
+  expect_equal(resultProfileGrid$Results[1, "BMD"], 19.7922909180127)
+  expect_equal(resultProfileGrid$bmrScaled[1,1], 0.144988275510254)
+  expect_equal(unname(resultProfileGrid$interval[1,]), c(16.3460864786873,26.9565322744268))
+})
+
+test_that("bmd function computes BMD (additional) correctly for Chlorac model", {
+  object0 <- drm(num.dead/total ~ conc, weights = total, data = drcData::chlorac, fct = LN.3u(), type = "binomial")
+  
+  result <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", display = FALSE)
+  resultSandwich <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
+  resultInv <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", interval = "inv", display = FALSE)
+  resultProfile <- suppressWarnings(bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", interval = "profile", display = FALSE))
+  resultProfileGrid <- suppressWarnings(bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", interval = "profileGrid", profileGridSize = 20, profileProgressInfo = FALSE, display = FALSE))
+  
+  # Expected results based on manual calculation (checked in v2.6.7)
+  expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](0)+0.1))
+  
+  # result
+  expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
+  expect_true(!is.na(result$Results[1, "BMD"]))
+  expect_equal(result$Results[1, "BMD"], 21.7026737107011)
+  expect_equal(result$bmrScaled[1,1], 0.199987658431846)
+  expect_equal(unname(result$interval[1,]), c(17.173324815284,26.2320226061182))
+  
+  # resultSandwich
+  expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
+  expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
+  expect_equal(resultSandwich$Results[1, "BMD"], 21.7026737107011)
+  expect_equal(resultSandwich$bmrScaled[1,1], 0.199987658431846)
+  expect_equal(unname(resultSandwich$interval[1,]), c(20.4561088161456,22.9492386052567))
+  
+  # resultInv
+  expect_equal(resultInv$bmrScaled[1,1], drop(object0$curve[[1]](resultInv$Results[1, "BMD"])))
+  expect_true(!is.na(resultInv$Results[1, "BMD"]))
+  expect_equal(resultInv$Results[1, "BMD"], 21.7026737107011)
+  expect_equal(resultInv$bmrScaled[1,1], 0.199987658431846)
+  expect_equal(unname(resultInv$interval[1,]), c(18.8322967064953,26.4970903630817))
+  
+  # resultProfile
+  expect_equal(resultProfile$bmrScaled[1,1], drop(object0$curve[[1]](resultProfile$Results[1, "BMD"])))
+  expect_true(!is.na(resultProfile$Results[1, "BMD"]))
+  expect_equal(resultProfile$Results[1, "BMD"], 21.7026737107011)
+  expect_equal(resultProfile$bmrScaled[1,1], 0.199987658431846)
+  expect_equal(unname(resultProfile$interval[1,]), c(18.2326808009201,39.9999359543284))
+  
+  # resultProfileGrid
+  expect_equal(resultProfileGrid$bmrScaled[1,1], drop(object0$curve[[1]](resultProfileGrid$Results[1, "BMD"])))
+  expect_true(!is.na(resultProfileGrid$Results[1, "BMD"]))
+  expect_equal(resultProfileGrid$Results[1, "BMD"], 21.7026737107011)
+  expect_equal(resultProfileGrid$bmrScaled[1,1], 0.199987658431846)
+  expect_equal(unname(resultProfileGrid$interval[1,]), c(18.2876046579125,28.7023777279169))
+  
+})
+
+
 # lemna results -----------------------------------------------------------
 
 test_that("bmd function computes BMD (point) correctly for lemna model", {
@@ -1299,7 +1439,8 @@ test_that("bmd function computes BMD (point) correctly for TCDD model", {
   object0 <- drm(alive/total ~ conc, weights = total, curveid = treat, 
                  pmodels = list(~ treat - 1, ~ treat - 1,
                                 ~ 1, ~ treat -1),
-                 data = data0, fct = W2.4(), type = "binomial")
+                 data = data0, fct = W2.4(), type = "binomial",
+                 control = drmc(noMessage = TRUE))
   
   result <- bmd(object0, bmr = 0.77, def = "point", backgType = "modelBased", display = FALSE)
   
@@ -1324,7 +1465,8 @@ test_that("bmd function computes BMD (excess) correctly for TCDD model", {
   object0 <- drm(alive/total ~ conc, weights = total, curveid = treat, 
                  pmodels = list(~ treat - 1, ~ treat - 1,
                                 ~ 1, ~ treat -1),
-                 data = data0, fct = W2.4(), type = "binomial")
+                 data = data0, fct = W2.4(), type = "binomial",
+                 control = drmc(noMessage = TRUE))
   
   result <- bmd(object0, bmr = 0.1, def = "excess", backgType = "modelBased", display = FALSE)
   
@@ -1350,7 +1492,8 @@ test_that("bmd function computes BMD (additional) correctly for TCDD model", {
   object0 <- drm(alive/total ~ conc, weights = total, curveid = treat, 
                  pmodels = list(~ treat - 1, ~ treat - 1,
                                 ~ 1, ~ treat -1),
-                 data = data0, fct = W2.4(), type = "binomial")
+                 data = data0, fct = W2.4(), type = "binomial",
+                 control = drmc(noMessage = TRUE))
   
   result <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", display = FALSE)
   
@@ -1365,3 +1508,24 @@ test_that("bmd function computes BMD (additional) correctly for TCDD model", {
   
 })
 
+
+# Meta-analytic random effects model --------------------------------------
+
+test_that("bmd function works on drcMMRE object", {
+  set.seed(1)
+  data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
+                      y = rep(drcData::ryegrass$rootl, 2) +
+                        c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
+                          rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
+                      EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+  
+  modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
+  bmdMMRE <- bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE)
+  
+  expect_true(all(!is.na(bmdMMRE$Results[, "BMD"])))
+  expect_equal(bmdMMRE$Results[, "BMD"], 1.66913593445629)
+  expect_equal(bmdMMRE$bmrScaled[,1], 9.15712352078559)
+  expect_equal(unname(bmdMMRE$bmrScaled[,1]), drop(modMMRE$curve[[1]](bmdMMRE$Results[, "BMD"])))
+  expect_equal(bmdMMRE$interval[1,], c(Lower = 1.3166277025622, Upper = 2.02164416635037))
+  expect_equal(bmdMMRE$SE[,"SE"], 0.214309787885148) 
+})

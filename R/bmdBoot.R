@@ -57,7 +57,8 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   get.drm.list <- function(tmp.data){
     if(ncol(object$parmMat) == 1){
       drm.list.tmp <- lapply(tmp.data, function(x){
-        try(eval(substitute(drm(formula0, data = x, type = object$type, fct = object[["fct"]]),
+        try(eval(substitute(drm(formula0, data = x, type = object$type, fct = object[["fct"]],
+                                control = drmc(noMessage = TRUE)),
                             list(formula0 = object$call$formula)
                             )), TRUE)
       }

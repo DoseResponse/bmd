@@ -1,0 +1,66 @@
+\name{drmHetVar}
+\alias{drmHetVar}
+\title{
+Dose response modeling with hierarchical variance structure
+}
+\description{Fits a meta-analytic hierarchical dose-response model.
+}
+\usage{
+drmMMRE(formula, exp_id, data, fct, type = c("continuous", "binomial"))
+}
+
+\arguments{
+  \item{formula}{a symbolic description of the model to be fit of the form 'response ~ dose'}
+  \item{exp_id}{the name of the column in the data set that specifies the hierarchical structure of the data}
+  \item{data}{a data frame containing the variables in the model.}
+  \item{fct}{a list with three or more elements specifying the non-linear function, the accompanying self starter function, the names of the parameter in the non-linear function and, optionally, the first and second derivatives as well as information used for calculation of ED values. Currently available functions include, among others, the four- and five-parameter log-logistic models LL.4, LL.5 and the Weibull model W1.4. Use drc::getMeanFunctions for a full list.}
+  \item{type}{a character string specifying the distribution of the data. The default is "continuous", corresponding to assuming a normal distribution. "binary" imply a binomial distribution.}
+}
+
+\details{
+The aim to provide an R package 
+  calculating the benchmark dose (BMD) and the lower limit of the corresponding 95\% confidence interval (BMDL)
+  for continuous and quantal dose-response data for a range of dose-response models based on the available
+  definitions of the benchmark dose concepts.
+  
+  Fitting the meta-analytic model relies on a multivariate meta-analytic model provided by the function \code{rma.mv} in the "metafor" package, which can be installed by running
+  \code{remotes::install_github("wviechtb/metafor")}
+  
+  Viechtbauer, W. (2010). Conducting meta-analyses in R with the metafor package. Journal of Statistical Software, 36(3), 1-48. doi:10.18637/jss.v036.i03
+}
+\value{
+meta-analytic dose-response model with a hierarchical variance structure of class \code{drcMMRE}. 
+
+The primary objective is to use this model for benchmark dose estimation based on dose-response data with a heterogeneous variance structure.
+}
+\references{
+}
+
+\author{ Signe M. Jensen and Jens Riis Baalkilde
+}
+\note{
+}
+
+\seealso{
+}
+\examples{
+library(drc)
+library(drcData)
+library(metafor)
+library(bmd)
+
+set.seed(1)
+data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
+                    y = rep(drcData::ryegrass$rootl, 2) +
+                      c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
+                        rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
+                    EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+
+modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
+bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative")
+
+}
+\keyword{models}
+\keyword{nonlinear}
+
+\concept{BMD BMDL benchmark dose-response}

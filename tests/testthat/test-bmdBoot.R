@@ -757,7 +757,7 @@ test_that("bmdBoot function computes BMD (point) correctly for TCDD model", {
   object0 <- drm(alive/total ~ conc, weights = total, curveid = treat, 
                  pmodels = list(~ treat - 1, ~ treat - 1,
                                 ~ 1, ~ treat -1),
-                 data = data0, fct = W2.4(), type = "binomial")
+                 data = data0, fct = W2.4(), type = "binomial", control = drmc(noMessage = TRUE))
   
   set.seed(1)
   invisible(capture.output({
@@ -791,7 +791,7 @@ test_that("bmdBoot function computes BMD (excess) correctly for TCDD model", {
   object0 <- drm(alive/total ~ conc, weights = total, curveid = treat, 
                  pmodels = list(~ treat - 1, ~ treat - 1,
                                 ~ 1, ~ treat -1),
-                 data = data0, fct = W2.4(), type = "binomial")
+                 data = data0, fct = W2.4(), type = "binomial", control = drmc(noMessage = TRUE))
   
   set.seed(1)
   invisible(capture.output({
@@ -824,7 +824,7 @@ test_that("bmdBoot function computes BMD (additional) correctly for TCDD model",
   object0 <- drm(alive/total ~ conc, weights = total, curveid = treat, 
                  pmodels = list(~ treat - 1, ~ treat - 1,
                                 ~ 1, ~ treat -1),
-                 data = data0, fct = W2.4(), type = "binomial")
+                 data = data0, fct = W2.4(), type = "binomial", control = drmc(noMessage = TRUE))
   
   set.seed(1)
   invisible(capture.output(

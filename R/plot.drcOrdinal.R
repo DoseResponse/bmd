@@ -7,7 +7,7 @@ plot.drcOrdinal <- function(object, col_pal = NULL, xlim = NULL){
     col_pal <- scales::grey_pal(start = 0.9, end = 0)(length(object$levels))
   }
   
-  plotData <- pivot_longer(object$data, cols = object$levels) %>% #-c(object$dose, object$weights)) %>% 
+  plotData <- tidyr::pivot_longer(object$data, cols = object$levels) %>% #-c(object$dose, object$weights)) %>% 
     mutate(dose = eval(parse(text=object$dose)),
            cat = factor(name, levels = object$levels),
            prop = value/eval(parse(text=object$weights)))

@@ -17,16 +17,10 @@
 # Arguments and structure -------------------------------------------------
 
 test_that("drmHetVar handles missing required arguments", {
-  lm_object <- lm(y ~ x, 
-                  data = data.frame(x = 0:4, 
-                                    y = 1:5 + c(-0.4, 0, 0.2, -0.1, 0.13)))
-  drm_ryegrass <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
-  drm_S.alba <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
-  
-  expect_error(drmHetVar(lm_object), 'object must be a dose-response model of class "drc"')
-  expect_error(drmHetVar(drm_S.alba), 'dose-response models with multiple curves not supported for heteroscedasticity analysis')
-  expect_error(drmHetVar(drm_ryegrass), 'argument "var.formula" is missing, with no default')
-  expect_error(drmHetVar(drm_ryegrass, "~ fitted"), 'argument "formula" must be of class "formula"')
+  expect_error(drmHetVar(), "argument \"formula\" is missing, with no default")
+  expect_error(drmHetVar(rootl ~ conc), "argument \"var.formula\" is missing, with no default")
+  expect_error(drmHetVar(rootl ~ conc, ~fitted), "argument \"data\" must be supplied")
+  expect_error(drmHetVar(rootl ~ conc, ~fitted, data = drcData::ryegrass), "argument \"fct\" must be supplied")
 })
 
 
@@ -36,23 +30,24 @@ test_that("drmHetVar handles missing required arguments", {
 # Ryegrass model ----------------------------------------------------------
 
 test_that("drmHetVar on Ryegrass model", {
-  ryegrass.W2.4 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = W2.4())
   var.formula0 <- ~ fitted + I(fitted^2)
-  ryegrass.W2.4.hetVar <- drmHetVar(ryegrass.W2.4, var.formula0)
+  ryegrass.W2.4.hetVar <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
   
   expect_equal(unname(ryegrass.W2.4.hetVar$sigmaFun(0:30)), 
-               c(0.40511221475221, 0.40968626192675, 0.706103004999106, 0.792892779243004, 0.670380066035056, 
-                 0.538422954006715, 0.436184506516667, 0.361508041361228, 0.307007516705357, 0.266619836548278,
-                 0.236108689714632, 0.212610588112651, 0.194185769216453, 0.179501681344542, 0.167626441952835,
-                 0.157896177513736, 0.14982937328875, 0.143070832121776, 0.137354400911807, 0.132477749754008, 
-                 0.128285014290574, 0.124654653614345, 0.121490824831162, 0.118717166664911, 0.116272258432784, 
-                 0.11410626087336, 0.112178401926649, 0.110455074239762, 0.108908380793708, 0.107515012445684,
-                 0.106255373873181), tolerance = 1e-8)
+               c(0.445223595938359, 0.452982799562158, 0.684142804788777, 0.729133309006225, 0.62712931196859, 
+                 0.517200820094488, 0.429080850573182, 0.362481488223554, 0.312371686102985, 0.274232074339055,
+                 0.244734374622287, 0.221538950706607, 0.20300983626506, 0.187992726721281, 0.175661515738903,
+                 0.165415590233537, 0.156811341769763, 0.149516137204819, 0.143276993385066, 0.137898950836005,
+                 0.133229921433214, 0.129149916870622, 0.125563283907698, 0.12239303259968, 0.119576641433876,
+                 0.117062918313419, 0.114809625763844, 0.112781665783847, 0.110949679063262, 0.109288954200143,
+                 0.107778571110093), tolerance = 1e-8)
   expect_equal(ryegrass.W2.4.hetVar$var.formula, var.formula0)
-  expect_equal(ryegrass.W2.4.hetVar$sigmaMod$coefficients, 
-               c('(Intercept)' = -0.0262169518584718, 
-                 'fitted' = 0.364206633951366, 
-                 'I(fitted^2)' = -0.0399131012240055))
+  expect_equal(ryegrass.W2.4.hetVar$curvePar,
+               c(b = -1.80835016587568, c = 0.251695674718818, d = 7.73421602363691, e = 2.50022750625478))
+  expect_equal(ryegrass.W2.4.hetVar$sigmaPar, 
+               c('(Intercept)' = 0.00730403731249006, 
+                 'fitted' = 0.311027994530052, 
+                 'I(fitted^2)' = -0.0328936930911057))
 })
 
 
@@ -60,24 +55,25 @@ test_that("drmHetVar on Ryegrass model", {
 # GiantKelp model ---------------------------------------------------------
 
 test_that("drmHetVar on GiantKelp model", {
-  GiantKelp.LL.4 <- drm(tubeLength ~ dose, data = drcData::GiantKelp, fct = LL.4())
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
-  GiantKelp.LL.4.hetVar <- drmHetVar(GiantKelp.LL.4, var.formula0)
+  GiantKelp.LL.4.hetVar <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   
   expect_equal(unname(GiantKelp.LL.4.hetVar$sigmaFun(0:30)), 
-               c(1.04778617981885, 1.52105761523325, 1.71774043309804, 1.82140390270584,
-                 1.88129829696735, 1.91693199359302, 1.93772576623764, 1.94882504223662, 
-                 1.9532883624276, 1.95304997306311, 1.9493924059426, 1.94319840614618,
-                 1.93509414356216, 1.92553493643006, 1.91485878842791, 1.90332103382559,
-                 1.89111744462622, 1.87840004800314, 1.8652882012118, 1.85187650121705,
-                 1.83824053362485, 1.82444111690957, 1.8105274798966, 1.79653967075753, 
-                 1.78251040430148, 1.76846649326726, 1.75442996780752, 1.74041895868067,
-                 1.72644839956268, 1.71253058960424, 1.69867564707763), tolerance = 1e-8)
+               c(1.11726591406817, 1.55167099990238, 1.73263234952392, 1.82828103973254, 
+                 1.88375349592666, 1.91693820464214, 1.93647807446137, 1.94709603355865, 
+                 1.95160088283562, 1.95176983121002, 1.94878189680672, 1.94344901375631, 
+                 1.93634744430458, 1.92789646121981, 1.91840750107324, 1.90811598138072,
+                 1.89720252751968, 1.88580750723786, 1.87404121023516, 1.86199112048934,
+                 1.84972720356378, 1.8373058112302, 1.82477260561939, 1.81216477686644,
+                 1.79951274423047, 1.78684147457951, 1.77417151400327, 1.7615198019742, 
+                 1.74890031900735, 1.73632460564062, 1.72380218110818), tolerance = 1e-8)
   expect_equal(GiantKelp.LL.4.hetVar$var.formula, var.formula0)
-  expect_equal(GiantKelp.LL.4.hetVar$sigmaMod$coefficients, 
-               c('(Intercept)' = 1.04778617981885, 
-                 'log(dose + 1)' = 0.807525479557079, 
-                 'I(log(dose + 1)^2)' = -0.179960519480946))
+  expect_equal(GiantKelp.LL.4.hetVar$curvePar,
+               c(b = 1.31919020059578, c = 5.59288746292885, d = 18.2001039179043, e = 44.2426813468012))
+  expect_equal(GiantKelp.LL.4.hetVar$sigmaPar, 
+               c('(Intercept)' = 1.11726591406817, 
+                 'log(dose + 1)' = 0.740539128243396, 
+                 'I(log(dose + 1)^2)' = -0.164214857054588))
 })
 
 
