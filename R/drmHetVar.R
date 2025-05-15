@@ -91,6 +91,10 @@ drmHetVar <- function(formula, var.formula, data, fct) {
   curve <- function(x) curveFun(x, par = curvePar)
   sigmaFun <- function(x) tauFun(x, tauPar = sigmaPar, curvePar = curvePar)
   
+  # sumList
+  sumList <- list(numObs = length(resp),
+                  numPar = length(curvePar) + length(sigmaPar))
+  
   # Output
   object <- list(
     curvePar = curvePar,
@@ -106,6 +110,7 @@ drmHetVar <- function(formula, var.formula, data, fct) {
     fct = fct,
     data = data,
     dataList = dataList,
+    sumList = sumList,
     call = call,
     fitted.values = curveFun(dose, fit$par[1:n_mean_par]),
     residuals = resp - curveFun(dose, fit$par[1:n_mean_par])

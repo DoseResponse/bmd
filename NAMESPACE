@@ -5,7 +5,9 @@ export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BC
 
 ## S3 methods
 S3method(logLik, drcOrdinal)
+S3method(logLik, drcHetVar)
 S3method(AIC, drcOrdinal)
+S3method(AIC, drcHetVar)
 S3method(BIC, drcOrdinal)
 S3method(plot, drcOrdinal)
 S3method(print, drcOrdinal)
