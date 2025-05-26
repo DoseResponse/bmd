@@ -1,7 +1,11 @@
-drmHetVarSelfStarter <- function(formula, var.formula, data, fct) 
+drmHetVarSelfStarter <- function(formula, var.formula, data, fct, curveStart = NULL) 
 {
   dName <- as.character(formula)[3]
-  object0 <- drm(formula, data = data, fct = fct)
+  if(is.null(curveStart)){
+    object0 <- drm(formula, data = data, fct = fct)
+  } else {
+    object0 <- drm(formula, data = data, fct = fct, start = curveStart)
+  }
   
   data <- cbind(data, fitted = fitted(object0), residuals = residuals(object0))
   data.agg <- dplyr::summarise(dplyr::group_by(data, fitted), 

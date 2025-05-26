@@ -42,6 +42,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridPerce
   object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
   set.seed(1)
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
+  resultSemiParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "semiparametric", progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
   
   # result
@@ -51,12 +52,19 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridPerce
   expect_equal(result$bmrScaled[1,1], unname(object0$curve(result$Results[1, "BMD"])))
   expect_equal(unname(result$interval[1,]), c(1.04983687382092,1.41290802464387))
   
+  # resultSemiParametric
+  expect_true(!is.na(resultSemiParametric$Results[1, "BMD"]))
+  expect_equal(resultSemiParametric$Results[1, "BMD"], c(BMD=1.22216776066126))
+  expect_equal(resultSemiParametric$bmrScaled[1,1], 7.53945959231123)
+  expect_equal(resultSemiParametric$bmrScaled[1,1], unname(object0$curve(resultSemiParametric$Results[1, "BMD"])))
+  expect_equal(unname(resultSemiParametric$interval[1,]), c(0.950640020523221,1.41523185031235))
+  
   # resultParametric
   expect_true(!is.na(resultParametric$Results[1, "BMD"]))
   expect_equal(resultParametric$Results[1, "BMD"], c(BMD=1.22216776066126))
   expect_equal(resultParametric$bmrScaled[1,1], 7.53945959231123)
   expect_equal(resultParametric$bmrScaled[1,1], unname(object0$curve(resultParametric$Results[1, "BMD"])))
-  expect_equal(unname(resultParametric$interval[1,]), c(1.01655519161232,1.49458093079044))
+  expect_equal(unname(resultParametric$interval[1,]), c(1.00050130374069,1.44861779926571))
   
 })
 
@@ -139,6 +147,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridPerc
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1)
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
+  resultSemiParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "semiparametric", progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
   
   # result
@@ -148,13 +157,19 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridPerc
   expect_equal(result$bmrScaled[1,1], unname(object0$curve(result$Results[1, "BMD"])))
   expect_equal(unname(result$interval[1,]), c(1.04968526838944,15.522684535877))
   
+  # resultSemiParametric
+  expect_true(!is.na(resultSemiParametric$Results[1, "BMD"]))
+  expect_equal(resultSemiParametric$Results[1, "BMD"], c(BMD=5.62878374597309))
+  expect_equal(resultSemiParametric$bmrScaled[1,1], 17.4208624811968)
+  expect_equal(resultSemiParametric$bmrScaled[1,1], unname(object0$curve(resultSemiParametric$Results[1, "BMD"])))
+  expect_equal(unname(resultSemiParametric$interval[1,]), c(3.83490020339583,10.0947390719072))
+  
   # resultParametric
   expect_true(!is.na(resultParametric$Results[1, "BMD"]))
   expect_equal(resultParametric$Results[1, "BMD"], c(BMD=5.62878374597309))
   expect_equal(resultParametric$bmrScaled[1,1], 17.4208624811968)
   expect_equal(resultParametric$bmrScaled[1,1], unname(object0$curve(resultParametric$Results[1, "BMD"])))
-  expect_equal(unname(resultParametric$interval[1,]), c(2.57336056093907,8.71919924498031))
-  
+  expect_equal(unname(resultParametric$interval[1,]), c(3.18753866045103,10.1753755402802))
 })
 
 test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridSD", {
