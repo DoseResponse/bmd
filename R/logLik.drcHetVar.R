@@ -5,3 +5,7 @@ logLik.drcHetVar <- function(object){
 AIC.drcHetVar <- function(object){
   2*object$sumList$numPar - 2*logLik(object)
 }
+
+BIC.drcHetVar <- function(object){
+  object$sumList$numPar*log(object$sumList$numObs) - 2*logLik(object)
+}

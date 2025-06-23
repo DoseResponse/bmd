@@ -75,7 +75,7 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   # start_curve <- coef(drm(formula, data = data, fct = fct)) # rep(mean(y), n_mean_par)
   # start_tau <- rep(sd(y), n_var_par)
   # start <- c(start_curve, 0.05)# start_tau)
-  start <- unlist(drmHetVarSelfStarter(formula, var.formula, data, fct, curveStart))
+  start <- unlist(drmHetVarSelfStarter(formula, var.formula, mf, fct, curveStart))
   
   fit <- optim(start, negLogLik, method = "BFGS", hessian = TRUE)
   

@@ -23,6 +23,22 @@ test_that("drmHetVar handles missing required arguments", {
   expect_error(drmHetVar(rootl ~ conc, ~fitted, data = drcData::ryegrass), "argument \"fct\" must be supplied")
 })
 
+test_that("drmHetVar handles missing observations", {
+  ryegrass <- drcData::ryegrass
+  
+  expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = rbind(ryegrass, c(NA, 0)), fct = LL.4())$curvePar,
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+  expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = rbind(ryegrass, c(0, NA)), fct = LL.4())$curvePar,
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+  expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = rbind(ryegrass, c(NA, NA)), fct = LL.4())$curvePar,
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+  expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = cbind(ryegrass, na.col = c(1,NA)), fct = LL.4())$curvePar,
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+  expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = cbind(ryegrass, na.col = NA), fct = LL.4())$curvePar,
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+  
+})
+
 
 
 

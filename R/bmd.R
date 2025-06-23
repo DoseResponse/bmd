@@ -17,7 +17,11 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
     backgType <- "modelBased"
     } 
   if (missing(backgType)) {
-    stop(paste("backgType is missing", sep=""))
+    if(!(def %in% c("hybridExc", "hybridAdd"))){
+      backgType <- "modelBased"
+    } else {
+      backgType <- "hybridSD"
+    }
   }
   if (!(def %in% c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"))) {
     stop(paste("Could not recognize def", sep=""))

@@ -13,7 +13,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInte
 }
 \arguments{
   \item{modelList}{list of models of class \code{drc}}
-  \item{modelWeights}{character string specifying the type of weights used, "AIC", "BIC" or "Stack", or a vector of the same length as the modelList with user defined weights}
+  \item{modelWeights}{character string specifying the type of weights used, "AIC", "BIC" or "Stack" (Baalkilde, J. R., Hansen, N. R., and Jensen, S. M., 2025), or a vector of the same length as the modelList with user defined weights}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
@@ -84,7 +84,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInte
   "Buckland" - 
   }
   
-  \item{bootstrapType}{character string indicating type of bootstrap sampling to be used if type="bootstrap". "nonparametric" (default), "semiparametric" or "parametric" (see details)}
+  \item{bootstrapType}{character string indicating type of bootstrap sampling to be used if type="bootstrap" or "curve". "nonparametric" (default), or "parametric" (see details)}
   
   \item{bootInterval}{character string indicating how to estimate the bootstrap confidence intervals used to find BMDL type="bootstrap". "percentile" (default) or "BCa" (Bias corrected and adjusted)}
   
@@ -108,12 +108,12 @@ This package project is still under development. The aim to provide an R package
   
   Details on the implemented definitions and methods can be found in Crump (2002)
   
-  Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
+  Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)).
 
 All sampling is made within dose groups.  
 }
 \value{
-A list of three elements: Results contain the estimated BMD and BMDL, Boot.samples.used gives the number of boot samples that resulted in succesful estimations and were accordingly used  in the estimation of BMDL (and BMDU), Interval gives BMDL and BMDU, which is identical to the confidence interval for the percentile interval approach.
+A list of five elements: Results contain the estimated BMD and BMDL, Boot.samples.used gives the number of boot samples that resulted in succesful estimations and were accordingly used  in the estimation of BMDL (and BMDU), Interval gives BMDL and BMDU, which is identical to the confidence interval for the percentile interval approach, SE gives the estimated SE for the "Buckland" method, and modelWeights includes the estimated weights.
 }
 \references{
   Budtz-Jorgensen, E., Keiding, N., and Grandjean, P. (2001) 
@@ -123,6 +123,10 @@ A list of three elements: Results contain the estimated BMD and BMDL, Boot.sampl
   Crump, K. (2002)
   Critical Issues in Benchmark Calculations from Continuous Data,
   \emph{Critical Reviews in Toxicology} \bold{32}, 133--153.
+  
+  Baalkilde, J. R., Hansen, N. R., and Jensen, S. M. (2025)
+  Stacking Weights and Model Space Selection in Frequentist Model Averaging for Benchmark Dose Estimation,
+  \emph{Environmetrics} \bold{36(2)}, e70002.
 }
 
 \author{ Signe M. Jensen and Jens Riis Baalkilde

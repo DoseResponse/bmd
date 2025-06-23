@@ -32,6 +32,16 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
     stop('Could not recognize def. Options are "hybridExc" or "hybridAdd"')
   }
   
+  if(length(bootType) != 1){
+    if(!identical(bootType, c("nonparametric", "semiparametric", "parametric"))){
+      stop('"bootstrapType" not recognised. Options are: "nonparametric", "semiparametric and "parametric"')
+    }
+    bootstrapType <- "nonparametric" # default
+  }
+  if(!bootstrapType %in% c("nonparametric", "semiparametric", "parametric")){
+    stop('"bootstrapType" not recognised. Options are: "nonparametric", "semiparametric" and "parametric"')
+  }
+  
   level <- 1-2*(1-level)
   
   # SLOPE
@@ -160,6 +170,6 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
                bmrScaled = bmrScaled,
                interval = bmdInterval,
                model = object)
-  class(resBMD) <- "bmdHetVar"
+  class(resBMD) <- c("bmdHetVar", "bmd")
   invisible(resBMD) 
 }

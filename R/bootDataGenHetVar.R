@@ -7,7 +7,7 @@ bootDataGenHetVar <- function(object, R=1000, bootType=c("nonparametric", "semip
   tmp.data <- list()
   if(identical(bootType, "nonparametric")){
     dName <- object$dataList$names$dName
-    data.e <- object$data
+    data.e <- as.data.frame(object$data)
     row.num <- 1:nrow(data.e)
     dose <- data.e[,dName]
     tmp.data <- list()
@@ -19,7 +19,7 @@ bootDataGenHetVar <- function(object, R=1000, bootType=c("nonparametric", "semip
     dName <- object$dataList$names$dName
     rName <- object$dataList$names$rName
     
-    data.e <- object$data
+    data.e <- as.data.frame(object$data)
     dose <- data.e[,dName]
     sigma_fitted <- object$sigmaFun(dose)
     std_residuals <- object$residuals/sigma_fitted
@@ -34,7 +34,7 @@ bootDataGenHetVar <- function(object, R=1000, bootType=c("nonparametric", "semip
     dName <- object$dataList$names$dName
     rName <- object$dataList$names$rName
     
-    data.e <- object$data
+    data.e <- as.data.frame(object$data)
     dose <- data.e[,object$dataList$names$dName]
     fitted <- object$fitted
     sigma_fitted <- object$sigmaFun(dose)

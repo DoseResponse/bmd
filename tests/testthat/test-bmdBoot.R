@@ -384,31 +384,31 @@ test_that("bmdBoot function computes BMD (relative) correctly for ryegrass horme
   expect_equal(unname(result$interval[1,]), c(1.44434658745943,1.75290180636397))
 })
 
-# test_that("bmdBoot function computes BMD (relative) with log-transformed response correctly for ryegrass model", {
-#   set.seed(1)
-#   object0 <- drm(log(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
-#   
-#   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", display = FALSE, R = 50)
-#   
-#   # Expected results based on manual calculation (checked in v2.6.7)
-#   expect_true(!is.na(result$Results[1, "BMD"]))
-#   expect_equal(result$Results[1, "BMD"], 0.804218529940602)
-#   expect_equal(result$Boot.samples.used, 0)
-#   expect_equal(unname(result$interval[1,]), c(NA,NA))
-# })
-# 
-# test_that("bmdBoot function computes BMD (relative) with square root-transformed response correctly for ryegrass model", {
-#   set.seed(1)
-#   object0 <- drm(sqrt(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
-#   
-#   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", display = FALSE, R = 50)
-#   
-#   # Expected results based on manual calculation (checked in v2.6.7)
-#   expect_true(!is.na(result$Results[1, "BMD"]))
-#   expect_equal(result$Results[1, "BMD"], 1.29590294092622)
-#   expect_equal(result$Boot.samples.used, 0)
-#   expect_equal(unname(result$interval[1,]), c(NA,NA))
-# })
+test_that("bmdBoot function computes BMD (relative) with log-transformed response correctly for ryegrass model", {
+  set.seed(1)
+  object0 <- drm(log(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
+
+  result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", display = FALSE, R = 50)
+
+  # Expected results based on manual calculation (checked in v2.6.7)
+  expect_true(!is.na(result$Results[1, "BMD"]))
+  expect_equal(result$Results[1, "BMD"], 0.804218529940602)
+  expect_equal(result$Boot.samples.used, 50)
+  expect_equal(unname(result$interval[1,]), c(0.635058621791563,1.03367363699335))
+})
+
+test_that("bmdBoot function computes BMD (relative) with square root-transformed response correctly for ryegrass model", {
+  set.seed(1)
+  object0 <- drm(sqrt(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
+
+  result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", display = FALSE, R = 50)
+
+  # Expected results based on manual calculation (checked in v2.6.7)
+  expect_true(!is.na(result$Results[1, "BMD"]))
+  expect_equal(result$Results[1, "BMD"], 1.29590294092622)
+  expect_equal(result$Boot.samples.used, 50)
+  expect_equal(unname(result$interval[1,]), c(1.20489647805449,1.47017774750813))
+})
 
 
 test_that("bmdBoot function output remains consistent", {

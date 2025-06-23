@@ -30,6 +30,7 @@ test_that("bmdMA function handles missing required arguments", {
   expect_error(bmdMA(modelList0, modelWeights = "AIC", def = "invalid_def", backgType = "modelBased", type = "Kang"), "Could not recognize def")
   expect_error(bmdMA(modelList0, modelWeights = "AIC", def = "relative", backgType = "invalid_type", type = "Kang"), "Could not recognize backgType")
   expect_error(bmdMA(modelList0, modelWeights = "AIC", def = "relative", backgType = "modelBased", type = "Kang"), 'argument "bmr" is missing, with no default')
+  expect_error(bmdMA(modelList0, modelWeights = "AIC", def = "relative", backgType = "modelBased", type = "Kang", bootstrapType = "invalid_type"), '"bootstrapType" not recognised. Options are: "nonparametric" and "parametric"')
 })
 
 
@@ -446,12 +447,30 @@ test_that("bmdMA function computes BMD (relative) with log-transformed response 
   
   # results
   resultBuckland <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", type = "Buckland", display = FALSE)
+  set.seed(1)
+  resultBootstrap <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", type = "bootstrap", display = FALSE, progressInfo = FALSE)
+  resultCurve <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", type = "curve", display = FALSE, progressInfo = FALSE)
   
   # Expected results based on manual calculation (checked in v2.6.7)
+  # resultBuckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 1.20542377217772)
   expect_equal(resultBuckland$SE[1,1], 0.353626557987876)
   expect_equal(unname(resultBuckland$interval[1,]), c(0.623759845685001,1.78708769867044))
+  
+  # resultBootstrap
+  expect_true(all(!is.na(resultBootstrap$Results[, "BMD_MA"])))
+  expect_equal(unname(resultBootstrap$Results[, "BMD_MA"]), c(1.20542377217772))
+  expect_equal(resultBootstrap$Boot.samples.used, 1000)
+  expect_equal(unname(resultBootstrap$interval[,"BMDL_MA"]), c(0.962987242762308))
+  expect_equal(unname(resultBootstrap$interval[,"BMDU_MA"]), c(1.66195885889725))
+  
+  # resultCurve
+  expect_true(all(!is.na(resultCurve$Results[, "BMD_MA"])))
+  expect_equal(unname(resultCurve$Results[, "BMD_MA"]), c(1.2058581809568))
+  expect_equal(resultCurve$Boot.samples.used, 1000)
+  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(1.01029775850722))
+  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(1.75309602794422))
 })
 
 test_that("bmdMA function computes BMD (relative) with square root-transformed response correctly for ryegrass models", {
@@ -465,12 +484,30 @@ test_that("bmdMA function computes BMD (relative) with square root-transformed r
   
   # results
   resultBuckland <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", type = "Buckland", display = FALSE)
+  set.seed(1)
+  resultBootstrap <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", type = "bootstrap", display = FALSE, progressInfo = FALSE)
+  resultCurve <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", type = "curve", display = FALSE, progressInfo = FALSE)
   
   # Expected results based on manual calculation (checked in v2.6.7)
+  # resultBuckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 1.50354728636659)
   expect_equal(resultBuckland$SE[1,1], 0.237926009341212)
   expect_equal(unname(resultBuckland$interval[1,]), c(1.11219382695561,1.89490074577758))
+  
+  # resultBootstrap
+  expect_true(all(!is.na(resultBootstrap$Results[, "BMD_MA"])))
+  expect_equal(unname(resultBootstrap$Results[, "BMD_MA"]), c(1.50354728636659))
+  expect_equal(resultBootstrap$Boot.samples.used, 1000)
+  expect_equal(unname(resultBootstrap$interval[,"BMDL_MA"]), c(1.34368562204519))
+  expect_equal(unname(resultBootstrap$interval[,"BMDU_MA"]), c(1.73002893650846))
+  
+  # resultCurve
+  expect_true(all(!is.na(resultCurve$Results[, "BMD_MA"])))
+  expect_equal(unname(resultCurve$Results[, "BMD_MA"]), c(1.51713033393971))
+  expect_equal(resultCurve$Boot.samples.used, 1000)
+  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(1.36000313896168))
+  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(1.74646551140735))
 })
 
 

@@ -42,7 +42,7 @@ test_that("bmd function handles missing required arguments", {
   expect_error(bmd(lm(1:10 ~ 1)), 'object must be of class "drc"')
   expect_error(bmd(object0, def = "invalid_def", backgType = "modelBased"), "Could not recognize def")
   expect_error(bmd(object0, def = "excess", backgType = "invalid_type"), "Could not recognize backgType")
-  expect_error(bmd(object0, def = "excess"), "backgType is missing")
+  expect_error(bmd(object0, def = "excess"), "\"excess\" is not available for continuous data")
 })
 
 
@@ -1352,7 +1352,7 @@ test_that("bmd function computes BMD (relative) with log-transformed response co
                       resp = c(3.3735,4.1836,3.1644,5.5953,4.6321,3.4822,4.7901,5.041,
                                8.4779,7.5968,9.4139,8.292,15.2536,13.6601,16.9997,15.8299,
                                23.2592,24.2193,24.0967,23.8693,28.7189,28.5821,27.8745,25.8106))
-  object0 <- drm(resp ~ dose, data = data0, fct = W1.4())
+  object0 <- drm(log(resp) ~ dose, data = data0, fct = W1.4())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", sandwich.vcov = TRUE, display = FALSE)
@@ -1364,24 +1364,24 @@ test_that("bmd function computes BMD (relative) with log-transformed response co
   expect_equal(result$bmrScaled[1], log(exp(drop(object0$curve[[1]](0)))*1.1))
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 4.95526222076805)
-  expect_equal(result$bmrScaled[1,1], 4.23797610385243)
+  expect_equal(result$Results[1, "BMD"], 5.68205675583797)
+  expect_equal(result$bmrScaled[1,1], 1.46639113206374)
   expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
-  expect_equal(unname(result$interval[1,]), c(3.56339436443336,6.34713007710273))
+  expect_equal(unname(result$interval[1,]), c(4.26760401810185,7.09650949357409))
   
   # resultSandwich
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
-  expect_equal(resultSandwich$Results[1, "BMD"], 4.95526222076805)
-  expect_equal(resultSandwich$bmrScaled[1,1], 4.23797610385243)
+  expect_equal(resultSandwich$Results[1, "BMD"], 5.68205675583797)
+  expect_equal(resultSandwich$bmrScaled[1,1], 1.46639113206374)
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
-  expect_equal(unname(resultSandwich$interval[1,]), c(3.86451935421879,6.0460050873173))
+  expect_equal(unname(resultSandwich$interval[1,]), c(3.99249625714426,7.37161725453168))
   
   # resultProfile
   expect_true(!is.na(resultProfile$Results[1, "BMD"]))
-  expect_equal(resultProfile$Results[1, "BMD"], 4.95526222076805)
-  expect_equal(resultProfile$bmrScaled[1,1], 4.23797610385243)
+  expect_equal(resultProfile$Results[1, "BMD"], 5.68205675583797)
+  expect_equal(resultProfile$bmrScaled[1,1], 1.46639113206374)
   expect_equal(resultProfile$bmrScaled[1,1], drop(object0$curve[[1]](resultProfile$Results[1, "BMD"])))
-  expect_equal(unname(resultProfile$interval[1,]), c(3.75569647489823,6.23001397383884))
+  expect_equal(unname(resultProfile$interval[1,]), c(4.49150596950358,7.03069153045658))
   
 })
 
@@ -1391,7 +1391,7 @@ test_that("bmd function computes BMD (relative) with square root-transformed res
                       resp = c(3.3735,4.1836,3.1644,5.5953,4.6321,3.4822,4.7901,5.041,
                                8.4779,7.5968,9.4139,8.292,15.2536,13.6601,16.9997,15.8299,
                                23.2592,24.2193,24.0967,23.8693,28.7189,28.5821,27.8745,25.8106))
-  object0 <- drm(resp ~ dose, data = data0, fct = W1.4())
+  object0 <- drm(sqrt(resp) ~ dose, data = data0, fct = W1.4())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", sandwich.vcov = TRUE, display = FALSE)
@@ -1402,24 +1402,24 @@ test_that("bmd function computes BMD (relative) with square root-transformed res
   # Expected results based on manual calculation (checked in v2.6.7)
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 5.60146426427603)
-  expect_equal(result$bmrScaled[1,1], 4.34486467615463)
+  expect_equal(result$Results[1, "BMD"], 5.84243115619949)
+  expect_equal(result$bmrScaled[1,1], 2.09788179452544)
   expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
-  expect_equal(unname(result$interval[1,]), c(4.0395612239518,7.16336730460026))
+  expect_equal(unname(result$interval[1,]), c(4.4433007730042,7.24156153939477))
   
   # resultSandwich
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
-  expect_equal(resultSandwich$Results[1, "BMD"], 5.60146426427603)
-  expect_equal(resultSandwich$bmrScaled[1,1], 4.34486467615463)
+  expect_equal(resultSandwich$Results[1, "BMD"], 5.84243115619949)
+  expect_equal(resultSandwich$bmrScaled[1,1], 2.09788179452544)
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
-  expect_equal(unname(resultSandwich$interval[1,]), c(4.35735478850823,6.84557374004383))
+  expect_equal(unname(resultSandwich$interval[1,]), c(4.41009310114347,7.2747692112555))
   
   # resultProfile
   expect_true(!is.na(resultProfile$Results[1, "BMD"]))
-  expect_equal(resultProfile$Results[1, "BMD"], 5.60146426427603)
-  expect_equal(resultProfile$bmrScaled[1,1], 4.34486467615463)
+  expect_equal(resultProfile$Results[1, "BMD"], 5.84243115619949)
+  expect_equal(resultProfile$bmrScaled[1,1], 2.09788179452544)
   expect_equal(resultProfile$bmrScaled[1,1], drop(object0$curve[[1]](resultProfile$Results[1, "BMD"])))
-  expect_equal(unname(resultProfile$interval[1,]), c(4.23995309372506,7.0173030071411))
+  expect_equal(unname(resultProfile$interval[1,]), c(4.64454353972284,7.12686669438367))
   
 })
 

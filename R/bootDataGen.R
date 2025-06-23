@@ -45,7 +45,8 @@ bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE
   }
     }
     if(object$type %in% c("continuous","Poisson","negbin1","negbin2")){
-      data.e<-object$data
+      # data.e<-object$data
+      data.e<-object$origData
       data.e[,"row.num"]<-1:dim(data.e)[1]
       data.e[,"dose"]<-data.e[,as.character(object$call$formula[[3]])]
       tmp.data <- list()
@@ -82,6 +83,7 @@ bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE
     }
     }
     if(object$type=="continuous"){
+      origDose <- object$dataList$dose
       mean.Y <- aggregate(object$data[,as.character(object$call$formula[[2]])] ~ 
                             object$data[,as.character(object$call$formula[[3]])],
                           FUN=function(x) mean(x,na.rm=TRUE))[,2]

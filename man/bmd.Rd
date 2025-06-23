@@ -31,7 +31,10 @@ level=0.95, profileGridSize = 20, profileProgressInfo = TRUE)
   
   "hybridPercentile" - the background risk is specified by the user in terms of percentile from the control group distribution (assuming a normal distribution).
   p0 = 1 - phi((x0 - f(0))/sigma) = 1 - backg.
-  where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
+  where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group
+  
+  If not specified, it will be set to "modelBased" for all def excluding "hybridExc" and "hybridAdd", for these the default is "hybridSD".
+  }
     
   \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomial response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridPercentile"}
   
