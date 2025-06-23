@@ -34,12 +34,11 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
   
   if(length(bootType) != 1){
     if(!identical(bootType, c("nonparametric", "semiparametric", "parametric"))){
-      stop('"bootstrapType" not recognised. Options are: "nonparametric", "semiparametric and "parametric"')
     }
-    bootstrapType <- "nonparametric" # default
+    bootType <- "nonparametric" # default
   }
-  if(!bootstrapType %in% c("nonparametric", "semiparametric", "parametric")){
-    stop('"bootstrapType" not recognised. Options are: "nonparametric", "semiparametric" and "parametric"')
+  if(!bootType %in% c("nonparametric", "semiparametric", "parametric")){
+    stop('"bootType" not recognised. Options are: "nonparametric", "semiparametric" and "parametric"')
   }
   
   level <- 1-2*(1-level)
