@@ -20,6 +20,7 @@ Suggests:
     RLRsim,
     scales,
     metafor,
+    drcData,
     testthat (>= 3.0.0)
 License: GPL
 Encoding: UTF-8
