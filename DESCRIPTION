@@ -6,7 +6,10 @@ Date: 2025-03-24
 Author: Signe M.Jensen, Christian Ritz and Jens Riis Baalkilde
 Maintainer: Signe M. Jensen <smj@plen.ku.dk>
 Description: Benchmark dose analysis for continuous, quantal, count and ordinal dose-response data
-Imports: drc, ggplot2, dplyr
+Imports:
+    drc, 
+    ggplot2,
+    dplyr
 Suggests: 
     sandwich,
     CVXR,
@@ -14,7 +17,6 @@ Suggests:
     gridExtra,
     isotone,
     reshape2,
-    dplyr,
     car,
     Matrix,
     RLRsim,
@@ -22,6 +24,9 @@ Suggests:
     metafor,
     drcData,
     testthat (>= 3.0.0)
+Remotes:
+    doseResponse/drc
+    doseResponse/drcData
 License: GPL
 Encoding: UTF-8
 LazyData: true

@@ -1,4 +1,7 @@
 import(drc, ggplot2, dplyr)
+importFrom(stats, AIC)
+importFrom(stats, BIC)
+importFrom(stats, logLik)
 export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, 
        getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal,
        qplotDrc, qplotBmd, MACurve, monotonicityTest, trendTest, bmdHetVar, drmHetVar, drmMMRE, bmdHetVarMA)
