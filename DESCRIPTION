@@ -25,7 +25,7 @@ Suggests:
     drcData,
     testthat (>= 3.0.0)
 Remotes:
-    doseresponse/drc
+    doseresponse/drc,
     doseresponse/drcData
 License: GPL
 Encoding: UTF-8
