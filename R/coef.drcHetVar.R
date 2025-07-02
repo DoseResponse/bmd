@@ -1,4 +1,4 @@
-coef.drcHetVar <- function(object){
+coef.drcHetVar <- function(object, ...){
   curvePar <- object$curvePar
   names(curvePar) <- paste0("Curve:", names(curvePar))
   sigmaPar <- object$sigmaPar

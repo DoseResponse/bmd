@@ -40,7 +40,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
     sandwich.vcov <- TRUE
     interval <- "delta"
   }
-  if(sandwich.vcov & !require("sandwich")){
+  if(sandwich.vcov & !requireNamespace("sandwich")){
     stop('package "sandwich" must be installed to compute sandwich confidence intervals')
   }
   respTrans <- match.arg(respTrans)

@@ -18,7 +18,7 @@ monotonicityTest <- function(x, y, data, test = c("jonckheere", "bartholomew"), 
   }
   
   if(test == "bartholomew"){
-    if(!require("isotone")){
+    if(!requireNamespace("isotone")){
       stop('package "isotone" must be installed to use bartolomew monotonicity test')
     }
     p.value <- .bartholomewTest(y = y, x = x, alternative = alternative, ...)$p.value

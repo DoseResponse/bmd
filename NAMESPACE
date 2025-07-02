@@ -8,7 +8,7 @@ importFrom("stats", "aggregate", "approx", "as.formula", "coef",
            "uniroot", "update", "var", "vcov", "AIC", "BIC", "logLik")
 importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, 
-       getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, bootDataGenOrdinal,
+       getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA,
        qplotDrc, qplotBmd, MACurve, monotonicityTest, trendTest, bmdHetVar, drmHetVar, drmMMRE, bmdHetVarMA)
 
 ## S3 methods

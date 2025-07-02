@@ -1,6 +1,6 @@
 \name{plot.bmd}
-
-\alias{plot}
+\alias{plot.bmd}
+\alias{\method{plot}{bmd}}
 
 \title{Plotting benchmark doses}
 
@@ -9,7 +9,7 @@
 }
 
 \usage{
-  plot(x, ..., interval = c("BMDL", "twosided", "none"))
+  \method{plot}{bmd}(x, ..., interval = c("BMDL", "twosided", "none"))
 }
 
 \arguments{

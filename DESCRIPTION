@@ -5,7 +5,7 @@ Version: 2.7.3
 Date: 2025-03-24
 Author: Signe M.Jensen, Christian Ritz and Jens Riis Baalkilde
 Maintainer: Signe M. Jensen <smj@plen.ku.dk>
-Description: Benchmark dose analysis for continuous, quantal, count and ordinal dose-response data
+Description: Provides tools for benchmark dose analysis of dose-response data. Supports continuous, quantal, count, and ordinal responses.
 Imports:
     drc, 
     ggplot2,
@@ -28,9 +28,12 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes:
     doseresponse/drc,
-    doseresponse/drcData
-License: GPL
+    doseresponse/drcData,
+    wviechtb/metafor
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3
 RoxygenNote: 7.3.2
+Depends: 
+    R (>= 3.5)

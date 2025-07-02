@@ -103,11 +103,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         # Bootstrap
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
         # } else if(identical(bootstrapType,"semiparametric")){
-        #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
         }
         
         bmdMAboot <- function(data){
@@ -187,11 +187,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         # Bootstrap
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
         # } else if(identical(bootstrapType,"semiparametric")){
-        #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
         }
         
         bmdMACurveboot <- function(data){
@@ -310,11 +310,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
         maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
         
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
         # } else if(identical(bootstrapType,"semiparametric")){
-        #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated = FALSE)
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated = FALSE)
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated = FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated = FALSE)
         }
         
         bmdMAboot <- function(data){
@@ -407,11 +407,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         # Bootstrap
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
         # } else if(identical(bootstrapType,"semiparametric")){
-        #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated=FALSE)
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated=FALSE)
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated=FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated=FALSE)
         }
         
         bmdMACurveboot <- function(data){
@@ -572,11 +572,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
           # } else if(identical(bootstrapType,"semiparametric")){
-          #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
           }
           
           bmdMAboot <- function(data){
@@ -677,11 +677,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
           # } else if(identical(bootstrapType,"semiparametric")){
-          #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
           }
           
           bmdMACurveboot <- function(data){
@@ -816,11 +816,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
           # } else if(identical(bootstrapType,"semiparametric")){
-          #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated=FALSE)
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated=FALSE)
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated=FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated=FALSE)
           }
           
           bmdMAboot <- function(data){
@@ -937,11 +937,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
           # } else if(identical(bootstrapType,"semiparametric")){
-          #   bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated=FALSE)
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated=FALSE)
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated=FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated=FALSE)
           }
           
           bmdMACurveboot <- function(data){

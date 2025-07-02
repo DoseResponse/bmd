@@ -1,4 +1,10 @@
-logLik.drcOrdinal <- function(object, epsilon = 10^(-16)){
+logLik.drcOrdinal <- function(object, ...){
+  dots <- list(...)
+  if (!is.null(dots$epsilon)){
+    epsilon <- dots$epsilon
+  } else {
+    epsilon <- 1e-16
+  }
   tmp <- sapply(1:length(object$levels), function(cat.i){
     cat <- object$levels[[cat.i]]
     cat.per.dose <- unlist(object$drmList[[1]]$origData[,cat])

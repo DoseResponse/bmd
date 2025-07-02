@@ -17,7 +17,7 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
     stop('argument "fct" must be supplied')
   }
   
-  if(!require("dplyr")){
+  if(!requireNamespace("dplyr")){
     stop('package "dplyr" must be installed to fit dose-response model with heterogeneous variance')
   }
   

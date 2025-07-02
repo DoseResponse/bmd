@@ -1,5 +1,6 @@
-print.drcOrdinal <- function(object, ..., digits = max(3, getOption("digits") - 3)) 
+print.drcOrdinal <- function(x, ..., digits = max(3, getOption("digits") - 3)) 
 {
+  object <- x
   classList <- class(object)
   if(is.null(object$blocks)){
     cat("A 'drcOrdinal' model.", "\n", 

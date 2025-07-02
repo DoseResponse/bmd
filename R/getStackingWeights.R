@@ -201,7 +201,7 @@ getDataSplits <- function(object, nSplits){
 }
 
 getStackingWeights <- function(modelList, nSplits = 2){
-  if(!require("CVXR")){
+  if(!requireNamespace("CVXR")){
     stop('package "CVXR" must be installed to estimate stacking weights')
   }
   

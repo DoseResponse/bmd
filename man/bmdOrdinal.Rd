@@ -8,8 +8,8 @@ Benchmark dose estimation for ordinal dose-response models
 \usage{
 bmdOrdinal(object, bmr, backgType = c("modelBased", "absolute"), backg = NA,
            def = c("excess", "additional", "point"), 
-           interval = c("delta","bootstrap", "none"), level = 0.95, 
-           R = 500, bootType = c("nonparametric", "parametric", "model"), 
+           interval = c("delta", "sandwich", "profile", "bootstrap"), level = 0.95, 
+           R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical"), 
            display = TRUE, progressInfo = TRUE) 
 }
 \arguments{

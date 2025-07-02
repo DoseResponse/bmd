@@ -17,7 +17,7 @@ bmdIso(formula, data, type, bmr, p0,
   \item{data}{data frame containing the variables in the model}
   \item{type}{character string specifying the type of data used in the model. "continuous", "binomial" or "Poisson"}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
-  \item{p0}{}
+  \item{p0}{background probability for hybrid definitions}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
   "modelBased" - the background level is obtained from the model as the level for dose 0: 

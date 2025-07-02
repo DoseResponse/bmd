@@ -1,11 +1,14 @@
 bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical")){
   bootType <- match.arg(bootType)
   
-  if(!require("reshape2")){
+  if(!requireNamespace("reshape2")){
     stop('package "reshape2" must be installed to use bootstrapping with ordinal dose-response model')
   }
-  if(!require("dplyr")){
+  if(!requireNamespace("dplyr")){
     stop('package "dplyr" must be installed to use bootstrapping with ordinal dose-response model')
+  }
+  if(!requireNamespace("tidyr")){
+    stop('package "tidyr" must be installed to use bootstrapping with ordinal dose-response model')
   }
   
   if (bootType == "nonparametric") {

@@ -1,8 +1,10 @@
-bmdOrdinalMA <- function(modelList, modelWeights = c("AIC", "BIC"), bmr=0.1, backgType = "modelBased", backg = NA, def="excess", type = c("bootstrap", "Kang"), level = 0.95, R = 500, bootType = "nonparametric", display = TRUE, progressInfo = TRUE){
+bmdOrdinalMA <- function(modelList, modelWeights = c("AIC", "BIC"), bmr, backgType = c("modelBased", "absolute"), backg = NA, def = c("excess", "additional", "point"), type = c("bootstrap", "Kang"), level = 0.95, R = 500, bootType = c("nonparametric", "parametric"), display = TRUE, progressInfo = TRUE){
   # assertions
   if(!all(sapply(modelList, function(object) inherits(object, "drcOrdinal")))){
     stop('"modelList" must be a list of ordinal dose-response models of type "drcOrdinal"')
   }
+  
+  bootType <- match.arg(bootType)
   
   # bmdEstimates on all models
   bmdList <- lapply(modelList, function(object) bmdOrdinal(object, bmr=bmr, backgType = backgType, backg = backg, def=def, interval = "delta", display = FALSE))

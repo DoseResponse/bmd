@@ -1,5 +1,6 @@
-print.bmdOrdinal <- function(object, ..., digits = max(3, getOption("digits") - 3)) 
+print.bmdOrdinal <- function(x, ..., digits = max(3, getOption("digits") - 3)) 
 {
+  object <- x
   classList <- class(object)
   
   if (length(object$Results)>0) 

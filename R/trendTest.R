@@ -23,12 +23,12 @@ trendTest <- function(x, y, data, test = c("william", "shirley", "tukey"), level
   }
   
   if(test == "tukey"){
-    if(!require("multcomp")){
+    if(!requireNamespace("multcomp")){
       stop('package "multcomp" must be installed to use tukey trend test')
     }
     fitw <- lm(y ~ x)
     ttw <- .tukeytrendfit(y, x)
-    res <- multcomp:::summary.glht(multcomp::glht(model=ttw$mmm, linfct=ttw$mlf))
+    res <- summary(multcomp::glht(model=ttw$mmm, linfct=ttw$mlf))
     
     p.values <- as.numeric(res$test$pvalues)
     names(p.values) <- names(res$test$tstat)

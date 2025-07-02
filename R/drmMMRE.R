@@ -20,8 +20,12 @@ drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial
   
   type <- match.arg(type)
   
-  if(!require("metafor")){
+  if(!requireNamespace("metafor")){
     stop("install package metafor by running\nremotes::install_github(\"wviechtb/metafor\")")
+  }
+  
+  if(!requireNamespace("Matrix")){
+    stop("install package \"Matrix\"")
   }
   
   # Fit models for each exp_id
@@ -47,7 +51,7 @@ drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial
                                         ))
   
   # Fit MA_MA_model
-  MV_MA_model<-tryCatch( expr={rma.mv(Estimate
+  MV_MA_model<-tryCatch( expr={metafor::rma.mv(Estimate
                                       ,(block_diag_matrix+t(block_diag_matrix))/2
                                       , mods = ~0+Coef
                                       ,random= ~ 0+Coef|exp_id
@@ -100,6 +104,6 @@ drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial
 }
 
 
-vcov.drcMMRE <- function(object){
+vcov.drcMMRE <- function(object, ...){
   vcov(object$MV_MA_model)
 }

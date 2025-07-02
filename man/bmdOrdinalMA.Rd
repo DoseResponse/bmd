@@ -6,9 +6,12 @@ Benchmark dose estimation for ordinal dose-response models
 \description{Estimation of benchmark doses and benchmark dose lower limit based on model averaging from a user-defined list of ordinal dose-response model fits 
 }
 \usage{
-bmdOrdinalMA(modelList, modelWeights = c("AIC", "BIC"), bmr, backgType = c("modelBased", "absolute"), backg = NA,
-             def=c("excess", "additional", "point"), level = 0.95, R = 500,
-             bootType = c("nonparametric", "parametric"), display = TRUE, progressInfo = TRUE)
+bmdOrdinalMA(modelList, modelWeights = c("AIC", "BIC"), bmr, 
+             backgType = c("modelBased", "absolute"), backg = NA,
+             def=c("excess", "additional", "point"), type = c("bootstrap", "Kang"),
+             level = 0.95, R = 500,
+             bootType = c("nonparametric", "parametric"), 
+             display = TRUE, progressInfo = TRUE)
 }
 \arguments{
   \item{modelList}{A list of ordinal dose-response models of class \code{drcOrdinal}}
@@ -32,6 +35,8 @@ bmdOrdinalMA(modelList, modelWeights = c("AIC", "BIC"), bmr, backgType = c("mode
   Works for binomial response. BMR should be between 0 and 1.  
   
   "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for binomial, count and continuous response data.}
+  
+  \item{type}{specify the model averaging type used for the confidence intervals. Options are "Kang" (confidence intervals computed as weighted averages of individual confidence intervals) and "bootstrap"}
   
   \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
   

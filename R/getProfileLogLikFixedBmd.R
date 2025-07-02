@@ -43,7 +43,7 @@ getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start){
         SSD <- constrOptim0$value
       } else {
         int0 <- confint(object,level = 0.99)[1,]
-        optim0 <- optim(par = start, f = fn0, method = "Brent", lower = int0[1], upper = int0[2])
+        optim0 <- optim(par = start, fn = fn0, method = "Brent", lower = int0[1], upper = int0[2])
         SSD <- optim0$value
       }
       #sigmaSqHat <- object$fit$value/n  # 
