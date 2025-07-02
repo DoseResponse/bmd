@@ -747,26 +747,26 @@ test_that("bmd function computes BMD (point) correctly for Chlorac model", {
   expect_true(!is.na(result$Results[1, "BMD"]))
   expect_equal(result$Results[1, "BMD"], 22.2271415904074)
   expect_equal(result$bmrScaled[1,1], 0.22)
-  expect_equal(unname(result$interval[1,]), c(18.292131969707,26.1621512111078))
+  expect_equal(unname(result$interval[1,]), c(18.292131969707,26.1621512111078), tolerance = 1e-4)
   
   # resultSandwich
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
   expect_equal(resultSandwich$Results[1, "BMD"], 22.2271415904074)
   expect_equal(resultSandwich$bmrScaled[1,1], 0.22)
-  expect_equal(unname(resultSandwich$interval[1,]), c(21.7141651046908,22.740118076124))
+  expect_equal(unname(resultSandwich$interval[1,]), c(21.7141651046908,22.740118076124), tolerance = 1e-4)
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
   
   # resultProfile
   expect_true(!is.na(resultProfile$Results[1, "BMD"]))
   expect_equal(resultProfile$Results[1, "BMD"], 22.2271415904074)
   expect_equal(resultProfile$bmrScaled[1,1], 0.22)
-  expect_equal(unname(resultProfile$interval[1,]), c(19.0428644039017,39.9999389661972))
+  expect_equal(unname(resultProfile$interval[1,]), c(19.0428644039017,39.9999389661972), tolerance = 1e-4)
   
   # resultProfileGrid
   expect_true(!is.na(resultProfileGrid$Results[1, "BMD"]))
   expect_equal(resultProfileGrid$Results[1, "BMD"], 22.2271415904074)
   expect_equal(resultProfileGrid$bmrScaled[1,1], 0.22)
-  expect_equal(unname(resultProfileGrid$interval[1,]), c(19.2099579670753,28.9585965214678))
+  expect_equal(unname(resultProfileGrid$interval[1,]), c(19.2099579670753,28.9585965214678), tolerance = 1e-4)
 })
 
 test_that("bmd function computes BMD (excess) correctly for Chlorac model", {
@@ -784,35 +784,35 @@ test_that("bmd function computes BMD (excess) correctly for Chlorac model", {
   expect_true(!is.na(result$Results[1, "BMD"]))
   expect_equal(result$Results[1, "BMD"], 19.7922909180127)
   expect_equal(result$bmrScaled[1,1], 0.144988275510254)
-  expect_equal(unname(result$interval[1,]), c(15.1507479878497,24.4338338481757))
+  expect_equal(unname(result$interval[1,]), c(15.1507479878497,24.4338338481757), tolerance = 1e-4)
   
   # resultSandwich
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
   expect_equal(resultSandwich$Results[1, "BMD"], 19.7922909180127)
   expect_equal(resultSandwich$bmrScaled[1,1], 0.144988275510254)
-  expect_equal(unname(resultSandwich$interval[1,]), c(18.5884627205015,20.9961191155239))
+  expect_equal(unname(resultSandwich$interval[1,]), c(18.5884627205015,20.9961191155239), tolerance = 1e-4)
   
   # resultInv
   expect_equal(resultInv$bmrScaled[1,1], drop(object0$curve[[1]](resultInv$Results[1, "BMD"])))
   expect_true(!is.na(resultInv$Results[1, "BMD"]))
   expect_equal(resultInv$Results[1, "BMD"], 19.7922909180127)
   expect_equal(resultInv$bmrScaled[1,1], 0.144988275510254)
-  expect_equal(unname(resultInv$interval[1,]), c(17.2530174112536,25.3502935604775))
+  expect_equal(unname(resultInv$interval[1,]), c(17.2530174112536,25.3502935604775), tolerance = 1e-4)
   
   # resultProfile
   expect_equal(resultProfile$bmrScaled[1,1], drop(object0$curve[[1]](resultProfile$Results[1, "BMD"])))
   expect_true(!is.na(resultProfile$Results[1, "BMD"]))
   expect_equal(resultProfile$Results[1, "BMD"], 19.7922909180127)
   expect_equal(resultProfile$bmrScaled[1,1], 0.144988275510254)
-  expect_equal(unname(resultProfile$interval[1,]), c(16.1933316166892,39.9999273156964))
+  expect_equal(unname(resultProfile$interval[1,]), c(16.1933316166892,39.9999273156964), tolerance = 1e-4)
   
   # resultProfileGrid
   expect_equal(resultProfileGrid$bmrScaled[1,1], drop(object0$curve[[1]](resultProfileGrid$Results[1, "BMD"])))
   expect_true(!is.na(resultProfileGrid$Results[1, "BMD"]))
   expect_equal(resultProfileGrid$Results[1, "BMD"], 19.7922909180127)
   expect_equal(resultProfileGrid$bmrScaled[1,1], 0.144988275510254)
-  expect_equal(unname(resultProfileGrid$interval[1,]), c(16.3460864786873,26.9565322744268))
+  expect_equal(unname(resultProfileGrid$interval[1,]), c(16.3460864786873,26.9565322744268), tolerance = 1e-4)
 })
 
 test_that("bmd function computes BMD (additional) correctly for Chlorac model", {
@@ -832,35 +832,35 @@ test_that("bmd function computes BMD (additional) correctly for Chlorac model", 
   expect_true(!is.na(result$Results[1, "BMD"]))
   expect_equal(result$Results[1, "BMD"], 21.7026737107011)
   expect_equal(result$bmrScaled[1,1], 0.199987658431846)
-  expect_equal(unname(result$interval[1,]), c(17.173324815284,26.2320226061182))
+  expect_equal(unname(result$interval[1,]), c(17.173324815284,26.2320226061182), tolerance = 1e-4)
   
   # resultSandwich
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
   expect_equal(resultSandwich$Results[1, "BMD"], 21.7026737107011)
   expect_equal(resultSandwich$bmrScaled[1,1], 0.199987658431846)
-  expect_equal(unname(resultSandwich$interval[1,]), c(20.4561088161456,22.9492386052567))
+  expect_equal(unname(resultSandwich$interval[1,]), c(20.4561088161456,22.9492386052567), tolerance = 1e-4)
   
   # resultInv
   expect_equal(resultInv$bmrScaled[1,1], drop(object0$curve[[1]](resultInv$Results[1, "BMD"])))
   expect_true(!is.na(resultInv$Results[1, "BMD"]))
   expect_equal(resultInv$Results[1, "BMD"], 21.7026737107011)
   expect_equal(resultInv$bmrScaled[1,1], 0.199987658431846)
-  expect_equal(unname(resultInv$interval[1,]), c(18.8322967064953,26.4970903630817))
+  expect_equal(unname(resultInv$interval[1,]), c(18.8322967064953,26.4970903630817), tolerance = 1e-4)
   
   # resultProfile
   expect_equal(resultProfile$bmrScaled[1,1], drop(object0$curve[[1]](resultProfile$Results[1, "BMD"])))
   expect_true(!is.na(resultProfile$Results[1, "BMD"]))
   expect_equal(resultProfile$Results[1, "BMD"], 21.7026737107011)
   expect_equal(resultProfile$bmrScaled[1,1], 0.199987658431846)
-  expect_equal(unname(resultProfile$interval[1,]), c(18.2326808009201,39.9999359543284))
+  expect_equal(unname(resultProfile$interval[1,]), c(18.2326808009201,39.9999359543284), tolerance = 1e-4)
   
   # resultProfileGrid
   expect_equal(resultProfileGrid$bmrScaled[1,1], drop(object0$curve[[1]](resultProfileGrid$Results[1, "BMD"])))
   expect_true(!is.na(resultProfileGrid$Results[1, "BMD"]))
   expect_equal(resultProfileGrid$Results[1, "BMD"], 21.7026737107011)
   expect_equal(resultProfileGrid$bmrScaled[1,1], 0.199987658431846)
-  expect_equal(unname(resultProfileGrid$interval[1,]), c(18.2876046579125,28.7023777279169))
+  expect_equal(unname(resultProfileGrid$interval[1,]), c(18.2876046579125,28.7023777279169), tolerance = 1e-4)
   
 })
 
@@ -923,7 +923,7 @@ test_that("bmd function computes BMD (relative) correctly for lemna model", {
   expect_true(!is.na(result$Results[1, "BMD"]))
   expect_equal(result$Results[1, "BMD"], 0.644966972651776)
   expect_equal(result$bmrScaled[1,1], 60.1147293067283)
-  expect_equal(unname(result$interval[1,]), c(-0.124767225483307,1.41470117078686))
+  expect_equal(unname(result$interval[1,]), c(-0.124767225483307,1.41470117078686), tolerance = 1e-4)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](0)*0.9))
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
   # inv

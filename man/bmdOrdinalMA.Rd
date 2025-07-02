@@ -6,12 +6,13 @@ Benchmark dose estimation for ordinal dose-response models
 \description{Estimation of benchmark doses and benchmark dose lower limit based on model averaging from a user-defined list of ordinal dose-response model fits 
 }
 \usage{
-bmdOrdinalMA(modelList, bmr, backgType = c("modelBased", "absolute"), backg = NA,
+bmdOrdinalMA(modelList, modelWeights = c("AIC", "BIC"), bmr, backgType = c("modelBased", "absolute"), backg = NA,
              def=c("excess", "additional", "point"), level = 0.95, R = 500,
-             bootType = c("nonparametric", "parametric"), display = TRUE)
+             bootType = c("nonparametric", "parametric"), display = TRUE, progressInfo = TRUE)
 }
 \arguments{
   \item{modelList}{A list of ordinal dose-response models of class \code{drcOrdinal}}
+  \item{modelWeights}{character string specifying the type of weights used, "AIC" or "BIC", or a numeric vector of the same length as the modelList with user defined weights}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. The options are "modelBased" and "absolute".
 
@@ -46,6 +47,8 @@ bmdOrdinalMA(modelList, bmr, backgType = c("modelBased", "absolute"), backg = NA
   }
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
+  
+  \item{progressInfo}{logical. If TRUE, a progressbar is displayed when calculating bootstrap confidence intervals}
 }
 
 \details{

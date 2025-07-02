@@ -1,4 +1,4 @@
-bmdOrdinalMA <- function(modelList, modelWeights = c("AIC", "BIC"), bmr=0.1, backgType = "modelBased", backg = NA, def="excess", type = c("bootstrap", "Kang"), level = 0.95, R = 500, bootType = "nonparametric", progressInfo = TRUE, display = TRUE){
+bmdOrdinalMA <- function(modelList, modelWeights = c("AIC", "BIC"), bmr=0.1, backgType = "modelBased", backg = NA, def="excess", type = c("bootstrap", "Kang"), level = 0.95, R = 500, bootType = "nonparametric", display = TRUE, progressInfo = TRUE){
   # assertions
   if(!all(sapply(modelList, function(object) inherits(object, "drcOrdinal")))){
     stop('"modelList" must be a list of ordinal dose-response models of type "drcOrdinal"')

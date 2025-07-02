@@ -10,7 +10,7 @@ bmdOrdinal(object, bmr, backgType = c("modelBased", "absolute"), backg = NA,
            def = c("excess", "additional", "point"), 
            interval = c("delta","bootstrap", "none"), level = 0.95, 
            R = 500, bootType = c("nonparametric", "parametric", "model"), 
-           display = TRUE) 
+           display = TRUE, progressInfo = TRUE) 
 }
 \arguments{
   \item{object}{object of class \code{drcOrdinal}}
@@ -62,6 +62,8 @@ bmdOrdinal(object, bmr, backgType = c("modelBased", "absolute"), backg = NA,
   }
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
+  
+  \item{progressInfo}{logical. If TRUE, a progressbar is displayed when calculating bootstrap confidence intervals}
 }
 
 \details{

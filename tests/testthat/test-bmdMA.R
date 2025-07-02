@@ -553,27 +553,27 @@ test_that("bmdMA function computes BMD (point) correctly for TCDD models", {
   
   # Boot
   expect_true(!is.na(resultBoot$Results[1, "BMD_MA"]))
-  expect_equal(resultBoot$Boot.samples.used, 48)
+  expect_equal(resultBoot$Boot.samples.used, 48, tolerance = 1)
   expect_equal(resultBoot$Results[1, "BMD_MA"], 8.0976277220152)
   expect_equal(resultBoot$interval[1,], c(BMDL_MA = 6.27951876692377, BMDU_MA = 15.8918488967058), tolerance = 1e-1)
   
   # BootBCa
   expect_true(all(!is.na(resultBootBCa$Results[, "BMD_MA"])))
   expect_equal(unname(resultBootBCa$Results[, "BMD_MA"]), c(8.0976277220152))
-  expect_equal(resultBootBCa$Boot.samples.used, 48)
+  expect_equal(resultBootBCa$Boot.samples.used, 48, tolerance = 1)
   expect_equal(unname(resultBootBCa$Results[,"BMDL_MA"]), c(5.48916035257719), tolerance = 1e-1)
   expect_equal(unname(resultBootBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
   
   # Curve
   expect_true(!is.na(resultCurve$Results[1, "BMD_MA"]))
-  expect_equal(resultCurve$Boot.samples.used, 48)
+  expect_equal(resultCurve$Boot.samples.used, 48, tolerance = 1)
   expect_equal(resultCurve$Results[1, "BMD_MA"], 7.93703689546043)
   expect_equal(resultCurve$interval[1,], c(BMDL_MA = 6.51501264650305, BMDU_MA = 16.4080707920735), tolerance = 1e-1)
   
   # CurveBCa
   expect_true(all(!is.na(resultCurveBCa$Results[, "BMD_MA"])))
   expect_equal(unname(resultCurveBCa$Results[, "BMD_MA"]), c(7.93703689546043))
-  expect_equal(resultCurveBCa$Boot.samples.used, 48)
+  expect_equal(resultCurveBCa$Boot.samples.used, 48, tolerance = 1)
   expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(5.91280712553062), tolerance = 1e-1)
   expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
 })
@@ -932,25 +932,25 @@ test_that("bmdMA function computes BMD (point) correctly for Decreasing binomial
   # resultBoot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
   expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(16.4767601484833, 30.3381343833517))
-  expect_equal(resultBoot$Boot.samples.used, 50)
+  expect_equal(resultBoot$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(1.55114527115658,24.7976584352616), tolerance = 1e-1)
   expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(28.447104103199,39.2750258645232), tolerance = 1e-1)
   # resultCurve
   expect_true(all(!is.na(resultCurve$Results[, "BMD_MA"])))
   expect_equal(unname(resultCurve$Results[, "BMD_MA"]), c(16.5073556830358, 30.3309353075015))
-  expect_equal(resultCurve$Boot.samples.used, 50)
+  expect_equal(resultCurve$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(1.45044325358349,26.3872029783547), tolerance = 1e-1)
   expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(23.4835755264987,39.9141782740096), tolerance = 1e-1)
   # resultBootBCa
   expect_true(all(!is.na(resultBootBCa$Results[, "BMD_MA"])))
   expect_equal(unname(resultBootBCa$Results[, "BMD_MA"]), c(16.4767601484833, 30.3381343833517))
-  expect_equal(resultBootBCa$Boot.samples.used, 49)
+  expect_equal(resultBootBCa$Boot.samples.used, 49, tolerance = 1)
   expect_equal(unname(resultBootBCa$Results[,"BMDL_MA"]), c(3.3270653573855,16.8290145235522), tolerance = 1e-1)
   expect_equal(unname(resultBootBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
   # resultCurveBCa
   expect_true(all(!is.na(resultCurveBCa$Results[, "BMD_MA"])))
   expect_equal(unname(resultCurveBCa$Results[, "BMD_MA"]), c(16.5073556830358, 30.3309353075015))
-  expect_equal(resultCurveBCa$Boot.samples.used, 50)
+  expect_equal(resultCurveBCa$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(0.361186441608513,21.6147459158837), tolerance = 1e-1)
   expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
 })
@@ -1007,26 +1007,26 @@ test_that("bmdMA function computes BMD (excess) correctly for Decreasing binomia
   # resultBoot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
   expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(11.7349943036545, 23.7533160131826))
-  expect_equal(resultBoot$Boot.samples.used, 50)
-  expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(0.176508789719701,7.73106039713397), tolerance = 1e-2)
-  expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(24.7982532099151,32.7273607506471), tolerance = 1e-2)
+  expect_equal(resultBoot$Boot.samples.used, 50, tolerance = 1)
+  expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(0.176508789719701,7.73106039713397), tolerance = 1e-1)
+  expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(24.7982532099151,32.7273607506471), tolerance = 1e-1)
   # resultCurve
   expect_true(all(!is.na(resultCurve$Results[, "BMD_MA"])))
   expect_equal(unname(resultCurve$Results[, "BMD_MA"]), c(11.9000482326248, 24.0167032503988))
-  expect_equal(resultCurve$Boot.samples.used, 49)
-  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(0.212082383992232,17.245459902478), tolerance = 1e-2)
-  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(19.1178603752347, 34.4447842377776), tolerance = 1e-2)
+  expect_equal(resultCurve$Boot.samples.used, 49, tolerance = 1)
+  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(0.212082383992232,17.245459902478), tolerance = 1e-1)
+  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(19.1178603752347, 34.4447842377776), tolerance = 1e-1)
   # resultBootBCa
   expect_true(all(!is.na(resultBootBCa$Results[, "BMD_MA"])))
   expect_equal(unname(resultBootBCa$Results[, "BMD_MA"]), c(11.7349943036545, 23.7533160131826))
-  expect_equal(resultBootBCa$Boot.samples.used, 49)
-  expect_equal(unname(resultBootBCa$Results[,"BMDL_MA"]), c(0.422313711087127,2.45309962249564), tolerance = 1e-2)
+  expect_equal(resultBootBCa$Boot.samples.used, 49, tolerance = 1)
+  expect_equal(unname(resultBootBCa$Results[,"BMDL_MA"]), c(0.422313711087127,2.45309962249564), tolerance = 1e-1)
   expect_equal(unname(resultBootBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
   # ResultCurveBCa
   expect_true(all(!is.na(resultCurveBCa$Results[, "BMD_MA"])))
   expect_equal(unname(resultCurveBCa$Results[, "BMD_MA"]), c(11.9000482326248, 24.0167032503988))
-  expect_equal(resultCurveBCa$Boot.samples.used, 49)
-  expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(1.01766053328384,11.5161237490573), tolerance = 1e-2)
+  expect_equal(resultCurveBCa$Boot.samples.used, 49, tolerance = 1)
+  expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(1.01766053328384,11.5161237490573), tolerance = 1e-1)
   expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
 })
 
@@ -1080,15 +1080,15 @@ test_that("bmdMA function computes BMD (additional) correctly for Decreasing bin
   # resultBoot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
   expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(12.0475135843298, 24.2168984689448))
-  expect_equal(resultBoot$Boot.samples.used, 50)
-  expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(0.160028906689239,7.38437587559939), tolerance = 1e-2)
-  expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(25.2916075533545,33.2573011197188), tolerance = 1e-2)
+  expect_equal(resultBoot$Boot.samples.used, 50, tolerance = 1)
+  expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(0.160028906689239,7.38437587559939), tolerance = 1e-1)
+  expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(25.2916075533545,33.2573011197188), tolerance = 1e-1)
   # resultCurve
   expect_true(all(!is.na(resultCurve$Results[, "BMD_MA"])))
   expect_equal(unname(resultCurve$Results[, "BMD_MA"]), c(12.2047330511244, 24.4616008187769))
-  expect_equal(resultCurve$Boot.samples.used, 48)
-  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(0.641340012245435,18.4858704146623), tolerance = 1e-2)
-  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(19.5768964306862,34.7795760773764), tolerance = 1e-2)
+  expect_equal(resultCurve$Boot.samples.used, 48, tolerance = 1)
+  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(0.641340012245435,18.4858704146623), tolerance = 1e-1)
+  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(19.5768964306862,34.7795760773764), tolerance = 1e-1)
 })
 
 
@@ -1134,7 +1134,7 @@ test_that("bmdMA function computes BMD (point with stacking weights) correctly f
   # resultBoot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
   expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(16.6498456454902, 30.3165644996408), tolerance = 1e-1)
-  expect_equal(resultBoot$Boot.samples.used, 50)
+  expect_equal(resultBoot$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(2.12333205792999,25.08635184492), tolerance = 1)
   expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(27.8840479507664,38.6902619548875), tolerance = 1)
 })

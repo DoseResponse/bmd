@@ -110,7 +110,7 @@ getFctDerivx <- function(object){
   }
   
   # Brain-Cousens
-  if(class(object$fct) == "braincousens"){
+  if(identical(class(object$fct), "braincousens")){
     derivx <- function(dose, parm)
     {
       parmMat <- matrix(parmVec, nrow(parm), numParm, byrow = TRUE)

@@ -1,11 +1,11 @@
 drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   call <- match.call()
   
-  if(class(formula) != "formula"){
+  if(!inherits(formula, "formula")){
     stop('argument "formula" must be of class "formula"')
   }
   
-  if(class(var.formula) != "formula"){
+  if(!inherits(var.formula, "formula")){
     stop('argument "var.formula" must be of class "formula"')
   }
   

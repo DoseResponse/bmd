@@ -45,7 +45,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   }
   respTrans <- match.arg(respTrans)
   
-  if(class(object$fct) == "braincousens" & is.null(object$fct$fixed)){
+  if(inherits(object$fct, "braincousens") & is.null(object$fct$fixed)){
     if(object$fct$name == "BC.4"){
       object$fct$fixed <- c(NA, 0, NA, NA, NA)
     } else if(object$fct$name == "BC.5"){
