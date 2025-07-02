@@ -28,8 +28,7 @@ Suggests:
     testthat (>= 3.0.0)
 Remotes:
     doseresponse/drc,
-    doseresponse/drcData,
-    wviechtb/metafor
+    doseresponse/drcData
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
