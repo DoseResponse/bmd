@@ -1,6 +1,6 @@
 \name{plot.bmd}
-
 \alias{plot.bmd}
+\alias{\method{plot}{bmd}}
 
 \title{Plotting benchmark doses}
 
@@ -9,7 +9,7 @@
 }
 
 \usage{
-  plot.bmd(x, ..., interval = c("BMDL", "twosided", "none"))
+  \method{plot}{bmd}(x, ..., interval = c("BMDL", "twosided", "none"))
 }
 
 \arguments{
@@ -39,6 +39,8 @@
 %\seealso{\code{\link{plotraw}} plots the observations only.}
 
 \examples{
+library(drc)
+library(drcData)
 
 ## Fitting model and calculating BMD. 
 model <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())

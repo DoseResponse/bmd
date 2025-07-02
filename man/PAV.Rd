@@ -6,7 +6,7 @@ Pool-adjacent-violators monotonizing
 \description{The function monotonizes a sequence of probabilities or means based on the pool-adjacent-violators algorithm.  
 }
 \usage{
-function(formula,data,type) 
+PAV(formula,data,type) 
 }
 \arguments{
   \item{formula}{an object of class "formula" expressing dose-response relationship. Details of model specification are given under 'Details'}

@@ -6,7 +6,7 @@ Fitting ordinal dose-response models
 \description{A model fitting function for analysis of ordinal dose-response data.
 }
 \usage{
-drmOrdinal(levels, dose, weights, data, fct, p.epsilon = 10^(-16))
+drmOrdinal(levels, dose, weights, blocks, data, fct, p.epsilon = 1e-16)
 }
 \arguments{
   \item{levels}{a character vector of the levels of the response variable in increasing order, as they appear in the supplied data set}
@@ -23,8 +23,8 @@ drmOrdinal(levels, dose, weights, data, fct, p.epsilon = 10^(-16))
   function, the accompanying self starter function, the names of the parameter in the non-linear function and, 
   optionally, the first and second derivatives as well, for the individual fitted curves. For more information see the help page for the "drm" function in the "drc" package.
   Currently available functions for ordinal dose-response models include, among others, the log-logistic models 
-  \code{\link{LL.4}}, the log-normal model \code{\link{LN.4}} and the two Weibull models \code{\link{W1.4}} and \code{\link{W2.4}}. Use
-  \code{\link{getMeanFunctions}} for a full list.}
+  \code{\link[drc]{LL.4}}, the log-normal model \code{\link[drc]{LN.4}} and the two Weibull models \code{\link[drc]{W1.4}} and \code{\link[drc]{W2.4}}. Use
+  \code{\link[drc]{getMeanFunctions}} for a full list.}
 
   \item{p.epsilon}{numeric value specifying the lower bound for the probabilites for each level returned by the function pFun created when fitting the model. Default value is 10^(-16)}
 }
@@ -47,11 +47,13 @@ drmOrdinal(levels, dose, weights, data, fct, p.epsilon = 10^(-16))
 \seealso{
 }
 \examples{
+library(drc)
 library(drcData)
 data(guthion)
 guthionS <- subset(guthion, trt == "S")
 
-guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total",
+                          dose = "dose", data = guthionS, fct = LL.2())
 
 plot(guthionS.LL, xlim = c(15,55)) # uses ggplot
 

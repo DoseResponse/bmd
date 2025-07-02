@@ -6,11 +6,14 @@ Benchmark dose estimation
 \description{Estimation of benchmark doses and benchmark dose lower limit from dose response model fits 
 }
 \usage{
-bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
-def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-respTrans = c("none", "log", "sqrt"),
-interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE,
-level=0.95, profileGridSize = 20, profileProgressInfo = TRUE) 
+bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
+    backg = NA, controlSD = NA, 
+    def = c("excess", "additional", "relative", "extra",
+            "added", "hybridExc", "hybridAdd", "point"),
+    respTrans = c("none", "log", "sqrt"), 
+    interval = c("delta", "sandwich", "inv", "profile", "profileGrid"), 
+    sandwich.vcov = FALSE, display = TRUE, level = 0.95,
+    profileGridSize = NA, profileProgressInfo = TRUE)
 }
 
 \arguments{
@@ -31,7 +34,10 @@ level=0.95, profileGridSize = 20, profileProgressInfo = TRUE)
   
   "hybridPercentile" - the background risk is specified by the user in terms of percentile from the control group distribution (assuming a normal distribution).
   p0 = 1 - phi((x0 - f(0))/sigma) = 1 - backg.
-  where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group}
+  where x0 is the level for which the response is considered adverse, phi is the normal distribution function and sigma is the SD for the control group
+  
+  If not specified, it will be set to "modelBased" for all def excluding "hybridExc" and "hybridAdd", for these the default is "hybridSD".
+  }
     
   \item{backg}{numeric value specifying the background level. Defaults to 0 for "absolute" background risk for binomial response (1 for decreasing dose-response models), 2 SD for "hybridSD" background and 0.9 for "hybridPercentile"}
   
@@ -117,6 +123,9 @@ A list of four elements: Results contain the estimated BMD and BMDL, bmrScaled i
 \seealso{
 }
 \examples{
+library(drc)
+library(drcData)
+
 ## Fitting log-logistic two-parameter model to binomial data
 deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
 

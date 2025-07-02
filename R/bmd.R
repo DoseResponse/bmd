@@ -17,7 +17,11 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
     backgType <- "modelBased"
     } 
   if (missing(backgType)) {
-    stop(paste("backgType is missing", sep=""))
+    if(!(def %in% c("hybridExc", "hybridAdd"))){
+      backgType <- "modelBased"
+    } else {
+      backgType <- "hybridSD"
+    }
   }
   if (!(def %in% c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"))) {
     stop(paste("Could not recognize def", sep=""))
@@ -29,16 +33,19 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   level <- 1-2*(1-level)
   
   interval <- match.arg(interval)
+  if(inherits(object, "drcMMRE") & interval != "delta"){
+    stop("only delta type confidence interval supported for object of type \"drcMMRE\"")
+  }
   if(interval == "sandwich"){
     sandwich.vcov <- TRUE
     interval <- "delta"
   }
-  if(sandwich.vcov & !require("sandwich")){
+  if(sandwich.vcov & !requireNamespace("sandwich")){
     stop('package "sandwich" must be installed to compute sandwich confidence intervals')
   }
   respTrans <- match.arg(respTrans)
   
-  if(class(object$fct) == "braincousens" & is.null(object$fct$fixed)){
+  if(inherits(object$fct, "braincousens") & is.null(object$fct$fixed)){
     if(object$fct$name == "BC.4"){
       object$fct$fixed <- c(NA, 0, NA, NA, NA)
     } else if(object$fct$name == "BC.5"){
@@ -82,8 +89,12 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
       }
       dBmdVal <- EDeval[[2]] + bmrScaledList$dBmrScaled[,1] / fctDerivx(bmdVal, t(parmMat))[1]
       bmdSEVal <- sqrt(dBmdVal %*% varCov %*% dBmdVal)
-      intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
-                                    level = level, object$"type", df.residual(object), FALSE)
+      if(inherits(object, "drcMMRE")){
+        intMat <- matrix(qnorm(c((1-level)/2, 1-(1-level)/2), mean = bmdVal, sd = bmdSEVal), ncol = 2)
+      } else {
+        intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
+                                      level = level, object$"type", df.residual(object), FALSE)
+      }
     } else if(interval == "inv"){
       if(!identical(respTrans, "none")){stop("inverse regression interval not available for transformed response.")}
       slope <- drop(ifelse(object$curve[[1]](0)-object$curve[[1]](Inf)>0,"decreasing","increasing"))

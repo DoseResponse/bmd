@@ -6,14 +6,20 @@ Model-averaged benchmark dose estimation
 \description{Estimation of benchmark doses and benchmark dose lower limit based on model averaging from a user-defined list of dose response model fits 
 }
 \usage{
-bmdMA(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
-def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),respTrans = c("none", "log", "sqrt"),
-interval = c("delta","sandwich","inv", "profile"),
-type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInterval, level=0.95, stackingSeed, stackingSplits, display = TRUE, progressInfo = TRUE) 
+bmdMA(modelList, modelWeights, bmr, 
+      backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), 
+      backg = NA, def = c("excess", "additional", "relative", "extra", 
+                          "added", "hybridExc", "hybridAdd", "point"),
+      respTrans = c("none", "log", "sqrt"), 
+      interval = c("delta","sandwich","inv", "profile"), 
+      type = c("curve","bootstrap","Kang","Buckland"), 
+      bootstrapType = c("nonparametric", "parametric"), R=1000, 
+      bootInterval = "percentile", level=0.95, stackingSeed, 
+      stackingSplits, display = TRUE, progressInfo = TRUE) 
 }
 \arguments{
   \item{modelList}{list of models of class \code{drc}}
-  \item{modelWeights}{character string specifying the type of weights used, "AIC", "BIC" or "Stack", or a vector of the same length as the modelList with user defined weights}
+  \item{modelWeights}{character string specifying the type of weights used, "AIC", "BIC" or "Stack" (Baalkilde, J. R., Hansen, N. R., and Jensen, S. M., 2025), or a vector of the same length as the modelList with user defined weights}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
@@ -84,7 +90,7 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInte
   "Buckland" - 
   }
   
-  \item{bootstrapType}{character string indicating type of bootstrap sampling to be used if type="bootstrap". "nonparametric" (default), "semiparametric" or "parametric" (see details)}
+  \item{bootstrapType}{character string indicating type of bootstrap sampling to be used if type="bootstrap" or "curve". "nonparametric" (default), or "parametric" (see details)}
   
   \item{bootInterval}{character string indicating how to estimate the bootstrap confidence intervals used to find BMDL type="bootstrap". "percentile" (default) or "BCa" (Bias corrected and adjusted)}
   
@@ -98,6 +104,8 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInte
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
   
+  \item{progressInfo}{logical. If TRUE, a progressbar is shown when computing bootstrap confidence intervals.}
+  
 }
 
 \details{
@@ -108,12 +116,12 @@ This package project is still under development. The aim to provide an R package
   
   Details on the implemented definitions and methods can be found in Crump (2002)
   
-  Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)). Bootstrapping with argument boot = "semiparametric" is done by sampling with replacement from the residuals.
+  Bootstrapping with the argument boot = "nonparametric" is done by sampling with replacement from the original data set. Bootstrapping with the argument boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)), assuming equal variance between groups, in case of continuous data. For binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i). In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the resampling always produces 0 or 1, respectively. In this case data is sampled from binom(N_i,(Y_i+1/3)/(N_i+1/3)).
 
 All sampling is made within dose groups.  
 }
 \value{
-A list of three elements: Results contain the estimated BMD and BMDL, Boot.samples.used gives the number of boot samples that resulted in succesful estimations and were accordingly used  in the estimation of BMDL (and BMDU), Interval gives BMDL and BMDU, which is identical to the confidence interval for the percentile interval approach.
+A list of five elements: Results contain the estimated BMD and BMDL, Boot.samples.used gives the number of boot samples that resulted in succesful estimations and were accordingly used  in the estimation of BMDL (and BMDU), Interval gives BMDL and BMDU, which is identical to the confidence interval for the percentile interval approach, SE gives the estimated SE for the "Buckland" method, and modelWeights includes the estimated weights.
 }
 \references{
   Budtz-Jorgensen, E., Keiding, N., and Grandjean, P. (2001) 
@@ -123,6 +131,10 @@ A list of three elements: Results contain the estimated BMD and BMDL, Boot.sampl
   Crump, K. (2002)
   Critical Issues in Benchmark Calculations from Continuous Data,
   \emph{Critical Reviews in Toxicology} \bold{32}, 133--153.
+  
+  Baalkilde, J. R., Hansen, N. R., and Jensen, S. M. (2025)
+  Stacking Weights and Model Space Selection in Frequentist Model Averaging for Benchmark Dose Estimation,
+  \emph{Environmetrics} \bold{36(2)}, e70002.
 }
 
 \author{ Signe M. Jensen and Jens Riis Baalkilde
@@ -133,6 +145,9 @@ A list of three elements: Results contain the estimated BMD and BMDL, Boot.sampl
 \seealso{
 }
 \examples{
+library(drc)
+library(drcData)
+
 ## Fitting 4 different two-parameter models to binomial data
 deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
 deguelin.m2 <- drm(r/n~dose, weights=n, data=deguelin, fct=W1.2(), type="binomial")
@@ -140,15 +155,17 @@ deguelin.m3 <- drm(r/n~dose, weights=n, data=deguelin, fct=W2.2(), type="binomia
 deguelin.m4 <- drm(r/n~dose, weights=n, data=deguelin, fct=LN.2(), type="binomial")
 
 
-## Model averaged BMD for 5% additional risk with estimated background risk and BMDL based on Buckland et al.
+## Model averaged BMD for 5% additional risk with estimated background risk 
+## and BMDL based on Buckland et al.
 bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
       backgType = "modelBased", def = "additional",
       type = "Buckland")
 
-## Model averaged BMD for 5% additional risk with estimated background risk and BMDL based on an average of the model curves
+## Model averaged BMD for 5% additional risk with estimated background risk
+## and BMDL based on an average of the model curves
 bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
       backgType = "modelBased", def = "additional",
-      type = "curve", bootstrapType = "parametric", bootInterval = "percentile", R=100)
+      type = "curve", bootstrapType = "parametric", bootInterval = "percentile", R=50)
 
 
 ## Fitting 4 different two-parameter models to binomial data
@@ -157,16 +174,17 @@ ryegrass.m2<-drm(rootl~conc, data=ryegrass, fct=W1.4())
 ryegrass.m3<-drm(rootl~conc, data=ryegrass, fct=W2.4())
 ryegrass.m4<-drm(rootl~conc, data=ryegrass, fct=LN.4())
 
-## Model-averaged BMD and bootstrap BMDL for bmr=5% and using the hybrid approach to estimate the background risk.  
+## Model-averaged BMD and bootstrap BMDL for bmr=5% and using the hybrid approach
+## to estimate the background risk.  
 bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="AIC", bmr=0.05, 
-      backgType = "hybridSD",
-      def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
+      backgType = "hybridSD", def = "hybridAdd", type = "bootstrap",
+      bootstrapType = "nonparametric", bootInterval = "percentile", R = 50)
 
 
 ## Model-averaged BMD using the Stacking Weights
 bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="Stack", bmr=0.05, 
-      backgType = "hybridSD",
-      def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
+      backgType = "hybridSD", def = "hybridAdd", type = "bootstrap",
+      bootstrapType = "nonparametric", bootInterval = "percentile", R = 50)
 
 }
 \keyword{model averaging}

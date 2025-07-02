@@ -38,7 +38,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   
   respTrans <- match.arg(respTrans)
   
-  if(class(object$fct) == "braincousens" & is.null(object$fct$fixed)){
+  if(inherits(object$fct, "braincousens") & is.null(object$fct$fixed)){
     if(object$fct$name == "BC.4"){
       object$fct$fixed <- c(NA, 0, NA, NA, NA)
     } else if(object$fct$name == "BC.5"){
@@ -57,16 +57,17 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   get.drm.list <- function(tmp.data){
     if(ncol(object$parmMat) == 1){
       drm.list.tmp <- lapply(tmp.data, function(x){
-        try(eval(substitute(drm(formula0, data = x, type = object$type, fct = object[["fct"]]),
+        try(eval(substitute(drm(formula0, data = x, type = object$type, fct = object[["fct"]],
+                                control = drmc(noMessage = TRUE)),
                             list(formula0 = object$call$formula)
                             )), TRUE)
       }
       )
     } else if(is.null(object$call$pmodels)){
       drm.list.tmp <- lapply(tmp.data, function(x){
-        if(object$type != "binomial"){
-          x[[as.character(object$call$curveid)]] <- x[[paste0("orig.", as.character(object$call$curveid))]]
-        }
+        # if(object$type != "binomial"){
+        #   x[[as.character(object$call$curveid)]] <- x[[paste0("orig.", as.character(object$call$curveid))]]
+        # }
         try(
           eval(substitute(drm(object$call$formula, weights = weights0, curveid = curveid0,
                               data = x, type = object$type, fct = object$fct, control = drmc(noMessage = TRUE)),
@@ -77,11 +78,11 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       })
     } else {
       drm.list.tmp <- lapply(tmp.data, function(x){
-        if(object$type != "binomial"){
-          x[[as.character(object$call$curveid)]] <- x[[paste0("orig.", as.character(object$call$curveid))]]
-        }
+        # if(object$type != "binomial"){
+        #   x[[as.character(object$call$curveid)]] <- x[[paste0("orig.", as.character(object$call$curveid))]]
+        # }
         try(
-          eval(substitute(drm(formula0, weights = weights0, curveid = curveid0,pmodels = pmodels0,
+          eval(substitute(drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0,
                               data = x, type = object$type, fct = object$fct, control = drmc(noMessage = TRUE)),
                           list(formula0 = object$call$formula,
                                weights0 = object$call$weights,
@@ -138,7 +139,7 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
     if(identical(bootInterval,"BCa")){
       jackData <- list()
       for(i in 1:(dim(object$data)[1])){
-        jackData[[i]] <- object$data[-i,]
+        jackData[[i]] <- object$origData[-i,]
       }
       # bootJack.drm.tmp <- lapply(jackData, function(x){
       #   try(drm(object$call$formula, data = x, fct = object[["fct"]]),TRUE)

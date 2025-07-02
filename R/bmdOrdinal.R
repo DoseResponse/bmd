@@ -1,5 +1,6 @@
-bmdOrdinal <- function(object, bmr=0.1, backgType = "modelBased", backg = NA, def="excess", interval = c("delta", "sandwich", "profile", "bootstrap"), level = 0.95, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical"), display = TRUE, progressInfo = TRUE){
+bmdOrdinal <- function(object, bmr, backgType = c("modelBased", "absolute"), backg = NA, def=c("excess", "additional", "point"), interval = c("delta", "sandwich", "profile", "bootstrap"), level = 0.95, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical"), display = TRUE, progressInfo = TRUE){
   interval <- match.arg(interval)
+  
   if(is.null(object$blocks)){
     bootType <- match.arg(bootType)
   } else if(length(bootType)!=1){
@@ -13,6 +14,20 @@ bmdOrdinal <- function(object, bmr=0.1, backgType = "modelBased", backg = NA, de
       cat('bootType = "hierarchical" is recommended for ordinal dose-response models with blocks.\n')
     }
   }
+  
+  if(identical(backgType, c("modelBased", "absolute"))){
+    stop("backgType is missing")
+  } else if(!(backgType %in% c("modelBased", "absolute"))){
+    stop("Could not recognize backgType")
+  }
+  
+  if(identical(def, c("excess", "additional", "point"))){
+    stop("def is missing")
+  } else if(!(def %in% c("excess", "additional", "point"))){
+    stop("Could not recognize def")
+  }
+  
+  
   
   if(interval %in% c("delta", "sandwich", "profile")){
     # CI <- bmdOrdinalDeltaCI(object = object, bmr = bmr, backgType = backgType, backg = backg, def = def, level = level)

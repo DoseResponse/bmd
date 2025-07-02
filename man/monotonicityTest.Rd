@@ -36,9 +36,8 @@ y <- c(2, 4, 6, 8, 10)
 result <- monotonicityTest(x, y, test = "jonckheere")
 print(result)
 
-# Example with a data frame
 data <- data.frame(x = c(1, 2, 3, 4, 5), y = c(10, 9, 8, 7, 6))
-result <- monotonicityTest("x", "y", data = data, test = "bartholomew")
+result <- monotonicityTest("conc", "rootl", data = drcData::ryegrass, test = "bartholomew")
 print(result)
 }
 

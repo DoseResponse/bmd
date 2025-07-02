@@ -3,15 +3,18 @@
 \title{
 Dose response modeling with heterogeneous variance
 }
-\description{Add a heterogeneous variance structure to an existing \code{drc} object.
+\description{Fit a dose-response model with heterogeneous variance dependending on dose level.
 }
 \usage{
-drmHetVar(object, var.formula)
+drmHetVar(formula, var.formula, data, fct, curveStart = NULL)
 }
 
 \arguments{
-  \item{object}{dose-response model of class \code{drcHetVar}}
+  \item{formula}{formula for the dose-response relationship}
   \item{var.formula}{one-sided formula specifying the dependance of the dose values and/or the fitted values on the point-wise standard error}
+  \item{data}{data.frame containing the observations}
+  \item{fct}{a list with three or more elements specifying the non-linear function, the accompanying self starter function, the names of the parameter in the non-linear function and, optionally, the first and second derivatives as well as information used for calculation of ED values. Currently available functions include, among others, the four- and five-parameter log-logistic models LL.4, LL.5 and the Weibull model W1.4. Use drc::getMeanFunctions for a full list.}
+  \item{curveStart}{numerical of length equal to the number of parameters for the curve. Starting values for the curve parameters (optional).}
 }
 
 \details{
@@ -25,7 +28,7 @@ The aim to provide an R package
 \value{
 dose-response model with a heterogeneous variance structure of class \code{drcHetVar}. 
 
-The primary objective is to use this model for benchmark dose estimation based on the hybrid method with a heterogeneous variance structure.
+The primary objective is to use this model for benchmark dose estimation based on the hybrid method with a heterogeneous variance structure. This can be done using the \code{bmdHetVar} function.
 
 A plot method is available, which can be useful for assessing the fit of the variance structure.
 }
@@ -46,32 +49,30 @@ library(bmd)
 # install.packages("gridExtra") # OPTIONAL - USED FOR PLOTTING A drcHetVar OBJECT.
 
 # ryegrass data
-ryegrass.LL.4 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
 set.seed(123)
-ryegrass.LL.4.hetVar <- drmHetVar(ryegrass.LL.4, ~ fitted + I(fitted^2))
+ryegrass.LL.4.hetVar <- drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2),
+                                  data = ryegrass, fct = LL.4())
 plot(ryegrass.LL.4.hetVar)
-bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1,
+          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
+          def = "hybridExc", R = 50, level = 0.95, 
+          bootType = "parametric", progressInfo = TRUE, display = TRUE) # parametric bootstrap
 
 # barley data
-barley.LL.4 <- drm(weight ~ Dose, data = barley, fct = LL.4())
 set.seed(123)
-barley.LL.4.hetVar <- drmHetVar(barley.LL.4, ~ fitted + I(fitted^2))
+barley.LL.4.hetVar <- drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), data = barley, fct = LL.4())
 plot(barley.LL.4.hetVar)
-bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
 
 # GiantKelp data
-GiantKelp.LL.4 <- drm(tubeLength ~ dose, data = GiantKelp, fct = LL.4())
 set.seed(123)
-GiantKelp.LL.4.hetVarSq <- drmHetVar(GiantKelp.LL.4, ~ fitted + I(fitted^2))
+GiantKelp.LL.4.hetVarSq <- drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), 
+                                     data = GiantKelp, fct = LL.4())
 plot(GiantKelp.LL.4.hetVarSq)
-bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
 
-GiantKelp.LL.4.hetVarLogSq <- drmHetVar(GiantKelp.LL.4, ~ log(dose+1) + I(log(dose+1)^2))
+GiantKelp.LL.4.hetVarLogSq <- drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), 
+                                        data = GiantKelp, fct = LL.4())
 plot(GiantKelp.LL.4.hetVarLogSq)
-bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
 
 
 

@@ -4,9 +4,9 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   def = c("excess", "additional", 
                           "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
                   respTrans = c("none", "log", "sqrt"),
-                  interval = "delta",
+                  interval = c("delta", "sandwich", "inv", "profile"),
                   type = c("curve","bootstrap","Kang","Buckland"),
-                  bootstrapType = "nonparametric",
+                  bootstrapType = c("nonparametric", "parametric"),
                   R=1000,
                   bootInterval = "percentile",
                   level=0.95,
@@ -31,6 +31,17 @@ bmdMA <- function(modelList, modelWeights, bmr,
     stop('Specify model averaging type. Options are "curve", "bootstrap", "Kang" and "Buckland"')
   }
   
+  if(length(bootstrapType) != 1){
+    if(!identical(bootstrapType, c("nonparametric", "parametric"))){
+      stop('"bootstrapType" not recognised. Options are: "nonparametric" and "parametric"')
+    }
+    bootstrapType <- "nonparametric" # default
+  }
+  if(!bootstrapType %in% c("nonparametric", "parametric")){
+    stop('"bootstrapType" not recognised. Options are: "nonparametric" and "parametric"')
+  }
+  
+  interval <- match.arg(interval)
   
   nCurves <- ncol(modelList[[1]]$parmMat)
   bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,
@@ -92,16 +103,17 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         # Bootstrap
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
-        } else if(identical(bootstrapType,"semiparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
+        # } else if(identical(bootstrapType,"semiparametric")){
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
         }
         
         bmdMAboot <- function(data){
           bootModelList <- lapply(modelList, function(model) try(
-            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0),
+            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0,
+                                control = drmc(noMessage = TRUE)),
                             list(formula0 = model$call$formula, 
                                  weights0 = model$call$weights,
                                  start0 = coef(model)))),
@@ -175,17 +187,18 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         # Bootstrap
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
-        } else if(identical(bootstrapType,"semiparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
+        # } else if(identical(bootstrapType,"semiparametric")){
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
         }
         
         bmdMACurveboot <- function(data){
           bootModelList <- lapply(modelList, function(model){try(
             eval(substitute(
-              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type),
+              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type,
+                  control = drmc(noMessage = TRUE)),
               list(formula0 = model$call$formula, 
                    weights0 = model$call$weights,
                    start0 = coef(model)))),
@@ -297,16 +310,17 @@ bmdMA <- function(modelList, modelWeights, bmr,
         maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
         
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
-        } else if(identical(bootstrapType,"semiparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated = FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
+        # } else if(identical(bootstrapType,"semiparametric")){
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated = FALSE)
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated = FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated = FALSE)
         }
         
         bmdMAboot <- function(data){
           bootModelList <- lapply(modelList, function(model) try(
-            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = "binomial"),
+            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = "binomial",
+                                control = drmc(noMessage = TRUE)),
                             list(formula0 = model$call$formula, 
                                  weights0 = model$call$weights,
                                  start0 = coef(model)))),
@@ -393,17 +407,18 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         # Bootstrap
         if(identical(bootstrapType,"nonparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
-        } else if(identical(bootstrapType,"semiparametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated=FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
+        # } else if(identical(bootstrapType,"semiparametric")){
+        #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated=FALSE)
         } else if(identical(bootstrapType,"parametric")){
-          bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated=FALSE)
+          bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated=FALSE)
         }
         
         bmdMACurveboot <- function(data){
           bootModelList <- lapply(modelList, function(model){try(
             eval(substitute(
-              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type),
+              drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0, type = model$type,
+                  control = drmc(noMessage = TRUE)),
               list(formula0 = model$call$formula, 
                    weights0 = model$call$weights,
                    start0 = coef(model)))),
@@ -557,15 +572,15 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
-          } else if(identical(bootstrapType,"semiparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
+          # } else if(identical(bootstrapType,"semiparametric")){
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
           }
           
           bmdMAboot <- function(data){
-            data[[as.character(modelList[[1]]$call$curveid)]] <- data[[paste0("orig.", as.character(modelList[[1]]$call$curveid))]]
+            # data[[as.character(modelList[[1]]$call$curveid)]] <- data[[paste0("orig.", as.character(modelList[[1]]$call$curveid))]]
             if(is.null(modelList[[1]]$call$pmodels)){
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
@@ -636,7 +651,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             if(identical(bootInterval,"BCa")){
               jackData <- list()
               for(i in 1:(dim(modelList[[1]]$data)[1])){
-                jackData[[i]] <- modelList[[1]]$data[-i,]
+                jackData[[i]] <- modelList[[1]]$origData[-i,]
               }
               
               jackBmdEst <- matrix(NA, nrow = length(jackData), ncol = nCurves)
@@ -662,15 +677,15 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric")
-          } else if(identical(bootstrapType,"semiparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric")
+          # } else if(identical(bootstrapType,"semiparametric")){
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric")
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric")
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric")
           }
           
           bmdMACurveboot <- function(data){
-            data[[as.character(modelList[[1]]$call$curveid)]] <- data[[paste0("orig.", as.character(modelList[[1]]$call$curveid))]]
+            # data[[as.character(modelList[[1]]$call$curveid)]] <- data[[paste0("orig.", as.character(modelList[[1]]$call$curveid))]]
             if(is.null(modelList[[1]]$call$pmodels)){
               bootModelList <- lapply(modelList, function(model){try(
                 eval(substitute(
@@ -753,7 +768,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
             if(identical(bootInterval,"BCa")){
               jackData <- list()
               for(i in 1:(dim(modelList[[1]]$data)[1])){
-                jackData[[i]] <- modelList[[1]]$data[-i,]
+                jackData[[i]] <- modelList[[1]]$origData[-i,]
               }
               
               jackBmdEst <- matrix(NA, nrow = length(jackData), ncol = nCurves)
@@ -801,11 +816,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
-          } else if(identical(bootstrapType,"semiparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated=FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
+          # } else if(identical(bootstrapType,"semiparametric")){
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated=FALSE)
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated=FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated=FALSE)
           }
           
           bmdMAboot <- function(data){
@@ -922,11 +937,11 @@ bmdMA <- function(modelList, modelWeights, bmr,
           
           # Bootstrap
           if(identical(bootstrapType,"nonparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="nonparametric",aggregated = FALSE)
-          } else if(identical(bootstrapType,"semiparametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="semiparametric",aggregated=FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="nonparametric",aggregated = FALSE)
+          # } else if(identical(bootstrapType,"semiparametric")){
+          #   bootData <- bootDataGen(modelList[[1]],R=R,bootType="semiparametric",aggregated=FALSE)
           } else if(identical(bootstrapType,"parametric")){
-            bootData <- bootDataGen(modelList[[1]],R=R,boot="parametric",aggregated=FALSE)
+            bootData <- bootDataGen(modelList[[1]],R=R,bootType="parametric",aggregated=FALSE)
           }
           
           bmdMACurveboot <- function(data){

@@ -6,15 +6,18 @@ Benchmark dose estimation from isotonic regression
 \description{The function monotonizes the sequence of response values based on the pool-adjacent violators algorithm and based on these use linear interpolating splines to build an isotonic regression model. From this model a benchmark dose is estimated.  
 }
 \usage{
-bmd(formula, data, type, bmr, p0, backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), 
-backg = NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point"), 
-display = FALSE) 
+bmdIso(formula, data, type, bmr, p0,
+       backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), 
+       backg = NA, def = c("excess", "additional", "relative", 
+                           "added", "hybridExc", "hybridAdd", "point"),
+       display = FALSE) 
 }
 \arguments{
   \item{formula}{an object of class "formula" expressing the dose-response relationship. Details of model specification are given under 'Details'}
   \item{data}{data frame containing the variables in the model}
   \item{type}{character string specifying the type of data used in the model. "continuous", "binomial" or "Poisson"}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
+  \item{p0}{background probability for hybrid definitions}
   \item{backgType}{character string specifying how the background level is specified. For binomial data the options are "modelBased" and "absolute". For continuous data the options are "absolute", "hybridSD" and "hybridPercentile"
 
   "modelBased" - the background level is obtained from the model as the level for dose 0: 
@@ -97,13 +100,16 @@ bmdIso(tumor.incidence/total ~ conc,
       
 ## Data on root length in ryegrass after exposure to ferulic acid
 require(drc)
+require(drcData)
 data(ryegrass)
 
-# As isotonic regression only wors for increasing dose-response relationship the association is turned
+# As isotonic regression only wors for increasing dose-response relationship 
+# the association is turned
 ryegrass1<-ryegrass
 ryegrass1$rootl<-100-ryegrass1$rootl
 
-# Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
+# Estimating BMD from isotonic regression using relative risk definition
+# and a BMR=0.05
 bmdIso(rootl ~ conc, 
       data=ryegrass1, 
       type="continuous",

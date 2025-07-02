@@ -6,10 +6,16 @@ Benchmark dose estimation for ordinal dose-response models
 \description{Estimation of benchmark doses and benchmark dose lower limit based on model averaging from a user-defined list of ordinal dose-response model fits 
 }
 \usage{
-bmdOrdinalMA(modelList, bmr, backgType = c("modelBased", "absolute"), def=c("excess", "additional", "point"), level = 0.95, R = 500, bootType = ("nonparametric", "parametric"), display = TRUE)
+bmdOrdinalMA(modelList, modelWeights = c("AIC", "BIC"), bmr, 
+             backgType = c("modelBased", "absolute"), backg = NA,
+             def=c("excess", "additional", "point"), type = c("bootstrap", "Kang"),
+             level = 0.95, R = 500,
+             bootType = c("nonparametric", "parametric"), 
+             display = TRUE, progressInfo = TRUE)
 }
 \arguments{
   \item{modelList}{A list of ordinal dose-response models of class \code{drcOrdinal}}
+  \item{modelWeights}{character string specifying the type of weights used, "AIC" or "BIC", or a numeric vector of the same length as the modelList with user defined weights}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. The options are "modelBased" and "absolute".
 
@@ -30,6 +36,8 @@ bmdOrdinalMA(modelList, bmr, backgType = c("modelBased", "absolute"), def=c("exc
   
   "point" - The response level for which to find BMD is directly defined through the BMR level: BMR = f(BMD). Works for binomial, count and continuous response data.}
   
+  \item{type}{specify the model averaging type used for the confidence intervals. Options are "Kang" (confidence intervals computed as weighted averages of individual confidence intervals) and "bootstrap"}
+  
   \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
   
   \item{R}{integer specifying the number of data sets resampled from the original data set when computing the confidence interval by bootstrap.}
@@ -44,6 +52,8 @@ bmdOrdinalMA(modelList, bmr, backgType = c("modelBased", "absolute"), def=c("exc
   }
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
+  
+  \item{progressInfo}{logical. If TRUE, a progressbar is displayed when calculating bootstrap confidence intervals}
 }
 
 \details{
@@ -75,17 +85,27 @@ A list of four elements: Results contain the estimated BMD and BMDL, interval gi
 \seealso{
 }
 \examples{
+library(drc)
 library(drcData)
 data(guthion)
 
 guthionS <- subset(guthion, trt == "S")
 
-guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
-guthionS.LN <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LN.2())
-guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = W1.2())
-guthionS.W2 <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = W2.2())
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), 
+                          weights = "total", dose = "dose", data = guthionS, fct = LL.2())
+guthionS.LN <- drmOrdinal(levels = c("alive", "moribund", "dead"), 
+                          weights = "total", dose = "dose", data = guthionS, fct = LN.2())
+guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"),
+                          weights = "total", dose = "dose", data = guthionS, fct = W1.2())
+guthionS.W2 <- drmOrdinal(levels = c("alive", "moribund", "dead"),
+                          weights = "total", dose = "dose", data = guthionS, fct = W2.2())
 
-bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), bmr = 0.1, backgType = "modelBased", def = "excess")
+bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
+             modelWeights = "AIC", bmr = 0.1, 
+             backgType = "modelBased", def = "excess", type = "Kang")
+bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
+             modelWeights = "AIC", bmr = 0.1, 
+             backgType = "modelBased", def = "excess", type = "bootstrap", R = 50)
 }
 \keyword{models}
 \keyword{nonlinear}

@@ -6,10 +6,13 @@ Benchmark dose estimation using bootstrap
 \description{The function estimates BMD and BMDL using bootstrap based on parametric dose-response models.  
 }
 \usage{
-bmdBoot(object, bmr, R, bootType = c("nonparametric", "semiparametric", "parametric"), bmdType, backgType = c("modelBased",
-"absolute", "hybridSD", "hybridPercentile"),
-    backg=NA, controlSD, def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),   bootInterval = c("Percentile","BCa"),
-    display=TRUE, level=0.95) 
+bmdBoot(object, bmr, R = 1000, bootType = "nonparametric", bmdType = "orig",
+        backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), 
+        backg = NA, controlSD = NA,
+        def = c("excess", "additional", "relative", "extra",
+                "added", "hybridExc", "hybridAdd", "point"), 
+        respTrans = c("none", "log", "sqrt"), bootInterval = c("percentile", "BCa"),
+        display = TRUE, level = 0.95)
 }
 \arguments{
   \item{object}{object of class \code{drc}}
@@ -100,15 +103,16 @@ A list of three elements: Results contain the estimated BMD and BMDL, bootEst is
 \examples{
 ## Data on root length in ryegrass after exposure to ferulic acid
 require(drc)
+require(drcData)
 data(ryegrass)
 
 ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
 
 ## BMD using the hybrid method, background risk is 2 SD, hybrid definition using excess risk
-bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd")
+bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", R = 50)
 
 ## BMD from the same definitions but using parametric bootstrap
-bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", boot="pseudorandom")
+bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", bootType="parametric",R = 50)
 
 }
 \keyword{bootstrap}

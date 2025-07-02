@@ -1,4 +1,4 @@
-drmOrdinal <- function(levels, dose, weights, blocks, data, fct, p.epsilon = 10^(-16)){
+drmOrdinal <- function(levels, dose, weights, blocks, data, fct, p.epsilon = 1e-16){
   if(missing(blocks)){
     blocks = NULL
   }

@@ -1,19 +1,20 @@
-\name{bmdHetVar}
-\alias{bmdHetVar}
+\name{bmdHetVarMA}
+\alias{bmdHetVarMA}
 \title{
-Benchmark dose estimation with heterogeneous variance
+Benchmark dose estimation with heterogeneous variance based on model averaging (MA)
 }
-\description{Estimation of benchmark doses and benchmark dose lower limit based on the hybrid method from dose response model fits with the option to specify a heterogeneous variance structure, where the variance depends on the dose level and/or the fitted values
+\description{Estimation of benchmark doses and benchmark dose lower limit based on the hybrid method from a list of dose response model fits with the option to specify a heterogeneous variance structure, where the variance depends on the dose level and/or the fitted values
 }
 \usage{
-bmdHetVar(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), 
-          backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"),
-          R = 1000, level = 0.95, bootType = "nonparametric",
-          progressInfo = TRUE, display = TRUE)
+bmdHetVarMA(modelList, modelWeights = c("AIC", "BIC"), bmr, 
+            backgType = c("absolute", "hybridSD", "hybridPercentile"), 
+            backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"), 
+            R = 1000, level = 0.95, progressInfo = TRUE,display = TRUE)
 }
 
 \arguments{
-  \item{object}{dose-response model with a heterogeneous variance structure of class \code{drcHetVar}}
+  \item{modelList}{a list of dose-response models with a heterogeneous variance structure of class \code{drcHetVar}}
+  \item{modelWeights}{character string specifying the type of weights used, "AIC" or "BIC", or a numeric vector of the same length as the modelList with user defined weights}
   \item{bmr}{numeric value of benchmark response level for which to calculate the benchmark dose}
   \item{backgType}{character string specifying how the background level is specified. The options are "absolute", "hybridSD" and "hybridPercentile".
 
@@ -40,15 +41,13 @@ bmdHetVar(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile")
   
   \item{interval}{character string specifying the type of confidence interval to use: "boot" (default) or "none"
   
-  "boot" - BMDL is based on percentile bootstrapping. 
+  "boot" - BMDL is based on nonparametric percentile bootstrapping. 
   
   "none" - no confidence interval is computed.} 
   
   \item{R}{number of bootstrap samples. Ignored if \code{interval = "none"}}
   
   \item{level}{numeric value specifying the levle of the confidence interval underlying BMDL. Default is 0.95}
-  
-  \item{bootType}{character string specifying the type of bootstrap samples. Options are "nonparametric" (observations are drawn without replacement from the original data set), "semi-parametric" (standardised residuals are drawn with replacement and subsequently rescaled according to the model) and "parametric" (new observations are simulated from the distribution given by the fitted model).}
   
   \item{progressInfo}{logical. If TRUE, progress info is be printed while bootstrap confidence intervals are estimated. Default is TRUE.}
   
@@ -64,7 +63,7 @@ The aim to provide an R package
   REFERENCES TO BE ADDED/WRITTEN
 }
 \value{
-A list of five elements: Results contain the estimated BMD and BMDL, bmrScaled is the response value corresponding to the BMD, interval gives the lower (BMDL) and upper (BMDU) end of the confidence interval of BMD
+A list of four elements: Results contain the estimated BMD and BMDL, Boot.samples.used gives the number of boot samples that resulted in succesful estimations and were accordingly used  in the estimation of BMDL (and BMDU), Interval gives BMDL and BMDU, which is identical to the confidence interval for the percentile interval approach, and modelWeights includes the estimated weights.
 }
 \references{
 }
@@ -84,36 +83,34 @@ library(bmd)
 
 # ryegrass data
 set.seed(123)
-ryegrass.LL.4.hetVar <- drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2),
-                                  data = ryegrass, fct = LL.4())
-plot(ryegrass.LL.4.hetVar)
-bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
-          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, 
-          display = TRUE) # increase R
-bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
-          def = "hybridExc", R = 50, level = 0.95, 
-          bootType = "parametric", progressInfo = TRUE, display = TRUE) # parametric bootstrap
+ryegrass.hetVar.list <- list(
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = LL.4()),
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = LN.4()),
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = W1.4()),
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = W2.4()))
+bmdHetVarMA(ryegrass.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridPercentile",
+            backg = 0.1, def = "hybridExc", R = 100, level = 0.95)
+bmdHetVarMA(ryegrass.hetVar.list, modelWeights = c(0.4, 0.2, 0.1, 0.3), bmr = 0.1, 
+            backgType = "hybridPercentile", backg = 0.1, 
+            def = "hybridExc", R = 50, level = 0.95) # user-defined weights
 
 # barley data
 set.seed(123)
-barley.LL.4.hetVar <- drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), data = barley, fct = LL.4())
-plot(barley.LL.4.hetVar)
-bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridSD", backg = 1, 
-          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+barley.hetVar.list <- list(drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), 
+                                     data = barley, fct = LL.4()),
+                           drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), 
+                                     data = barley, fct = W2.4()))
+bmdHetVarMA(barley.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridSD", backg = 2,
+            def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 
 # GiantKelp data
 set.seed(123)
-GiantKelp.LL.4.hetVarSq <- drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), 
-                                     data = GiantKelp, fct = LL.4())
-plot(GiantKelp.LL.4.hetVarSq)
-bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridSD", backg = 1, 
-          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
-
-GiantKelp.LL.4.hetVarLogSq <- drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), 
-                                        data = GiantKelp, fct = LL.4())
-plot(GiantKelp.LL.4.hetVarLogSq)
-bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, 
-          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+GiantKelp.hetVar.list <- list(
+  drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), data = GiantKelp, fct = LL.4()),
+  drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), data = GiantKelp, fct = LL.4()))
+bmdHetVarMA(GiantKelp.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridSD",
+            backg = 1, def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, 
+            display = TRUE)
 
 }
 \keyword{models}

@@ -11,10 +11,11 @@
 
 \usage{
   
-  qplotDrc(x, add = FALSE, level = NULL, type = c("average", "all", "bars", "none", "obs", "confidence"), 
-            gridsize = 100, xtrans = "pseudo_log", xlab, xlim, 
-            ytrans = NULL, ylab, ylim, col = FALSE,
-            normal = FALSE, normRef = 1, confidence.level = 0.95)
+  qplotDrc(x, add = FALSE, level = NULL, 
+           type = c("average", "all", "bars", "none", "obs", "confidence"), 
+           gridsize = 250, xtrans = "pseudo_log", xlab, xlim, 
+           ytrans = NULL, ylab, ylim, col = FALSE,
+           normal = FALSE, normRef = 1, confidence.level = 0.95)
 }
 
 \arguments{
@@ -85,6 +86,9 @@
 %\seealso{\code{\link{plotraw}} plots the observations only.}
 
 \examples{
+library(drc)
+library(drcData)
+library(ggplot2)
 
 ## Fitting models to be plotted below
 ryegrass.m1 <- drm(rootl~conc, data = ryegrass, fct = LL.4())
@@ -111,7 +115,8 @@ qplotDrc(spinach.m1, col = TRUE)
 
 ## Plot with specified colours
 qplotDrc(spinach.m1, col = TRUE) + 
-  scale_color_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod","darkslategray4", "plum4"))
+  scale_color_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod",
+                                "darkslategray4", "plum4"))
 
 ## Plot of curves 1 and 2 only
 qplotDrc(spinach.m1, level = c(1,4))
@@ -123,8 +128,10 @@ qplotDrc(spinach.m1, col = TRUE, type = "confidence")
 ## Customising the x scale by adding a new scale.
 qplotDrc(spinach.m1, col = TRUE, type = "confidence") +
   qplotDrc(spinach.m1, col = TRUE, type = "average", add = TRUE)$obsLayer + 
-  scale_color_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod","darkslategray4", "plum4"))+ 
-  scale_fill_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod","darkslategray4", "plum4")) +
+  scale_color_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod",
+                                "darkslategray4", "plum4"))+ 
+  scale_fill_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod",
+                               "darkslategray4", "plum4")) +
   scale_x_continuous(trans = scales:::pseudo_log_trans(sigma = 0.2, base = exp(1)))
 
 

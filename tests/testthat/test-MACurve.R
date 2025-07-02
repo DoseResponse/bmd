@@ -29,7 +29,7 @@ test_that("MACurve handles modelWeights argument", {
   manWeights0 <- c(0.3, 0.2, 0.2, 0.3)
   AICWeights0 <- exp(-1/2 * (sapply(modelList0, AIC) - min(sapply(modelList0, AIC)))) / sum(exp(-1/2 * (sapply(modelList0, AIC) - min(sapply(modelList0, AIC)))) )
   BICWeights0 <- exp(-1/2 * sapply(modelList0, BIC)) / sum(exp(-1/2 * sapply(modelList0, BIC)) )
-  set.seed(1)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   stackingWeights0 <- getStackingWeights(modelList0, nSplits = 3)
   
   x <- c(0, 50, 100, 150, 200, 250, 300, 350, 400)
