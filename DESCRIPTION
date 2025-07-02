@@ -9,7 +9,8 @@ Description: Benchmark dose analysis for continuous, quantal, count and ordinal 
 Imports:
     drc, 
     ggplot2,
-    dplyr
+    dplyr,
+    stats
 Suggests: 
     sandwich,
     CVXR,
@@ -19,9 +20,10 @@ Suggests:
     reshape2,
     car,
     Matrix,
-    RLRsim,
     scales,
     metafor,
+    tidyr,
+    numDeriv,
     drcData,
     testthat (>= 3.0.0)
 Remotes:
@@ -31,3 +33,4 @@ License: GPL
 Encoding: UTF-8
 LazyData: true
 Config/testthat/edition: 3
+RoxygenNote: 7.3.2

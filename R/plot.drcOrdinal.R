@@ -19,7 +19,7 @@ plot.drcOrdinal <- function(object, col_pal = NULL, xlim = NULL){
            function(levelsMerged){ 
              geom_function(aes(col = levelsMerged), fun = object$drmList[[levelsMerged]]$curve[[1]], data = data.frame(levelsMerged = levelsMerged))}) +
     scale_color_manual(breaks = object$levelsMerged, values = col_pal[2:length(object$levels)]) +
-    scale_x_continuous(trans = scales:::pseudo_log_trans(sigma = 1, base = exp(1)), limits = xlim) +
+    scale_x_continuous(trans = scales::pseudo_log_trans(sigma = 1, base = exp(1)), limits = xlim) +
     scale_y_continuous(limits = c(0,1)) +
     labs(x = object$dose, y = "proportion") +
     theme_bw()

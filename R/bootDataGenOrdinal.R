@@ -19,7 +19,7 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "p
                                                            FUN = function(x) sample(x, 
                                                                                     replace = TRUE))[[2]])), ]
       columns.rem <- colnames(subset(sampled.expand, select=-c(variable,row.num,value,row.orig)))
-      df <- reshape2:::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
+      df <- reshape2::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
       for(j in 1:length(object$levels)){
         if(!(object$levels[j] %in% colnames(df))){
           df[,object$levels[j]]<-0
@@ -46,7 +46,7 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "p
           unlist(sample(object$levels, size = data.size, replace = TRUE, prob = prop0))
       }
       columns.rem <- colnames(subset(sampled.expand, select=-c(variable,value,row.orig)))
-      df <- reshape2:::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
+      df <- reshape2::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
       for(j in 1:length(object$levels)){
         if(!(object$levels[j] %in% colnames(df))){
           df[,object$levels[j]]<-0
@@ -62,7 +62,7 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "p
       sampled.expand <- data.e
       sampled.expand[, "variable"] <- sapply(data.e[,object$dose], function(x) unlist(sample(object$levels, size = 1, replace = TRUE, object$pFun(x))))
       columns.rem <- colnames(subset(sampled.expand, select=-c(variable,value,row.orig)))
-      df <- reshape2:::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
+      df <- reshape2::dcast(sampled.expand, as.formula(paste(paste(columns.rem, collapse = "+")," ~ variable")), length)
       for(j in 1:length(object$levels)){
         if(!(object$levels[j] %in% colnames(df))){
           df[,object$levels[j]]<-0

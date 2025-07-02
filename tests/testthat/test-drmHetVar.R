@@ -27,15 +27,15 @@ test_that("drmHetVar handles missing observations", {
   ryegrass <- drcData::ryegrass
   
   expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = rbind(ryegrass, c(NA, 0)), fct = LL.4())$curvePar,
-               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478), tolerance = 1e-8)
   expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = rbind(ryegrass, c(0, NA)), fct = LL.4())$curvePar,
-               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478), tolerance = 1e-8)
   expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = rbind(ryegrass, c(NA, NA)), fct = LL.4())$curvePar,
-               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478), tolerance = 1e-8)
   expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = cbind(ryegrass, na.col = c(1,NA)), fct = LL.4())$curvePar,
-               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478), tolerance = 1e-8)
   expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = cbind(ryegrass, na.col = NA), fct = LL.4())$curvePar,
-               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478))
+               c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478), tolerance = 1e-8)
   
 })
 
@@ -59,11 +59,11 @@ test_that("drmHetVar on Ryegrass model", {
                  0.107778571110093), tolerance = 1e-8)
   expect_equal(ryegrass.W2.4.hetVar$var.formula, var.formula0)
   expect_equal(ryegrass.W2.4.hetVar$curvePar,
-               c(b = -1.80835016587568, c = 0.251695674718818, d = 7.73421602363691, e = 2.50022750625478))
+               c(b = -1.80835016587568, c = 0.251695674718818, d = 7.73421602363691, e = 2.50022750625478), tolerance = 1e-8)
   expect_equal(ryegrass.W2.4.hetVar$sigmaPar, 
                c('(Intercept)' = 0.00730403731249006, 
                  'fitted' = 0.311027994530052, 
-                 'I(fitted^2)' = -0.0328936930911057))
+                 'I(fitted^2)' = -0.0328936930911057), tolerance = 1e-8)
 })
 
 
@@ -85,11 +85,11 @@ test_that("drmHetVar on GiantKelp model", {
                  1.74890031900735, 1.73632460564062, 1.72380218110818), tolerance = 1e-8)
   expect_equal(GiantKelp.LL.4.hetVar$var.formula, var.formula0)
   expect_equal(GiantKelp.LL.4.hetVar$curvePar,
-               c(b = 1.31919020059578, c = 5.59288746292885, d = 18.2001039179043, e = 44.2426813468012))
+               c(b = 1.31919020059578, c = 5.59288746292885, d = 18.2001039179043, e = 44.2426813468012), tolerance = 1e-8)
   expect_equal(GiantKelp.LL.4.hetVar$sigmaPar, 
                c('(Intercept)' = 1.11726591406817, 
                  'log(dose + 1)' = 0.740539128243396, 
-                 'I(log(dose + 1)^2)' = -0.164214857054588))
+                 'I(log(dose + 1)^2)' = -0.164214857054588), tolerance = 1e-8)
 })
 
 

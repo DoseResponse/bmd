@@ -6,7 +6,7 @@ Fitting ordinal dose-response models
 \description{A model fitting function for analysis of ordinal dose-response data.
 }
 \usage{
-drmOrdinal(levels, dose, weights, data, fct, p.epsilon = 10^(-16))
+drmOrdinal(levels, dose, weights, blocks, data, fct, p.epsilon = 1e-16)
 }
 \arguments{
   \item{levels}{a character vector of the levels of the response variable in increasing order, as they appear in the supplied data set}
@@ -47,11 +47,13 @@ drmOrdinal(levels, dose, weights, data, fct, p.epsilon = 10^(-16))
 \seealso{
 }
 \examples{
+library(drc)
 library(drcData)
 data(guthion)
 guthionS <- subset(guthion, trt == "S")
 
-guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total",
+                          dose = "dose", data = guthionS, fct = LL.2())
 
 plot(guthionS.LL, xlim = c(15,55)) # uses ggplot
 

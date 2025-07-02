@@ -6,11 +6,14 @@ Benchmark dose estimation
 \description{Estimation of benchmark doses and benchmark dose lower limit from dose response model fits 
 }
 \usage{
-bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg, controlSD,
-def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"), 
-respTrans = c("none", "log", "sqrt"),
-interval = c("delta","inv", "profile", "profileGrid"), sandwich.vcov=FALSE, display = TRUE,
-level=0.95, profileGridSize = 20, profileProgressInfo = TRUE) 
+bmd(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
+    backg = NA, controlSD = NA, 
+    def = c("excess", "additional", "relative", "extra",
+            "added", "hybridExc", "hybridAdd", "point"),
+    respTrans = c("none", "log", "sqrt"), 
+    interval = c("delta", "sandwich", "inv", "profile", "profileGrid"), 
+    sandwich.vcov = FALSE, display = TRUE, level = 0.95,
+    profileGridSize = NA, profileProgressInfo = TRUE)
 }
 
 \arguments{
@@ -120,6 +123,9 @@ A list of four elements: Results contain the estimated BMD and BMDL, bmrScaled i
 \seealso{
 }
 \examples{
+library(drc)
+library(drcData)
+
 ## Fitting log-logistic two-parameter model to binomial data
 deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
 

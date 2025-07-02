@@ -1,5 +1,5 @@
-\name{drmHetVar}
-\alias{drmHetVar}
+\name{drmMMRE}
+\alias{drmMMRE}
 \title{
 Dose response modeling with hierarchical variance structure
 }

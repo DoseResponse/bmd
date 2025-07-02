@@ -4,7 +4,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
                   def = c("excess", "additional", 
                           "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),
                   respTrans = c("none", "log", "sqrt"),
-                  interval = "delta",
+                  interval = c("delta", "sandwich", "inv", "profile"),
                   type = c("curve","bootstrap","Kang","Buckland"),
                   bootstrapType = c("nonparametric", "parametric"),
                   R=1000,
@@ -40,6 +40,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
   if(!bootstrapType %in% c("nonparametric", "parametric")){
     stop('"bootstrapType" not recognised. Options are: "nonparametric" and "parametric"')
   }
+  
+  interval <- match.arg(interval)
   
   nCurves <- ncol(modelList[[1]]$parmMat)
   bmdList<-lapply(modelList, FUN=function(object){bmd(object, bmr, backgType = backgType, backg = backg, def = def, respTrans = respTrans,

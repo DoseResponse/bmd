@@ -1,0 +1,59 @@
+\name{getStackingWeights}
+\alias{getStackingWeights}
+\title{
+Model-average dose-response curves
+}
+\description{Computing stacking weights. 
+}
+\usage{
+getStackingWeights(modelList, nSplits = 2)
+}
+\arguments{
+  \item{modelList}{list of models of class \code{drc}}
+  \item{nSplits}{integer. The Stacking Weights are based on V-fold cross-validation. The nSplits argument sets the number V of data splits used in the cross validation.}
+}
+
+\details{
+The aim to provide an R package 
+  calculating the benchmark dose (BMD) and the lower limit of the corresponding 95\% confidence interval (BMDL)
+  for continuous and quantal dose-response data for a range of dose-response models based on the available
+  definitions of the benchmark dose concepts.
+  
+  Details on the implemented definitions and methods can be found in Crump (2002)
+}
+\value{
+numeric
+}
+\references{
+}
+
+\author{ Jens Riis Baalkilde
+}
+\note{
+}
+
+\seealso{
+}
+\examples{
+library(bmd)
+library(drc)
+library(drcData)
+
+# fit models to aconiazide data
+aconiazide.LL.3 <- drm(weightChange ~ dose,data = aconiazide,fct = LL.3())
+aconiazide.LN.3 <- drm(weightChange ~ dose,data = aconiazide,fct = LN.3())
+aconiazide.W1.3 <- drm(weightChange ~ dose,data= aconiazide,fct = W1.3())
+aconiazide.W2.3 <- drm(weightChange ~ dose,data= aconiazide,fct = W2.3())
+
+getStackingWeights(modelList = list(aconiazide.LL.3, aconiazide.LN.3,
+                                  aconiazide.W1.3, aconiazide.W2.3))
+getStackingWeights(modelList = list(aconiazide.LL.3, aconiazide.LN.3,
+                                  aconiazide.W1.3, aconiazide.W2.3),
+                  nSplits = 7)
+
+}
+\keyword{models}
+\keyword{nonlinear}
+\keyword{model averaging}
+
+\concept{dose-response, MA, Model Averaging}

@@ -6,7 +6,9 @@ Benchmark dose estimation for ordinal dose-response models
 \description{Estimation of benchmark doses and benchmark dose lower limit based on model averaging from a user-defined list of ordinal dose-response model fits 
 }
 \usage{
-bmdOrdinalMA(modelList, bmr, backgType = c("modelBased", "absolute"), def=c("excess", "additional", "point"), level = 0.95, R = 500, bootType = ("nonparametric", "parametric"), display = TRUE)
+bmdOrdinalMA(modelList, bmr, backgType = c("modelBased", "absolute"), backg = NA,
+             def=c("excess", "additional", "point"), level = 0.95, R = 500,
+             bootType = c("nonparametric", "parametric"), display = TRUE)
 }
 \arguments{
   \item{modelList}{A list of ordinal dose-response models of class \code{drcOrdinal}}
@@ -75,17 +77,27 @@ A list of four elements: Results contain the estimated BMD and BMDL, interval gi
 \seealso{
 }
 \examples{
+library(drc)
 library(drcData)
 data(guthion)
 
 guthionS <- subset(guthion, trt == "S")
 
-guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
-guthionS.LN <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LN.2())
-guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = W1.2())
-guthionS.W2 <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = W2.2())
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), 
+                          weights = "total", dose = "dose", data = guthionS, fct = LL.2())
+guthionS.LN <- drmOrdinal(levels = c("alive", "moribund", "dead"), 
+                          weights = "total", dose = "dose", data = guthionS, fct = LN.2())
+guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"),
+                          weights = "total", dose = "dose", data = guthionS, fct = W1.2())
+guthionS.W2 <- drmOrdinal(levels = c("alive", "moribund", "dead"),
+                          weights = "total", dose = "dose", data = guthionS, fct = W2.2())
 
-bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), bmr = 0.1, backgType = "modelBased", def = "excess")
+bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
+             modelWeights = "AIC", bmr = 0.1, 
+             backgType = "modelBased", def = "excess", type = "Kang")
+bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
+             modelWeights = "AIC", bmr = 0.1, 
+             backgType = "modelBased", def = "excess", type = "bootstrap", R = 50)
 }
 \keyword{models}
 \keyword{nonlinear}

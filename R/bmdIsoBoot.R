@@ -1,7 +1,8 @@
-bmdIsoBoot <- function(object, data, type, bmr, R=1000, boot="resample", 
+bmdIsoBoot <- function(formula, data, type, bmr, R=1000, boot="resample", 
                        backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), 
                        backg=NA, 
                        def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point")){
+  object <- formula
   if (type %in% c("Poisson","negbin1","negbin2") & boot!="resample") {
     stop(paste("\"",type,"\" only works with resample bootstrap \"", sep=""))
   }

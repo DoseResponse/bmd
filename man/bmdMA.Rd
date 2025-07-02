@@ -6,10 +6,16 @@ Model-averaged benchmark dose estimation
 \description{Estimation of benchmark doses and benchmark dose lower limit based on model averaging from a user-defined list of dose response model fits 
 }
 \usage{
-bmdMA(modelList, modelWeights, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), backg = NA, 
-def = c("excess", "additional", "relative", "extra", "added", "hybridExc", "hybridAdd", "point"),respTrans = c("none", "log", "sqrt"),
-interval = c("delta","sandwich","inv", "profile"),
-type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInterval, level=0.95, stackingSeed, stackingSplits, display = TRUE, progressInfo = TRUE) 
+bmdMA(modelList, modelWeights, bmr, 
+      backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"), 
+      backg = NA, def = c("excess", "additional", "relative", "extra", 
+                          "added", "hybridExc", "hybridAdd", "point"),
+      respTrans = c("none", "log", "sqrt"), 
+      interval = c("delta","sandwich","inv", "profile"), 
+      type = c("curve","bootstrap","Kang","Buckland"), 
+      bootstrapType = c("nonparametric", "parametric"), R=1000, 
+      bootInterval = "percentile", level=0.95, stackingSeed, 
+      stackingSplits, display = TRUE, progressInfo = TRUE) 
 }
 \arguments{
   \item{modelList}{list of models of class \code{drc}}
@@ -98,6 +104,8 @@ type = c("curve","bootstrap","Kang","Buckland"), bootstrapType, R=1000, bootInte
   
   \item{display}{logical. If TRUE the results are displayed; otherwise they are not}
   
+  \item{progressInfo}{logical. If TRUE, a progressbar is shown when computing bootstrap confidence intervals.}
+  
 }
 
 \details{
@@ -137,6 +145,9 @@ A list of five elements: Results contain the estimated BMD and BMDL, Boot.sample
 \seealso{
 }
 \examples{
+library(drc)
+library(drcData)
+
 ## Fitting 4 different two-parameter models to binomial data
 deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
 deguelin.m2 <- drm(r/n~dose, weights=n, data=deguelin, fct=W1.2(), type="binomial")
@@ -144,15 +155,17 @@ deguelin.m3 <- drm(r/n~dose, weights=n, data=deguelin, fct=W2.2(), type="binomia
 deguelin.m4 <- drm(r/n~dose, weights=n, data=deguelin, fct=LN.2(), type="binomial")
 
 
-## Model averaged BMD for 5% additional risk with estimated background risk and BMDL based on Buckland et al.
+## Model averaged BMD for 5% additional risk with estimated background risk 
+## and BMDL based on Buckland et al.
 bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
       backgType = "modelBased", def = "additional",
       type = "Buckland")
 
-## Model averaged BMD for 5% additional risk with estimated background risk and BMDL based on an average of the model curves
+## Model averaged BMD for 5% additional risk with estimated background risk
+## and BMDL based on an average of the model curves
 bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
       backgType = "modelBased", def = "additional",
-      type = "curve", bootstrapType = "parametric", bootInterval = "percentile", R=100)
+      type = "curve", bootstrapType = "parametric", bootInterval = "percentile", R=50)
 
 
 ## Fitting 4 different two-parameter models to binomial data
@@ -161,16 +174,17 @@ ryegrass.m2<-drm(rootl~conc, data=ryegrass, fct=W1.4())
 ryegrass.m3<-drm(rootl~conc, data=ryegrass, fct=W2.4())
 ryegrass.m4<-drm(rootl~conc, data=ryegrass, fct=LN.4())
 
-## Model-averaged BMD and bootstrap BMDL for bmr=5% and using the hybrid approach to estimate the background risk.  
+## Model-averaged BMD and bootstrap BMDL for bmr=5% and using the hybrid approach
+## to estimate the background risk.  
 bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="AIC", bmr=0.05, 
-      backgType = "hybridSD",
-      def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
+      backgType = "hybridSD", def = "hybridAdd", type = "bootstrap",
+      bootstrapType = "nonparametric", bootInterval = "percentile", R = 50)
 
 
 ## Model-averaged BMD using the Stacking Weights
 bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="Stack", bmr=0.05, 
-      backgType = "hybridSD",
-      def = "hybridAdd", type = "bootstrap",bootstrapType = "nonparametric", bootInterval = "percentile")
+      backgType = "hybridSD", def = "hybridAdd", type = "bootstrap",
+      bootstrapType = "nonparametric", bootInterval = "percentile", R = 50)
 
 }
 \keyword{model averaging}

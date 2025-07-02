@@ -6,7 +6,10 @@ Benchmark dose estimation from isotonic regression
 \description{The function estimates BMD and BMDL using bootstrap based on isotonic regression.  
 }
 \usage{
-bmd(formula, data, type, bmr, R=1000, boot="resample", backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), backg=NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point")) 
+bmdIsoBoot(formula, data, type, bmr, R=1000, boot="resample", 
+           backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"),
+           backg=NA, def = c("excess", "additional", "relative", 
+                             "added", "hybridExc", "hybridAdd", "point")) 
 }
 \arguments{
   \item{formula}{an object of class "formula" expressing dose-response relationship. Details of model specification are given under 'Details'}
@@ -105,7 +108,8 @@ bmdIsoBoot(tumor.incidence/total ~ conc,
 require(drc)
 data(ryegrass)
 
-# As isotonic regression only wors for increasing dose-response relationship the association is turned
+# As isotonic regression only wors for increasing dose-response relationship
+# the association is turned
 ryegrass1<-ryegrass
 ryegrass1$rootl<-100-ryegrass1$rootl
 
@@ -115,7 +119,7 @@ bmdIsoBoot(rootl ~ conc,
       type="continuous",
       bmr=0.05,
       backgType = "modelBased",
-      def = "relative")
+      def = "relative", R = 100)
 }
 \keyword{nonparametric}
 \keyword{isotonic regression}

@@ -28,7 +28,7 @@ trendTest <- function(x, y, data, test = c("william", "shirley", "tukey"), level
     }
     fitw <- lm(y ~ x)
     ttw <- .tukeytrendfit(y, x)
-    res <- multcomp:::summary.glht(multcomp:::glht(model=ttw$mmm, linfct=ttw$mlf))
+    res <- multcomp:::summary.glht(multcomp::glht(model=ttw$mmm, linfct=ttw$mlf))
     
     p.values <- as.numeric(res$test$pvalues)
     names(p.values) <- names(res$test$tstat)

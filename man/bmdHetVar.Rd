@@ -8,7 +8,8 @@ Benchmark dose estimation with heterogeneous variance
 \usage{
 bmdHetVar(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), 
           backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"),
-          R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE)
+          R = 1000, level = 0.95, bootType = "nonparametric",
+          progressInfo = TRUE, display = TRUE)
 }
 
 \arguments{
@@ -83,30 +84,36 @@ library(bmd)
 
 # ryegrass data
 set.seed(123)
-ryegrass.LL.4.hetVar <- drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = LL.4())
+ryegrass.LL.4.hetVar <- drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2),
+                                  data = ryegrass, fct = LL.4())
 plot(ryegrass.LL.4.hetVar)
-bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 500, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 500, level = 0.95, 
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
+          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, 
+          display = TRUE) # increase R
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
+          def = "hybridExc", R = 50, level = 0.95, 
           bootType = "parametric", progressInfo = TRUE, display = TRUE) # parametric bootstrap
 
 # barley data
 set.seed(123)
 barley.LL.4.hetVar <- drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), data = barley, fct = LL.4())
 plot(barley.LL.4.hetVar)
-bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 500, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 500, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridSD", backg = 1, 
+          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 
 # GiantKelp data
 set.seed(123)
-GiantKelp.LL.4.hetVarSq <- drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), data = GiantKelp, fct = LL.4())
+GiantKelp.LL.4.hetVarSq <- drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), 
+                                     data = GiantKelp, fct = LL.4())
 plot(GiantKelp.LL.4.hetVarSq)
-bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 500, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 500, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(GiantKelp.LL.4.hetVarSq, bmr = 0.1, backgType = "hybridSD", backg = 1, 
+          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 
-GiantKelp.LL.4.hetVarLogSq <- drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), data = GiantKelp, fct = LL.4())
+GiantKelp.LL.4.hetVarLogSq <- drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), 
+                                        data = GiantKelp, fct = LL.4())
 plot(GiantKelp.LL.4.hetVarLogSq)
-bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 500, level = 0.95, progressInfo = TRUE, display = TRUE)
-bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, def = "hybridExc", R = 500, level = 0.95, progressInfo = TRUE, display = TRUE)
+bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, 
+          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 
 }
 \keyword{models}

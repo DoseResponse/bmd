@@ -1,9 +1,14 @@
 import(drc, ggplot2, dplyr)
-importFrom(stats, AIC)
-importFrom(stats, BIC)
-importFrom(stats, logLik)
+importFrom("graphics", "lines")
+importFrom("stats", "aggregate", "approx", "as.formula", "coef",
+           "complete.cases", "confint", "constrOptim", "df.residual",
+           "dnorm", "fitted", "lm", "model.frame", "model.matrix",
+           "optim", "pnorm", "predict", "qchisq", "qnorm", "qt",
+           "quantile", "rbinom", "resid", "residuals", "rnorm", "sd",
+           "uniroot", "update", "var", "vcov", "AIC", "BIC", "logLik")
+importFrom("utils", "setTxtProgressBar", "txtProgressBar")
 export(bmd, bmdBoot, bmdIso, bmdIsoBoot, PAV, bmdMA, bootDataGen, bmdMACurve, BCa, invBmd, expandBinomial, 
-       getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, expandOrdinal, bootDataGenOrdinal,
+       getStackingWeights, drmOrdinal, bmdOrdinal, bmdOrdinalMA, bootDataGenOrdinal,
        qplotDrc, qplotBmd, MACurve, monotonicityTest, trendTest, bmdHetVar, drmHetVar, drmMMRE, bmdHetVarMA)
 
 ## S3 methods

@@ -1,4 +1,5 @@
-bmdIso <- function(object, data, type, bmr, p0, backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), backg=NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point"), display=FALSE){
+bmdIso <- function(formula, data, type, bmr, p0, backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), backg=NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point"), display=FALSE){
+  object <- formula
   PAV.p <- PAV(object, data, type)
   n <- as.numeric(table(data[, paste(object[[3]])]))
   if(type=="continuous"){

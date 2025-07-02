@@ -9,7 +9,7 @@
 }
 
 \usage{
-  qplotBmd(x, ..., interval = c("BMDL", "twosided", "none"), add = FALSE)
+  qplotBmd(x, ..., interval = c("BMDL", "twosided", "none"), col = FALSE, add = FALSE)
 }
 
 \arguments{
@@ -17,6 +17,7 @@
   \item{...}{arguments to be passed on to qplotDrc, if \code{add = FALSE}}
   \item{interval}{option to plot only the lower limit of the confidence interval for the benchmark dose ("BMDL", default), both limit
   of the confidence interval ("twosided"), or no confidence interval ("none").}
+  \item{col}{logical. If TRUE then multiple curves specified by "curveid" in the dose-response model are distinguised by colours rather than point shapes and line types} 
   \item{add}{logical. If TRUE then the functions returns a list of plot layers to be added to an already existing ggplot.} 
 }
 
@@ -40,6 +41,8 @@
 %\seealso{\code{\link{plotraw}} plots the observations only.}
 
 \examples{
+library(drc)
+library(drcData)
 
 ## Fitting model and calculating BMD. 
 model <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())

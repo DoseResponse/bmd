@@ -1,4 +1,5 @@
-PAV<-function(object,data,type){
+PAV<-function(formula,data,type){
+  object <- formula
   if( identical(type,"binomial")){
     N <- length( data[, paste(object[[3]]) ])
     Events <- data[, strsplit(as.character(object[[2]]),"/")[[2]] ]

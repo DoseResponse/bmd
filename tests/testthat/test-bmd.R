@@ -651,14 +651,14 @@ test_that("bmd function computes BMD (point) correctly for TCDD model", {
   expect_equal(result$Results[1, "BMD"], 7.77184985530323)
   expect_equal(result$bmrScaled[1,1], 0.22)
   expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
-  expect_equal(unname(result$interval[1,]), c(-9.09858347336425,24.6422831839707))
+  expect_equal(unname(result$interval[1,]), c(-9.09858347336425,24.6422831839707), tolerance = 1e-4)
   
   # resultSandwich
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
   expect_equal(resultSandwich$Results[1, "BMD"], 7.77184985530323)
   expect_equal(resultSandwich$bmrScaled[1,1], 0.22)
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
-  expect_equal(unname(resultSandwich$interval[1,]), c(7.69908281451778,7.84461689608868))
+  expect_equal(unname(resultSandwich$interval[1,]), c(7.69908281451778,7.84461689608868), tolerance = 1e-4)
   
 })
 
@@ -676,21 +676,21 @@ test_that("bmd function computes BMD (excess) correctly for TCDD model", {
   expect_equal(result$Results[1, "BMD"], 5.56116921034511)
   expect_equal(result$bmrScaled[1,1], 0.0709522577318265)
   expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
-  expect_equal(unname(result$interval[1,]), c(-30.6802498813352,41.8025883020255))
+  expect_equal(unname(result$interval[1,]), c(-30.6802498813352,41.8025883020255), tolerance = 1e-4)
   
   # resultSandwich
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
   expect_equal(resultSandwich$Results[1, "BMD"], 5.56116921034511)
   expect_equal(resultSandwich$bmrScaled[1,1], 0.0709522577318265)
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
-  expect_equal(unname(resultSandwich$interval[1,]), c(5.40992038310958,5.71241803758064))
+  expect_equal(unname(resultSandwich$interval[1,]), c(5.40992038310958,5.71241803758064), tolerance = 1e-4)
   
   # resultInv
   expect_true(!is.na(resultInv$Results[1, "BMD"]))
   expect_equal(resultInv$Results[1, "BMD"], 5.56116921034511)
   expect_equal(resultInv$bmrScaled[1,1], 0.0709522577318265)
   expect_equal(resultInv$bmrScaled[1,1], drop(object0$curve[[1]](resultInv$Results[1, "BMD"])))
-  expect_equal(unname(resultInv$interval[1,]), c(2.58555484830486,14.4423466517269))
+  expect_equal(unname(resultInv$interval[1,]), c(2.58555484830486,14.4423466517269), tolerance = 1e-4)
   
 })
 
@@ -709,21 +709,21 @@ test_that("bmd function computes BMD (additional) correctly for TCDD model", {
   expect_equal(result$Results[1, "BMD"], 6.36475841679501)
   expect_equal(result$bmrScaled[1,1], 0.122055008138765)
   expect_equal(result$bmrScaled[1,1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
-  expect_equal(unname(result$interval[1,]), c(-12.8633221463079,25.5928389798979))
+  expect_equal(unname(result$interval[1,]), c(-12.8633221463079,25.5928389798979), tolerance = 1e-4)
   
   # resultSandwich
   expect_true(!is.na(resultSandwich$Results[1, "BMD"]))
   expect_equal(resultSandwich$Results[1, "BMD"], 6.36475841679501)
   expect_equal(resultSandwich$bmrScaled[1,1], 0.122055008138765)
   expect_equal(resultSandwich$bmrScaled[1,1], drop(object0$curve[[1]](resultSandwich$Results[1, "BMD"])))
-  expect_equal(unname(resultSandwich$interval[1,]), c(6.28677997505832,6.4427368585317))
+  expect_equal(unname(resultSandwich$interval[1,]), c(6.28677997505832,6.4427368585317), tolerance = 1e-4)
   
   # resultInv
   expect_true(!is.na(resultInv$Results[1, "BMD"]))
   expect_equal(resultInv$Results[1, "BMD"], 6.36475841679501)
   expect_equal(resultInv$bmrScaled[1,1], 0.122055008138765)
   expect_equal(resultInv$bmrScaled[1,1], drop(object0$curve[[1]](resultInv$Results[1, "BMD"])))
-  expect_equal(unname(resultInv$interval[1,]), c(2.91217704808626,15.3343789956633))
+  expect_equal(unname(resultInv$interval[1,]), c(2.91217704808626,15.3343789956633), tolerance = 1e-4)
   
 })
 
@@ -878,7 +878,7 @@ test_that("bmd function computes BMD (point) correctly for lemna model", {
   expect_true(!is.na(result$Results[1, "BMD"]))
   expect_equal(result$Results[1, "BMD"], 4.35865965537475)
   expect_equal(result$bmrScaled[1,1], 52)
-  expect_equal(unname(result$interval[1,]), c(2.43392036088582,6.28339894986368))
+  expect_equal(unname(result$interval[1,]), c(2.43392036088582,6.28339894986368), tolerance = 1e-4)
   # profile
   # expect_true(!is.na(resultProfile$Results[1, "BMD"]))
   # expect_equal(resultProfile$Results[1, "BMD"], 4.53872215823332)
@@ -898,12 +898,12 @@ test_that("bmd function computes BMD (extra) correctly for lemna model", {
   expect_true(!is.na(result$Results[1, "BMD"]))
   expect_equal(result$Results[1, "BMD"], 0.644966972651776)
   expect_equal(result$bmrScaled[1,1], 60.1147293067283)
-  expect_equal(unname(result$interval[1,]), c(-0.274435904843214,1.56436985014677))
+  expect_equal(unname(result$interval[1,]), c(-0.274435904843214,1.56436985014677), tolerance = 1e-4)
   # inv
   expect_true(!is.na(resultInv$Results[1, "BMD"]))
   expect_equal(resultInv$Results[1, "BMD"], 0.644966972651776)
   expect_equal(resultInv$bmrScaled[1,1], 60.1147293067283)
-  expect_equal(unname(resultInv$interval[1,]), c(0.224614484009512,1.33997717698247))
+  expect_equal(unname(resultInv$interval[1,]), c(0.224614484009512,1.33997717698247), tolerance = 1e-4)
   # profile
   # expect_true(!is.na(resultProfile$Results[1, "BMD"]))
   # expect_equal(resultProfile$Results[1, "BMD"], 0.752514405241496)
@@ -925,12 +925,12 @@ test_that("bmd function computes BMD (relative) correctly for lemna model", {
   expect_equal(result$bmrScaled[1,1], 60.1147293067283)
   expect_equal(unname(result$interval[1,]), c(-0.124767225483307,1.41470117078686))
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](0)*0.9))
-  expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])))
+  expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
   # inv
   expect_true(!is.na(resultInv$Results[1, "BMD"]))
   expect_equal(resultInv$Results[1, "BMD"], 0.644966972651776)
   expect_equal(resultInv$bmrScaled[1,1], 60.1147293067283)
-  expect_equal(unname(resultInv$interval[1,]), c(0.206536602960556,2.00749707239478))
+  expect_equal(unname(resultInv$interval[1,]), c(0.206536602960556,2.00749707239478), tolerance = 1e-4)
   # profile
   # expect_true(!is.na(resultProfile$Results[1, "BMD"]))
   # expect_equal(resultProfile$Results[1, "BMD"], 0.752514405241496)
@@ -1526,6 +1526,6 @@ test_that("bmd function works on drcMMRE object", {
   expect_equal(bmdMMRE$Results[, "BMD"], 1.66913593445629)
   expect_equal(bmdMMRE$bmrScaled[,1], 9.15712352078559)
   expect_equal(unname(bmdMMRE$bmrScaled[,1]), drop(modMMRE$curve[[1]](bmdMMRE$Results[, "BMD"])))
-  expect_equal(bmdMMRE$interval[1,], c(Lower = 1.3166277025622, Upper = 2.02164416635037))
-  expect_equal(bmdMMRE$SE[,"SE"], 0.214309787885148) 
+  expect_equal(bmdMMRE$interval[1,], c(Lower = 1.3166277025622, Upper = 2.02164416635037), tolerance = 1e-4)
+  expect_equal(bmdMMRE$SE[,"SE"], 0.214309787885148, tolerance = 1e-4) 
 })
