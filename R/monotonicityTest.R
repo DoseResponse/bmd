@@ -45,6 +45,7 @@
 #' result <- monotonicityTest("conc", "rootl", data = drcData::ryegrass, test = "bartholomew")
 #' print(result)
 #' 
+#' @export
 monotonicityTest <- function(x, y, data, test = c("jonckheere", "bartholomew"), level = 0.05, ...){ # , "drc", "quad"
   if(!missing(data)){
     x <- data[[x]]

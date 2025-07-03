@@ -37,7 +37,7 @@
 #' qplotBmd(bmd0, interval = "twosided", add = FALSE)
 #' 
 #' 
-#' 
+#' @export
 qplotBmd <- function(x, ..., interval = c("BMDL", "twosided", "none"), col = FALSE, add = FALSE){
   object <- x
   

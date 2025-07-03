@@ -125,7 +125,7 @@
 #' ## BMD from the same definitions but using parametric bootstrap
 #' bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", bootType="parametric",R = 50)
 #' 
-#' 
+#' @export
 bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "orig",
                     backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
                     backg=NA, 

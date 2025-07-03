@@ -119,7 +119,7 @@
 #'   scale_x_continuous(trans = scales:::pseudo_log_trans(sigma = 0.2, base = exp(1)))
 #' 
 #' 
-#' 
+#' @export
 qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "bars", "none", "obs", "confidence"), 
                       gridsize = 250, xtrans = "pseudo_log", xlab, xlim, 
                       ytrans = NULL, ylab, ylim, col = FALSE,

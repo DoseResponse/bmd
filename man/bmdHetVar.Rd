@@ -144,7 +144,6 @@ plot(GiantKelp.LL.4.hetVarLogSq)
 bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, 
           def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 
-
 }
 \author{
 Signe M. Jensen and Jens Riis Baalkilde

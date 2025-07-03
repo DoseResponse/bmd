@@ -170,6 +170,7 @@
 #' bmd(ryegrass.m1, 0.05, backg = 2, backgType = "hybridSD", def = "hybridAdd", display = TRUE)
 #' 
 #' 
+#' @export
 bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "hybridPercentile"),
                backg=NA, controlSD=NA,
                def = c("excess", "additional", 

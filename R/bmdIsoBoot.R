@@ -101,6 +101,7 @@
 #' benchmark dose estimation with continuous dose-response data. Scandinavian
 #' Journal of Statistics, 42, 713-731
 #' @keywords nonparametric isotonic regression bootstrap
+#' @export
 #' @examples
 #' 
 #' ## Data on tumor incidence in rats after exposure to formaldehyde, from Piegorsch et al. (2014)

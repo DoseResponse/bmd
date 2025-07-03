@@ -142,7 +142,6 @@ bmdIso(rootl ~ conc,
       bmr=0.05,
       backgType = "modelBased",
       def = "relative")
-
 }
 \references{
 Piegorsch, W. W., Xiong, H., Bhattacharya, R. N., & Lin, L.

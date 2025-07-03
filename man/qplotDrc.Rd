@@ -154,7 +154,6 @@ qplotDrc(spinach.m1, col = TRUE, type = "confidence") +
   scale_x_continuous(trans = scales:::pseudo_log_trans(sigma = 0.2, base = exp(1)))
 
 
-
 }
 \references{
 Weimer, M., Jiang, X., Ponta, O., Stanzel, S., Freyberger, A.,

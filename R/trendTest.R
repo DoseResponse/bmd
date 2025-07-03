@@ -52,6 +52,7 @@
 #' result <- trendTest("x", "y", data = data, test = "shirley")
 #' print(result)
 #' 
+#' @export
 trendTest <- function(x, y, data, test = c("william", "shirley", "tukey"), level = 0.05){
   if(!missing(data)){
     x <- data[[x]]

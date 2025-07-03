@@ -1,7 +1,7 @@
 #' Help funtion to bmdBoot
 #' 
 #' 
-#' 
+#' @export
 BCa <- function(obs, data, bootSample, bootjack, level){
 R <- length(bootSample)
 b <- qnorm((sum(bootSample > obs)+sum(bootSample==obs)/2)/R)

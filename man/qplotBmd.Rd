@@ -57,7 +57,6 @@ qplotDrc(model,type="confidence") +
 qplotBmd(bmd0, interval = "twosided", add = FALSE)
 
 
-
 }
 \author{
 Jens Riis Baalkilde.

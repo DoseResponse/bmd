@@ -112,7 +112,7 @@
 #' bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, 
 #'           def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 #' 
-#' 
+#' @export
 bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"), R = 1000, level = 0.95, bootType = "nonparametric", progressInfo = TRUE, display = TRUE){
   ### Assertions ###
   # object

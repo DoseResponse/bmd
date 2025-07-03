@@ -162,6 +162,7 @@
 #' and Model Space Selection in Frequentist Model Averaging for Benchmark Dose
 #' Estimation, \emph{Environmetrics} \bold{36(2)}, e70002.
 #' @keywords model averaging nonlinear bootstrap
+#' @export
 #' @examples
 #' 
 #' library(drc)

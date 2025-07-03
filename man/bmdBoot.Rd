@@ -162,7 +162,6 @@ bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", R = 50)
 ## BMD from the same definitions but using parametric bootstrap
 bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", bootType="parametric",R = 50)
 
-
 }
 \author{
 Signe M. Jensen

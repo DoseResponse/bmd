@@ -143,7 +143,6 @@ bmdHetVarMA(GiantKelp.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = 
             backg = 1, def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, 
             display = TRUE)
 
-
 }
 \author{
 Signe M. Jensen and Jens Riis Baalkilde

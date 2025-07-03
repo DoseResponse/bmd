@@ -121,7 +121,7 @@
 #'       bmr=0.05,
 #'       backgType = "modelBased",
 #'       def = "relative")
-#' 
+#' @export
 bmdIso <- function(formula, data, type, bmr, p0, backgType = c("modelBased", "absolute","hybridSD","hybridPercentile"), backg=NA, def = c("excess", "additional", "relative", "added", "hybridExc", "hybridAdd", "point"), display=FALSE){
   object <- formula
   PAV.p <- PAV(object, data, type)

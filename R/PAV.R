@@ -20,6 +20,7 @@
 #' inference: order, inequality, and shape constraints. New York: John Wiley &
 #' Sons.
 #' @keywords nonparametric isotonic regression
+#' @export
 PAV<-function(formula,data,type){
   object <- formula
   if( identical(type,"binomial")){

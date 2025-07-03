@@ -16,6 +16,7 @@
 #' @return Creates a plot. No value returned.
 #' @author Jens Riis Baalkilde.
 #' @keywords ggplot
+#' @export
 #' @examples
 #' 
 #' library(drc)

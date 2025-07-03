@@ -58,7 +58,6 @@ guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "to
 
 plot(guthionS.LL, xlim = c(15,55)) # uses ggplot
 
-
 }
 \references{
 # ADD REFERENCES

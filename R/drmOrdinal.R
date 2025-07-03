@@ -43,7 +43,7 @@
 #' 
 #' plot(guthionS.LL, xlim = c(15,55)) # uses ggplot
 #' 
-#' 
+#' @export
 drmOrdinal <- function(levels, dose, weights, blocks, data, fct, p.epsilon = 1e-16){
   if(missing(blocks)){
     blocks = NULL
