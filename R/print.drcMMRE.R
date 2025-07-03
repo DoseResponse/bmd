@@ -1,3 +1,6 @@
+
+#' @title S3 method
+#' @export
 print.drcMMRE <- function (x, ..., digits = max(3, getOption("digits") - 3)) 
 {
   object <- x

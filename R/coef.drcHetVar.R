@@ -1,3 +1,6 @@
+
+#' @title S3 method
+#' @export
 coef.drcHetVar <- function(object, ...){
   curvePar <- object$curvePar
   names(curvePar) <- paste0("Curve:", names(curvePar))

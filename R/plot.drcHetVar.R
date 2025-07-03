@@ -1,3 +1,6 @@
+
+#' @title S3 method
+#' @export
 plot.drcHetVar <- function(x, ...){
   object <- x
   dots <- list(...)

@@ -1,3 +1,7 @@
+#' Help funtion to bmdBoot
+#' 
+#' 
+#' 
 bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE){
   if(bootType=="nonparametric"){
     if(object$type=="binomial"){

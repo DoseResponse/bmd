@@ -1,3 +1,7 @@
+#' Help funtion to bmdOrdinal and bmdOrdinalMA
+#' 
+#' 
+#' 
 bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical")){
   bootType <- match.arg(bootType)
   

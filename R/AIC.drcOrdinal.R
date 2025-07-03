@@ -1,3 +1,6 @@
+
+#' @title S3 method
+#' @export
 AIC.drcOrdinal <- function(object, ..., k = 2) {
   dots <- list(...)
   if (!is.null(dots$epsilon)){

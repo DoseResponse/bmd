@@ -1,3 +1,6 @@
+
+#' @title S3 method
+#' @export
 plot.drcOrdinal <- function(x, ...){
   object <- x
   dots <- list(...)

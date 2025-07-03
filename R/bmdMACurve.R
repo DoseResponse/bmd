@@ -1,3 +1,7 @@
+#' Help funtion to bmdMA
+#' 
+#' 
+#' 
 bmdMACurve<-function(modelList,modelWeights,bmrScaled0, searchInterval="dataBased"){
   nCurves <- ncol(modelList[[1]]$parmMat)
   

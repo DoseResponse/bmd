@@ -1,4 +1,7 @@
 print.drcOrdinal <- function(x, ..., digits = max(3, getOption("digits") - 3)) 
+#' @title S3 method
+#' @export
+print.drcOrdinal <- function(x, ..., digits = max(3, getOption("digits") - 3)) 
 {
   object <- x
   classList <- class(object)
