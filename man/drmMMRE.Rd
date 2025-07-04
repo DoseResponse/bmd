@@ -68,7 +68,6 @@ data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
 modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
 bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative")
 
-
 }
 \author{
 Signe M. Jensen and Jens Riis Baalkilde

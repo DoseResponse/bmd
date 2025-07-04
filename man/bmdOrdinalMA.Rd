@@ -131,7 +131,6 @@ bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2),
 bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
              modelWeights = "AIC", bmr = 0.1, 
              backgType = "modelBased", def = "excess", type = "bootstrap", R = 50)
-
 }
 \references{
 Budtz-Jorgensen, E., Keiding, N., and Grandjean, P. (2001)

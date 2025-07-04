@@ -71,7 +71,6 @@ qplotDrc(aconiazide.LL.3, type = "obs") +
                         modelWeights = "AIC")
                 })
 
-
 }
 \author{
 Jens Riis Baalkilde

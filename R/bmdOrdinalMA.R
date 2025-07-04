@@ -103,7 +103,7 @@
 #' bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
 #'              modelWeights = "AIC", bmr = 0.1, 
 #'              backgType = "modelBased", def = "excess", type = "bootstrap", R = 50)
-#' 
+#' @export
 bmdOrdinalMA <- function(modelList, modelWeights = c("AIC", "BIC"), bmr, backgType = c("modelBased", "absolute"), backg = NA, def = c("excess", "additional", "point"), type = c("bootstrap", "Kang"), level = 0.95, R = 500, bootType = c("nonparametric", "parametric"), display = TRUE, progressInfo = TRUE){
   # assertions
   if(!all(sapply(modelList, function(object) inherits(object, "drcOrdinal")))){

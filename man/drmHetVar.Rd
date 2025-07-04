@@ -83,7 +83,6 @@ plot(GiantKelp.LL.4.hetVarLogSq)
 
 
 
-
 }
 \author{
 Signe M. Jensen and Jens Riis Baalkilde

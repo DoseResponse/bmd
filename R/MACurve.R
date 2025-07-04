@@ -57,7 +57,7 @@
 #'                         modelWeights = "AIC")
 #'                 })
 #' 
-#' 
+#' @export
 MACurve <- function(x, modelList, modelWeights, stackingSeed = 1, stackingSplits = 2){
   
   

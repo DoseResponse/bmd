@@ -69,7 +69,7 @@
 #' 
 #' 
 #' 
-#' 
+#' @export
 drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   call <- match.call()
   

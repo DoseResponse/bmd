@@ -46,7 +46,6 @@ getStackingWeights(modelList = list(aconiazide.LL.3, aconiazide.LN.3,
                                   aconiazide.W1.3, aconiazide.W2.3),
                   nSplits = 7)
 
-
 }
 \author{
 Jens Riis Baalkilde

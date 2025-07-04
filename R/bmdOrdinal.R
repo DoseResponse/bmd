@@ -109,6 +109,7 @@
 #'                           weights = "total", dose = "dose", data = guthionS, fct = LL.2())
 #' bmdOrdinal(guthionS.LL, bmr = 0.1, backgType = "modelBased", def = "excess", R = 50)
 #' 
+#' @export
 bmdOrdinal <- function(object, bmr, backgType = c("modelBased", "absolute"), backg = NA, def=c("excess", "additional", "point"), interval = c("delta", "sandwich", "profile", "bootstrap"), level = 0.95, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical"), display = TRUE, progressInfo = TRUE){
   interval <- match.arg(interval)
   

@@ -239,7 +239,7 @@ getDataSplits <- function(object, nSplits){
 #'                                   aconiazide.W1.3, aconiazide.W2.3),
 #'                   nSplits = 7)
 #' 
-#' 
+#' @export
 getStackingWeights <- function(modelList, nSplits = 2){
   if(!requireNamespace("CVXR")){
     stop('package "CVXR" must be installed to estimate stacking weights')

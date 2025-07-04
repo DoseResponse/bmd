@@ -54,7 +54,7 @@
 #' modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
 #' bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative")
 #' 
-#' 
+#' @export
 drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial")){
   call_expr <- match.call()
   
