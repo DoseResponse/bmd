@@ -2,10 +2,20 @@
 % Please edit documentation in R/logLik.drcHetVar.R
 \name{AIC.drcHetVar}
 \alias{AIC.drcHetVar}
-\title{S3 method}
+\title{AIC Method for drcHetVar Objects}
 \usage{
 \method{AIC}{drcHetVar}(object, ..., k = 2)
 }
+\arguments{
+\item{object}{A drcHetVar model object}
+
+\item{...}{Additional arguments (not used)}
+
+\item{k}{Numeric value for penalty term in AIC calculation (default is 2)}
+}
+\value{
+The log-likelihood value
+}
 \description{
-S3 method
+Extracts the AIC from drcHetVar model objects.
 }
