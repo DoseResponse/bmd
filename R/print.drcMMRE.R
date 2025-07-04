@@ -1,3 +1,13 @@
+#' Print Method for drcMMRE Objects
+#'
+#' Prints a summary of a drcMMRE model object.
+#'
+#' @param x A drcMMRE model object
+#' @param ... Additional arguments (not used)
+#' @param digits Number of significant digits to use for printing values
+#'
+#' @return Invisibly returns the x object
+#' @export
 print.drcMMRE <- function (x, ..., digits = max(3, getOption("digits") - 3)) 
 {
   object <- x

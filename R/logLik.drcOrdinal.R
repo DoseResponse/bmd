@@ -1,3 +1,12 @@
+#' Log-Likelihood Method for drcOrdinal Objects
+#'
+#' Extracts the log-likelihood from drcOrdinal model objects.
+#'
+#' @param object A drcOrdinal model object
+#' @param ... Additional arguments (not used)
+#'
+#' @return The log-likelihood value
+#' @export
 logLik.drcOrdinal <- function(object, ...){
   dots <- list(...)
   if (!is.null(dots$epsilon)){

@@ -30,7 +30,7 @@
 #   - correct bmd estimate (point, extra, hybridExc)
 #   - delta
 # - Meta analytic model (drmMMRE)
-
+library(drc)
 
 # Arguments and structure -------------------------------------------------
 

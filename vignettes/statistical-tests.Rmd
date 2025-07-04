@@ -1,0 +1,82 @@
+---
+title: "statistical-tests"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{statistical-tests}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bmd)
+```
+
+# Statistical Tests Examples
+
+This vignette demonstrates the usage of functions related to 
+statistical tests.
+
+## Monotonicity Test
+
+```{r}
+
+
+
+
+# Example with custom data
+
+x <- c(1, 2, 3, 4, 5)
+
+y <- c(2, 4, 6, 8, 10)
+
+result <- monotonicityTest(x, y, test = "jonckheere")
+
+print(result)
+
+
+
+data <- data.frame(x = c(1, 2, 3, 4, 5), y = c(10, 9, 8, 7, 6))
+
+result <- monotonicityTest("conc", "rootl", data = drcData::ryegrass, test = "bartholomew")
+
+print(result)
+
+
+
+
+```
+
+
+
+## Trend Test
+
+```{r}
+
+# Example with custom data
+
+x <- c(1, 2, 3, 4, 5)
+
+y <- c(2, 4, 6, 8, 10)
+
+result <- trendTest(x, y, test = "tukey")
+
+print(result)
+
+
+
+# Example with a data frame
+
+data <- data.frame(x = c(1, 2, 3, 4, 5), y = c(10, 9, 8, 7, 6))
+
+result <- trendTest("x", "y", data = data, test = "shirley")
+
+print(result)
+```
+

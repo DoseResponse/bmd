@@ -1,3 +1,6 @@
+
+#' @title S3 method
+#' @export
 BIC.drcOrdinal <- function(object, ...){
   dots <- list(...)
   if (!is.null(dots$epsilon)){

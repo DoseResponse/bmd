@@ -1,0 +1,12 @@
+pandoc: '3.5'
+pkgdown: 2.1.0
+pkgdown_sha: ~
+articles:
+  basic-bmd-functions: basic-bmd-functions.html
+  bmd_Package: bmd_Package.html
+  model-averaging: model-averaging.html
+  specialized-models: specialized-models.html
+  statistical-tests: statistical-tests.html
+  utilities: utilities.html
+  visualization: visualization.html
+last_built: 2025-07-04T09:09Z

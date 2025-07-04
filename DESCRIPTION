@@ -25,7 +25,9 @@ Suggests:
     tidyr,
     numDeriv,
     drcData,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    knitr,
+    rmarkdown
 Remotes:
     doseresponse/drc,
     doseresponse/drcData
@@ -36,3 +38,4 @@ Config/testthat/edition: 3
 RoxygenNote: 7.3.2
 Depends: 
     R (>= 3.5)
+VignetteBuilder: knitr

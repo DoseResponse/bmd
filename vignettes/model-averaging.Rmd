@@ -1,0 +1,191 @@
+---
+title: "model-averaging"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{model-averaging}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bmd)
+```
+
+
+## Example for `bmdMA` function
+
+```r
+
+
+
+
+library(drc)
+
+library(drcData)
+
+
+
+## Fitting 4 different two-parameter models to binomial data
+
+deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
+
+deguelin.m2 <- drm(r/n~dose, weights=n, data=deguelin, fct=W1.2(), type="binomial")
+
+deguelin.m3 <- drm(r/n~dose, weights=n, data=deguelin, fct=W2.2(), type="binomial")
+
+deguelin.m4 <- drm(r/n~dose, weights=n, data=deguelin, fct=LN.2(), type="binomial")
+
+
+
+
+
+## Model averaged BMD for 5% additional risk with estimated background risk 
+
+## and BMDL based on Buckland et al.
+
+bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
+
+      backgType = "modelBased", def = "additional",
+
+      type = "Buckland")
+
+
+
+## Model averaged BMD for 5% additional risk with estimated background risk
+
+## and BMDL based on an average of the model curves
+
+bmdMA(list(deguelin.m1,deguelin.m2,deguelin.m3,deguelin.m4), modelWeights="AIC", 0.05, 
+
+      backgType = "modelBased", def = "additional",
+
+      type = "curve", bootstrapType = "parametric", bootInterval = "percentile", R=50)
+
+
+
+
+
+## Fitting 4 different two-parameter models to binomial data
+
+ryegrass.m1<-drm(rootl~conc, data=ryegrass, fct=LL.4())
+
+ryegrass.m2<-drm(rootl~conc, data=ryegrass, fct=W1.4())
+
+ryegrass.m3<-drm(rootl~conc, data=ryegrass, fct=W2.4())
+
+ryegrass.m4<-drm(rootl~conc, data=ryegrass, fct=LN.4())
+
+
+
+## Model-averaged BMD and bootstrap BMDL for bmr=5% and using the hybrid approach
+
+## to estimate the background risk.  
+
+bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="AIC", bmr=0.05, 
+
+      backgType = "hybridSD", def = "hybridAdd", type = "bootstrap",
+
+      bootstrapType = "nonparametric", bootInterval = "percentile", R = 50)
+
+
+
+
+
+## Model-averaged BMD using the Stacking Weights
+
+bmdMA(list(ryegrass.m1,ryegrass.m2,ryegrass.m3,ryegrass.m4), modelWeights="Stack", bmr=0.05, 
+
+      backgType = "hybridSD", def = "hybridAdd", type = "bootstrap",
+
+      bootstrapType = "nonparametric", bootInterval = "percentile", R = 50)
+
+
+
+
+
+```
+
+## bmd MA curve
+
+```r
+
+
+
+
+library(bmd)
+
+library(drc)
+
+library(drcData)
+
+library(ggplot2)
+
+
+
+# fit models to aconiazide data
+
+aconiazide.LL.3 <- drm(weightChange ~ dose,data = aconiazide,fct = LL.3())
+
+aconiazide.LN.3 <- drm(weightChange ~ dose,data = aconiazide,fct = LN.3())
+
+aconiazide.W1.3 <- drm(weightChange ~ dose,data= aconiazide,fct = W1.3())
+
+aconiazide.W2.3 <- drm(weightChange ~ dose,data= aconiazide,fct = W2.3())
+
+
+
+# plot the MA curve
+
+plot(aconiazide.LL.3, type = "obs")
+
+curve(
+
+  MACurve(x, modelList = list(aconiazide.LL.3, aconiazide.LN.3,aconiazide.W1.3, aconiazide.W2.3),
+
+          modelWeights = "AIC"),
+
+  add = TRUE)
+
+
+
+# or plot using ggplot2
+
+qplotDrc(aconiazide.LL.3, type = "obs") +
+
+ geom_function(fun = function(x){ 
+
+                MACurve(x, modelList = list(aconiazide.LL.3, aconiazide.LN.3,
+
+                                            aconiazide.W1.3, aconiazide.W2.3), 
+
+                        modelWeights = "AIC")
+
+                )
+
+
+
+```
+
+## get stacking weights
+
+```r
+getStackingWeights(modelList = list(aconiazide.LL.3, aconiazide.LN.3,
+
+                                  aconiazide.W1.3, aconiazide.W2.3))
+
+getStackingWeights(modelList = list(aconiazide.LL.3, aconiazide.LN.3,
+
+                                  aconiazide.W1.3, aconiazide.W2.3),
+
+                  nSplits = 7)
+           
+
+
+```       

@@ -1,3 +1,12 @@
+#' Plot Method for drcHetVar Objects
+#'
+#' Plots the fitted dose-response curve for drcHetVar model objects.
+#'
+#' @param x A drcHetVar model object
+#' @param ... Additional graphical parameters passed to plot
+#'
+#' @return Invisibly returns the x object
+#' @export
 plot.drcHetVar <- function(x, ...){
   object <- x
   dots <- list(...)

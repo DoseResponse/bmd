@@ -1,0 +1,306 @@
+---
+title: "specialized-models"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{specialized-models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bmd)
+```
+
+
+## Oridnal 
+
+```{r}
+
+
+
+
+library(drc)
+
+library(drcData)
+
+data(guthion)
+
+guthionS <- subset(guthion, trt == "S")
+
+
+
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total",
+
+                          dose = "dose", data = guthionS, fct = LL.2())
+
+
+
+plot(guthionS.LL, xlim = c(15,55)) # uses ggplot
+
+
+bmdOrdinal(guthionS.LL, bmr = 0.1, backgType = "modelBased", def = "excess", R = 50)
+
+
+```
+
+
+### MA 
+
+```r
+
+
+
+
+library(drc)
+
+library(drcData)
+
+data(guthion)
+
+
+
+guthionS <- subset(guthion, trt == "S")
+
+
+
+guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), 
+
+                          weights = "total", dose = "dose", data = guthionS, fct = LL.2())
+
+guthionS.LN <- drmOrdinal(levels = c("alive", "moribund", "dead"), 
+
+                          weights = "total", dose = "dose", data = guthionS, fct = LN.2())
+
+guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"),
+
+                          weights = "total", dose = "dose", data = guthionS, fct = W1.2())
+
+guthionS.W2 <- drmOrdinal(levels = c("alive", "moribund", "dead"),
+
+                          weights = "total", dose = "dose", data = guthionS, fct = W2.2())
+
+
+
+bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
+
+             modelWeights = "AIC", bmr = 0.1, 
+
+             backgType = "modelBased", def = "excess", type = "Kang")
+
+bmdOrdinalMA(list(guthionS.LL, guthionS.LN, guthionS.W1, guthionS.W2), 
+
+             modelWeights = "AIC", bmr = 0.1, 
+
+             backgType = "modelBased", def = "excess", type = "bootstrap", R = 50)
+
+```
+
+
+
+## Heterogenous Variance Models
+
+
+```r
+
+
+
+
+library(drc)
+
+library(drcData)
+
+library(bmd)
+
+# install.packages("gridExtra") # OPTIONAL - USED FOR PLOTTING A drcHetVar OBJECT.
+
+
+
+# ryegrass data
+
+set.seed(123)
+
+ryegrass.LL.4.hetVar <- drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2),
+
+                                  data = ryegrass, fct = LL.4())
+
+plot(ryegrass.LL.4.hetVar)
+
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1,
+
+          def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+
+bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
+
+          def = "hybridExc", R = 50, level = 0.95, 
+
+          bootType = "parametric", progressInfo = TRUE, display = TRUE) # parametric bootstrap
+
+
+
+# barley data
+
+set.seed(123)
+
+barley.LL.4.hetVar <- drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), data = barley, fct = LL.4())
+
+plot(barley.LL.4.hetVar)
+
+
+
+# GiantKelp data
+
+set.seed(123)
+
+GiantKelp.LL.4.hetVarSq <- drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), 
+
+                                     data = GiantKelp, fct = LL.4())
+
+plot(GiantKelp.LL.4.hetVarSq)
+
+
+
+GiantKelp.LL.4.hetVarLogSq <- drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), 
+
+                                        data = GiantKelp, fct = LL.4())
+
+plot(GiantKelp.LL.4.hetVarLogSq)
+
+
+
+
+
+
+
+```
+
+
+
+```{r}
+
+
+
+
+library(drc)
+
+library(drcData)
+
+library(bmd)
+
+# install.packages("gridExtra") # OPTIONAL - USED FOR PLOTTING A drcHetVar OBJECT.
+
+
+
+# ryegrass data
+
+set.seed(123)
+
+ryegrass.hetVar.list <- list(
+
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = LL.4()),
+
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = LN.4()),
+
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = W1.4()),
+
+  drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = W2.4()))
+
+bmdHetVarMA(ryegrass.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridPercentile",
+
+            backg = 0.1, def = "hybridExc", R = 100, level = 0.95)
+
+bmdHetVarMA(ryegrass.hetVar.list, modelWeights = c(0.4, 0.2, 0.1, 0.3), bmr = 0.1, 
+
+            backgType = "hybridPercentile", backg = 0.1, 
+
+            def = "hybridExc", R = 50, level = 0.95) # user-defined weights
+
+
+
+# barley data
+
+set.seed(123)
+
+barley.hetVar.list <- list(drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), 
+
+                                     data = barley, fct = LL.4()),
+
+                           drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), 
+
+                                     data = barley, fct = W2.4()))
+
+bmdHetVarMA(barley.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridSD", backg = 2,
+
+            def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+
+
+
+# GiantKelp data
+
+set.seed(123)
+
+GiantKelp.hetVar.list <- list(
+
+  drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), data = GiantKelp, fct = LL.4()),
+
+  drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), data = GiantKelp, fct = LL.4()))
+
+bmdHetVarMA(GiantKelp.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridSD",
+
+            backg = 1, def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, 
+
+            display = TRUE)
+
+
+
+```
+
+## Mixed Models
+
+```{r}
+
+
+
+
+
+library(drc)
+
+library(drcData)
+
+library(metafor)
+
+library(bmd)
+
+
+
+set.seed(1)
+
+data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
+
+                    y = rep(drcData::ryegrass$rootl, 2) +
+
+                      c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
+
+                        rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
+
+                    EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+
+
+
+modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
+
+bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative")
+
+
+
+```
+
+
+
+

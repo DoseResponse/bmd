@@ -1,0 +1,107 @@
+---
+title: "bmd Package"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{bmd_Package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(drcData)
+library(drc)
+library(bmd)
+```
+
+
+## Package Summary
+
+This R package focuses on Benchmark Dose (BMD) modeling, which is commonly used in toxicology and risk assessment to determine the dose of a substance that corresponds to a specific level of response or risk. The package provides a  comprehensive range of functionalities. It supports various model types, confidence interval methods, and model averaging approaches.
+
+### Core Functionalities
+
+1. **Dose-Response Modeling**:
+   - Fits various dose-response models including logistic, log-normal, Weibull, and fractional polynomial models
+   - Supports continuous, binomial, Poisson, and negative binomial response types
+   - Handles both single and multiple curves/groups
+
+2. **BMD Estimation**:
+   - Calculates benchmark doses (BMDs) and their lower confidence limits (BMDLs)
+   - Implements multiple BMD definitions: excess, additional, relative, extra, added, hybrid excess, hybrid additional, and point
+   - Provides various background types: model-based, absolute, hybridSD, and hybridPercentile
+
+3. **Confidence Interval Methods**:
+   - Delta method
+   - Profile likelihood
+   - Bootstrap (parametric, nonparametric)
+   - Sandwich estimator
+   - Inverse regression
+
+4. **Model Averaging**:
+   - Implements model averaging for BMD estimation via `bmdMA()`
+   - Supports various weighting schemes: AIC, BIC, and stacking (cross-validation)
+   - Implements different averaging approaches: Kang, Buckland, curve, and bootstrap
+
+5. **Special Model Types**:
+   - Ordinal response models (`drcOrdinal`)
+   - Heterogeneous variance models (`drcHetVar`)
+   - Mixed models with random effects (`drcMMRE`)
+
+6. **Trend Testing**:
+   - Implements monotonicity tests (Jonckheere-Terpstra, Bartholomew)
+   - Provides trend tests (Williams, Shirley, Tukey)
+
+7. **Visualization**:
+   - Plot methods for BMD objects
+   - ggplot2-based plotting functions (`qplotDrc`, `qplotBmd`)
+
+## Usage of the Package
+
+The package follows a workflow typically seen in dose-response analysis:
+
+1. **Fit dose-response models** using functions like `drm()`, `drcOrdinal()`, `drcHetVar()`, or `drcMMRE()`
+2. **Estimate BMDs** using `bmd()` or specialized functions like `bmdOrdinal()`, `bmdHetVar()`
+3. **Apply model averaging** with `bmdMA()` if multiple models are considered
+4. **Visualize results** using plot methods or specialized plotting functions
+5. **Test for trends** using `trendTest()` or `monotonicityTest()`
+
+### Example usage:
+
+```{r}
+# Fit dose-response model
+
+data("secalonic")
+model <- drm(rootl ~ dose, data = secalonic, fct = LL.4())
+## model <- drm(response ~ dose, data = mydata, fct = LL.4())
+
+# Calculate BMD
+bmd_result <- bmd(model, bmr = 0.1, backgType = "modelBased", def = "relative", interval = "profile")
+
+# Plot result
+plot(bmd_result)
+## note that ggplot2 style plot can be generated using qplot function
+## qplotBmd(bmd(model, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE)) # display = FALSE hides output from bmd function
+```
+
+#### Fit multiple models for model averaging
+
+```{r}
+# Fit multiple models for model averaging
+
+# Apply model averaging (if multiple models are fitted)
+model1 <- model
+model2 <- drm(rootl ~ dose, data = secalonic, fct = LN.3())
+model3 <- drm(rootl ~ dose, data = secalonic, fct = LN.4())
+model_list <- list(model1, model2, model3)
+bmd_ma <- bmdMA(model_list, modelWeights = "AIC", backgType = "modelBased", bmr = 0.1, 
+                def =  "relative" , type = "bootstrap")
+print(bmd_ma)
+```
+
