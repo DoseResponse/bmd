@@ -1,5 +1,11 @@
-
-#' @title S3 method
+#' Log-Likelihood Method for drcHetVar Objects
+#'
+#' Extracts the log-likelihood from drcHetVar model objects.
+#'
+#' @param object A drcHetVar model object
+#' @param ... Additional arguments (not used)
+#'
+#' @return The log-likelihood value
 #' @export
 logLik.drcHetVar <- function(object, ...){
   - object$sumList$numObs/2 * log(2*pi) - object$value/2

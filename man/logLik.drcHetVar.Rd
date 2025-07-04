@@ -2,10 +2,18 @@
 % Please edit documentation in R/logLik.drcHetVar.R
 \name{logLik.drcHetVar}
 \alias{logLik.drcHetVar}
-\title{S3 method}
+\title{Log-Likelihood Method for drcHetVar Objects}
 \usage{
 \method{logLik}{drcHetVar}(object, ...)
 }
+\arguments{
+\item{object}{A drcHetVar model object}
+
+\item{...}{Additional arguments (not used)}
+}
+\value{
+The log-likelihood value
+}
 \description{
-S3 method
+Extracts the log-likelihood from drcHetVar model objects.
 }

@@ -2,10 +2,20 @@
 % Please edit documentation in R/print.bmdOrdinal.R
 \name{print.bmdOrdinal}
 \alias{print.bmdOrdinal}
-\title{S3 method}
+\title{Print Method for bmdOrdinalr Objects}
 \usage{
 \method{print}{bmdOrdinal}(x, ..., digits = max(3, getOption("digits") - 3))
 }
+\arguments{
+\item{x}{A bmdOrdinal model object}
+
+\item{...}{Additional arguments (not used)}
+
+\item{digits}{Number of significant digits to use for printing values}
+}
+\value{
+Invisibly returns the x object
+}
 \description{
-S3 method
+Prints a summary of a bmdOrdinal model object.
 }

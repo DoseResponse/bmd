@@ -2,8 +2,7 @@
 % Please edit documentation in R/plot.bmd.R
 \name{plot.bmd}
 \alias{plot.bmd}
-\alias{\method{plot}{bmd}}
-\title{Plotting benchmark doses}
+\title{Plotting method for benchmark doses modeling object}
 \usage{
 \method{plot}{bmd}(x, ..., interval = c("BMDL", "twosided", "none"))
 }

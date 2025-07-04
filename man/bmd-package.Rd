@@ -3,7 +3,6 @@
 \docType{package}
 \name{bmd-package}
 \alias{bmd-package}
-\alias{bmd}
 \title{BMD: Benchmark Dose Modeling}
 \description{
 A package for benchmark dose modeling in toxicology and risk assessment

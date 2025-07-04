@@ -1,4 +1,4 @@
-#' Plotting benchmark doses
+#' Plotting method for benchmark doses modeling object
 #' 
 #' \code{plot.bmd} displays benchmark dose values with options to plot
 #' confidence intervals as well.
@@ -6,7 +6,7 @@
 #' This function is a simple function to plot benchmark dose values along with
 #' the fitted curve.
 #' 
-#' @aliases plot.bmd \method{plot}{bmd}
+#' @aliases plot.bmd 
 #' @param x an object of class 'bmd'.
 #' @param ... arguments to be passed on to \code{plot.drc}, if \code{add =
 #' FALSE}

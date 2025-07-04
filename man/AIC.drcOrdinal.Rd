@@ -2,10 +2,20 @@
 % Please edit documentation in R/AIC.drcOrdinal.R
 \name{AIC.drcOrdinal}
 \alias{AIC.drcOrdinal}
-\title{S3 method}
+\title{AIC Method for drcOrdinal Objects}
 \usage{
 \method{AIC}{drcOrdinal}(object, ..., k = 2)
 }
+\arguments{
+\item{object}{A drcOrdinal model object}
+
+\item{...}{Additional arguments (not used)}
+
+\item{k}{The penalty per parameter to be used; default is 2}
+}
+\value{
+The AIC value
+}
 \description{
-S3 method
+Calculates the Akaike Information Criterion for drcOrdinal model objects.
 }

@@ -2,10 +2,18 @@
 % Please edit documentation in R/plot.drcOrdinal.R
 \name{plot.drcOrdinal}
 \alias{plot.drcOrdinal}
-\title{S3 method}
+\title{Plot Method for drcOrdinal Objects}
 \usage{
 \method{plot}{drcOrdinal}(x, ...)
 }
+\arguments{
+\item{x}{A drcOrdinal model object}
+
+\item{...}{Additional graphical parameters passed to plot}
+}
+\value{
+Invisibly returns the x object
+}
 \description{
-S3 method
+Plots the fitted dose-response curve for drcOrdinal model objects.
 }

@@ -2,10 +2,18 @@
 % Please edit documentation in R/plot.drcHetVar.R
 \name{plot.drcHetVar}
 \alias{plot.drcHetVar}
-\title{S3 method}
+\title{Plot Method for drcHetVar Objects}
 \usage{
 \method{plot}{drcHetVar}(x, ...)
 }
+\arguments{
+\item{x}{A drcHetVar model object}
+
+\item{...}{Additional graphical parameters passed to plot}
+}
+\value{
+Invisibly returns the x object
+}
 \description{
-S3 method
+Plots the fitted dose-response curve for drcHetVar model objects.
 }

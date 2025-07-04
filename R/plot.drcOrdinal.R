@@ -1,5 +1,12 @@
 
-#' @title S3 method
+#' Plot Method for drcOrdinal Objects
+#'
+#' Plots the fitted dose-response curve for drcOrdinal model objects.
+#'
+#' @param x A drcOrdinal model object
+#' @param ... Additional graphical parameters passed to plot
+#'
+#' @return Invisibly returns the x object
 #' @export
 plot.drcOrdinal <- function(x, ...){
   object <- x

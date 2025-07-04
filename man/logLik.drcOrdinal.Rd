@@ -2,10 +2,18 @@
 % Please edit documentation in R/logLik.drcOrdinal.R
 \name{logLik.drcOrdinal}
 \alias{logLik.drcOrdinal}
-\title{S3 method}
+\title{Log-Likelihood Method for drcOrdinal Objects}
 \usage{
 \method{logLik}{drcOrdinal}(object, ...)
 }
+\arguments{
+\item{object}{A drcOrdinal model object}
+
+\item{...}{Additional arguments (not used)}
+}
+\value{
+The log-likelihood value
+}
 \description{
-S3 method
+Extracts the log-likelihood from drcOrdinal model objects.
 }

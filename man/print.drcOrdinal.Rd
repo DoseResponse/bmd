@@ -2,10 +2,20 @@
 % Please edit documentation in R/print.drcOrdinal.R
 \name{print.drcOrdinal}
 \alias{print.drcOrdinal}
-\title{S3 method}
+\title{Print Method for drcOrdinal Objects}
 \usage{
 \method{print}{drcOrdinal}(x, ..., digits = max(3, getOption("digits") - 3))
 }
+\arguments{
+\item{x}{A drcOrdinal model object}
+
+\item{...}{Additional arguments (not used)}
+
+\item{digits}{Number of significant digits to use for printing values}
+}
+\value{
+Invisibly returns the x object
+}
 \description{
-S3 method
+Prints a summary of a drcOrdinal model object.
 }

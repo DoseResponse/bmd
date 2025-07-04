@@ -14,5 +14,5 @@
 #' @importFrom utils setTxtProgressBar txtProgressBar
 #'
 #' @name bmd-package
-#' @aliases bmd
+#' @aliases bmd-package
 "_PACKAGE"
