@@ -10,7 +10,9 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE,
+  message = FALSE
 )
 ```
 
@@ -19,3 +21,163 @@ library(bmd)
 ```
 
 Visualization functions included in the `bmd` package are: "qplotDrc", "qplotBmd", "plot.bmd".
+
+
+```{r}
+library(drc)
+
+library(drcData)
+
+
+
+## Fitting model and calculating BMD. 
+
+model <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
+
+bmd0 <- bmd(model, bmr = 0.1, backgType = "modelBased", def = "relative")
+
+
+
+## Plotting
+
+plot(bmd0)
+
+
+
+# Plot both limits of confidence interval
+
+plot(bmd0, interval = "twosided")
+
+
+
+# Pass argument to plot.bmd to plot confidence band around curve
+
+plot(bmd0, type = "confidence")
+
+```
+
+
+
+```{r}
+# Plot
+
+qplotBmd(bmd0, interval = "twosided", add = FALSE)
+
+
+
+qplotDrc(model,type="confidence") +
+
+  qplotBmd(bmd0, interval = "twosided", add = TRUE)
+
+
+
+qplotBmd(bmd0, interval = "twosided", add = FALSE)
+
+
+```
+
+
+## qplotDrc
+
+```{r}
+
+library(drc)
+
+library(drcData)
+
+library(ggplot2)
+
+
+
+## Fitting models to be plotted below
+
+ryegrass.m1 <- drm(rootl~conc, data = ryegrass, fct = LL.4())
+
+ryegrass.m2 <- drm(rootl~conc, data = ryegrass, fct = LL.3())  # lower limit fixed at 0
+
+
+
+## Plotting observations and fitted curve for the first model
+
+p <- qplotDrc(ryegrass.m1) 
+
+p
+
+
+
+## Add confidence region for the first model.
+
+p + qplotDrc(ryegrass.m1, type="confidence", add = TRUE)$confBandLayer 
+
+
+
+## Plot both models
+
+p + qplotDrc(ryegrass.m2, add = TRUE)$curveLayer
+
+
+
+## Fitting model to be plotted below
+
+spinach.m1 <- drm(SLOPE~DOSE, CURVE, data = spinach, fct = LL.4())
+
+
+
+## Plot with no colours
+
+qplotDrc(spinach.m1)
+
+
+
+## Plot with default colours
+
+qplotDrc(spinach.m1, col = TRUE)
+
+
+
+## Plot with specified colours
+
+qplotDrc(spinach.m1, col = TRUE) + 
+
+  scale_color_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod",
+
+                                "darkslategray4", "plum4"))
+
+
+
+## Plot of curves 1 and 2 only
+
+qplotDrc(spinach.m1, level = c(1,4))
+
+
+
+## Plot with confidence regions
+
+qplotDrc(spinach.m1, col = TRUE, type = "confidence")
+
+
+
+## Plot points and add confidence regions. Confidence regions are coloured by the "fill" aesthetic.
+
+## Customising the x scale by adding a new scale.
+
+qplotDrc(spinach.m1, col = TRUE, type = "confidence") +
+
+  qplotDrc(spinach.m1, col = TRUE, type = "average", add = TRUE)$obsLayer + 
+
+  scale_color_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod",
+
+                                "darkslategray4", "plum4"))+ 
+
+  scale_fill_manual(values = c("darkolivegreen4", "lightcoral", "goldenrod",
+
+                               "darkslategray4", "plum4")) +
+
+  scale_x_continuous(trans = scales:::pseudo_log_trans(sigma = 0.2, base = exp(1)))
+
+
+
+
+```
+
+

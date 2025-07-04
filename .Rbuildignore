@@ -5,3 +5,5 @@ README.Rmd
 README.md
 README_files/
 ^\\.github$
+docs/
+example_extracts/
