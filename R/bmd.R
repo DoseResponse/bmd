@@ -92,7 +92,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
       if(inherits(object, "drcMMRE")){
         intMat <- matrix(qnorm(c((1-level)/2, 1-(1-level)/2), mean = bmdVal, sd = bmdSEVal), ncol = 2)
       } else {
-        intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
+        intMat <- confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
                                       level = level, object$"type", df.residual(object), FALSE)
       }
     } else if(interval == "inv"){
@@ -178,7 +178,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
         bmdSEVal <- sqrt(dBmdVal %*% varCov %*% dBmdVal)
         
         if(interval == "delta"){
-          intMat <- drc:::confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
+          intMat <- confint.basic(matrix(c(bmdVal, bmdSEVal), ncol = 2), 
                                         level = level, object$"type", df.residual(object), FALSE)
         }
         
