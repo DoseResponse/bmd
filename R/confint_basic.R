@@ -1,7 +1,8 @@
 # HELPER FUNCTION BORROWED FROM DRC PACKAGE
+# Name in drc package: confint.basic - changed to confint_basic to avoid S3 mixup
 # Defining basic function for providing confidence intervals
 
-"confint.basic" <- function(estMat, level, intType, dfres, formatting = TRUE)
+"confint_basic" <- function(estMat, level, intType, dfres, formatting = TRUE)
 {
   alphah <- (1 - level)/2 
   #    if (type == "u") {two <- qnorm(1 - alphah)}
