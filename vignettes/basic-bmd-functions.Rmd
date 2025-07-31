@@ -1,0 +1,120 @@
+---
+title: "basic-bmd-functions"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{basic-bmd-functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bmd)
+```
+
+# Basic BMD Functions Examples
+
+This vignette demonstrates the usage of functions related to 
+basic bmd functions
+.
+```r
+
+
+
+
+library(drc)
+
+library(drcData)
+
+
+
+## Fitting log-logistic two-parameter model to binomial data
+
+deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
+
+
+
+## BMD for 5% additional risk with estimated background risk
+
+bmd(deguelin.m1, 0.05, backgType = "modelBased", def = "additional")
+
+
+
+## BMD for 10% additional risk with 2% background risk
+
+bmd(deguelin.m1, 0.1, backg = 0.02 , backgType = "absolute", def = "additional")
+
+
+
+## BMD for 5% excess risk and background 0
+
+bmd(deguelin.m1, 0.05, backg = 0, backgType = "absolute", def = "excess")
+
+
+
+## Dose resulting in 12% risk
+
+bmd(deguelin.m1, 0.12, def = "point")
+
+
+
+## Benchmark doses for a continuous response
+
+ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
+
+
+
+## BMD as the dose resulting in a 5% change relative to the mean background level
+
+bmd(ryegrass.m1, 0.05, backgType = "modelBased", def = "relative", display = TRUE)
+
+
+
+## BMD using the hybrid method, background risk is 2 SD, hybrid definition using excess risk
+
+bmd(ryegrass.m1, 0.05, backg = 2, backgType = "hybridSD", def = "hybridAdd", display = TRUE)
+
+
+```
+
+
+
+
+## Bootstrapping Methods
+
+```r
+
+## Data on root length in ryegrass after exposure to ferulic acid
+
+require(drc)
+
+require(drcData)
+
+data(ryegrass)
+
+
+
+ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
+
+
+
+## BMD using the hybrid method, background risk is 2 SD, hybrid definition using excess risk
+
+bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", R = 50)
+
+
+
+## BMD from the same definitions but using parametric bootstrap
+
+bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", bootType="parametric",R = 50)
+
+
+
+```
+

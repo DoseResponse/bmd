@@ -9,32 +9,29 @@ getFctDerivx <- function(object){
   # Log-logistic
   if(identical(class(object$fct), "llogistic")){
     if(substr(object$fct$name, 3,3) == "."){
-      derivx <- function(x, parm)
+      derivx <- function(dose, parm)  # Changed from 'x' to 'dose'
       {
         parmMat <- matrix(parmVec, nrow(parm), numParm, byrow = TRUE)
         parmMat[, notFixed] <- parm
-        #        bNeg <- parmMat[, 1] < 0
-        #        parmMat[bNeg, 1] <- -parmMat[bNeg, 1]
         
-        temp1 <- x/parmMat[, 4]          
+        temp1 <- dose/parmMat[, 4]          # Changed from 'x' to 'dose'
         temp2 <- 1 + (temp1)^parmMat[, 1]
         temp3 <- parmMat[, 5]*(temp2^(parmMat[, 5] - 1))*(parmMat[, 1]/parmMat[, 4])*temp1^(parmMat[, 1] - 1)
         temp4 <- temp2^(2*parmMat[, 5])
         
         (-(parmMat[, 3] - parmMat[, 2])*temp3)/temp4
         retVec <- (-(parmMat[, 3] - parmMat[, 2])*temp3)/temp4
-        #        retVec[bNeg] <- -retVec[bNeg]
         retVec
       }
     } else if(substr(object$fct$name, 3,3) == "2"){
-      derivx <- function(x, parm)
+      derivx <- function(dose, parm)  # Changed from 'x' to 'dose'
       {
         parmMat <- matrix(parmVec, nrow(parm), numParm, byrow = TRUE)
         parmMat[, notFixed] <- parm
         
-        temp1 <- exp(parmMat[, 1]*(log(x) - parmMat[, 4]))  # x/parmMat[, 4]          
+        temp1 <- exp(parmMat[, 1]*(log(dose) - parmMat[, 4]))  # Changed from 'x' to 'dose'
         temp2 <- 1 + temp1
-        temp3 <- parmMat[, 5]*(temp2^(parmMat[, 5] - 1))*temp1*parmMat[, 1]/x
+        temp3 <- parmMat[, 5]*(temp2^(parmMat[, 5] - 1))*temp1*parmMat[, 1]/dose  # Changed from 'x' to 'dose'
         temp4 <- temp2^(2*parmMat[, 5])
         
         (-(parmMat[, 3] - parmMat[, 2])*temp3)/temp4 
@@ -52,7 +49,7 @@ getFctDerivx <- function(object){
       dFct <- function (dose, b, c, d, e) 
       {
         .expr1 <- d - c
-        .expr5 <- b * (log(dose) - transfe(e))
+        .expr5 <- b * (log(dose) - log(e))  # Fixed: changed 'transfe(e)' to 'log(e)'
         .value <- c + .expr1 * pnorm(.expr5)
         .grad <- array(0, c(length(.value), 1L), list(NULL, c("dose")))
         .grad[, "dose"] <- .expr1 * (dnorm(.expr5) * (b * (1/dose)))
@@ -65,45 +62,45 @@ getFctDerivx <- function(object){
   
   # Weibull1
   if(identical(class(object$fct), "Weibull-1")){
-    derivx <- function(x, parm)
+    derivx <- function(dose, parm)  # Changed from 'x' to 'dose'
     {
       parmMat <- matrix(parmVec, nrow(parm), numParm, byrow = TRUE)
       parmMat[, notFixed] <- parm
       
       .expr1 <- parmMat[, 3] - parmMat[, 2]  # d - c
-      .expr6 <- exp(parmMat[, 1] * (log(x) - log(parmMat[, 4])))
+      .expr6 <- exp(parmMat[, 1] * (log(dose) - log(parmMat[, 4])))  # Changed from 'x' to 'dose'
       .expr8 <- exp(-.expr6)
       .value <- parmMat[, 2] + .expr1 * .expr8
-      .grad <- array(0, c(length(.value), 1L), list(NULL, c("x")))
-      .grad[, "x"] <- -(.expr1 * (.expr8 * (.expr6 * (parmMat[, 1] * (1/x)))))
+      .grad <- array(0, c(length(.value), 1L), list(NULL, c("dose")))  # Changed from 'x' to 'dose'
+      .grad[, "dose"] <- -(.expr1 * (.expr8 * (.expr6 * (parmMat[, 1] * (1/dose)))))  # Changed from 'x' to 'dose'
       .grad
     }
   }
   
   # Weibull2
   if(identical(class(object$fct), "Weibull-2")){
-    derivx <- function(x, parm)
+    derivx <- function(dose, parm)  # Changed from 'x' to 'dose'
     {
       parmMat <- matrix(parmVec, nrow(parm), numParm, byrow = TRUE)
       parmMat[, notFixed] <- parm
       
       .expr1 <- parmMat[, 3] - parmMat[, 2]
-      .expr6 <- exp(parmMat[, 1] * (log(x) - log(parmMat[, 4])))
+      .expr6 <- exp(parmMat[, 1] * (log(dose) - log(parmMat[, 4])))  # Changed from 'x' to 'dose'
       .expr8 <- exp(-.expr6)
       .value <- parmMat[, 2] + .expr1 * (1 - .expr8)
-      .grad <- array(0, c(length(.value), 1L), list(NULL, c("x")))
-      .grad[, "x"] <- .expr1 * (.expr8 * (.expr6 * (parmMat[, 1] * (1/x))))
+      .grad <- array(0, c(length(.value), 1L), list(NULL, c("dose")))  # Changed from 'x' to 'dose'
+      .grad[, "dose"] <- .expr1 * (.expr8 * (.expr6 * (parmMat[, 1] * (1/dose))))  # Changed from 'x' to 'dose'
       .grad
     }
   }
   
   if(identical(class(object$fct), "Boltzmann")){
-    derivx <- function(x, parm)
+    derivx <- function(dose, parm)  # Changed from 'x' to 'dose'
     {
       parmMat <- matrix(parmVec, nrow(parm), numParm, byrow = TRUE)
       parmMat[, notFixed] <- parm
       
-      temp1 <- exp(parmMat[, 1]*(x - parmMat[, 4]))       
+      temp1 <- exp(parmMat[, 1]*(dose - parmMat[, 4]))  # Changed from 'x' to 'dose'
       
       (-parmMat[, 5]*(parmMat[, 3] - parmMat[, 2])*temp1*parmMat[, 1])/((1 + temp1)^(parmMat[, 5] + 1))
     }
@@ -149,6 +146,6 @@ getFctDerivx <- function(object){
       attr(dFct(dose, parmMat[, 1], parmMat[, 2], parmMat[, 3], parmMat[, 4]), "gradient")
     }
   }
-
+  
   derivx
 }

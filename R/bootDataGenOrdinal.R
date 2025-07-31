@@ -1,6 +1,143 @@
+#' Generate Bootstrap Data for Ordinal Dose-Response Analysis
+#'
+#' @description
+#' Helper function for `bmdOrdinal` and `bmdOrdinalMA` that generates bootstrap 
+#' datasets from fitted ordinal dose-response models. Supports multiple bootstrap 
+#' methods tailored for ordinal response data with different resampling strategies.
+#'
+#' @param object A fitted ordinal dose-response model object containing the original 
+#'        data, model specifications, response levels, and fitted parameters
+#' @param R integer; Number of bootstrap replicates to generate (default: 500)
+#' @param bootType character; Type of bootstrap resampling method. Options are:
+#'        \itemize{
+#'          \item \code{"nonparametric"}: Resamples individual observations within dose groups
+#'          \item \code{"parametric"}: Generates new observations using estimated category probabilities
+#'          \item \code{"model"}: Generates observations using fitted model probabilities
+#'          \item \code{"hierarchical"}: Hierarchical resampling accounting for block structure
+#'        }
+#'
+#' @details
+#' The function implements four distinct bootstrap strategies for ordinal data:
+#' 
+#' **Nonparametric Bootstrap:**
+#' \itemize{
+#'   \item Expands ordinal data to individual observations
+#'   \item Resamples observations within each original data row
+#'   \item Maintains the empirical distribution within dose groups
+#'   \item Most conservative approach, makes no distributional assumptions
+#' }
+#' 
+#' **Parametric Bootstrap:**
+#' \itemize{
+#'   \item Estimates category probabilities from original data
+#'   \item Applies continuity correction for boundary cases:
+#'     \deqn{p_{corrected} = \frac{1/K^2}{n + 1/K} \text{ when } p = 0}{p_corrected = (1/K^2)/(n + 1/K) when p = 0}
+#'     \deqn{p_{corrected} = \frac{n + 1/K^2}{n + 1/K} \text{ when } p = 1}{p_corrected = (n + 1/K^2)/(n + 1/K) when p = 1}
+#'   where K is the number of response categories and n is the sample size
+#'   \item Generates new observations using multinomial sampling
+#' }
+#' 
+#' **Model-Based Bootstrap:**
+#' \itemize{
+#'   \item Uses fitted model probabilities (\code{object$pFun}) for each dose
+#'   \item Generates observations directly from the fitted dose-response relationship
+#'   \item Assumes the fitted model accurately represents the true relationship
+#' }
+#' 
+#' **Hierarchical Bootstrap:**
+#' \itemize{
+#'   \item Accounts for block/cluster structure in the data
+#'   \item Requires \code{object$blocks} to be specified
+#'   \item Uses weighted resampling within dose groups
+#'   \item Maintains hierarchical correlation structure
+#' }
+#'
+#' @return A list of length R containing bootstrap datasets. Each element is a 
+#'         data.frame with the same structure as the original ordinal data, containing:
+#'         \itemize{
+#'           \item Dose variable (same name as original)
+#'           \item Count columns for each response category
+#'           \item For hierarchical: block identifier and total counts
+#'           \item All columns from original data structure preserved
+#'         }
+#'
+#' @section Data Processing:
+#' The function uses several data manipulation steps:
+#' \itemize{
+#'   \item \strong{Expansion}: Converts aggregated ordinal data to individual observations
+#'   \item \strong{Resampling}: Applies the specified bootstrap method
+#'   \item \strong{Aggregation}: Converts back to count format using \code{reshape2::dcast}
+#'   \item \strong{Completion}: Ensures all response categories are present (fills with 0 if missing)
+#' }
+#'
+#' @section Dependencies:
+#' This function requires the following packages:
+#' \itemize{
+#'   \item \code{reshape2}: For data reshaping operations
+#'   \item \code{dplyr}: For data manipulation (hierarchical bootstrap only)
+#'   \item \code{tidyr}: For data tidying operations (hierarchical bootstrap only)
+#' }
+#' 
+#' The function will stop with an informative error if required packages are not installed.
+#'
+#' @section Continuity Correction:
+#' For parametric bootstrap, when category probabilities are 0 or 1, a continuity 
+#' correction is applied to prevent degenerate sampling. This ensures all categories 
+#' have some probability of being selected, improving bootstrap stability.
+#'
+#' @note
+#' This is an internal helper function for ordinal BMD bootstrap procedures. It assumes 
+#' the input object has the standard structure from ordinal dose-response fitting, 
+#' including components like \code{data}, \code{levels}, \code{dose}, \code{pFun}, etc.
+#' 
+#' **Method Selection Guidelines:**
+#' \itemize{
+#'   \item Use \code{"nonparametric"} for robust, assumption-free bootstrap
+#'   \item Use \code{"parametric"} when sample sizes are small
+#'   \item Use \code{"model"} to assess model-based uncertainty
+#'   \item Use \code{"hierarchical"} for clustered/blocked experimental designs
+#' }
+#'
+#' @seealso 
+#' \code{\link{bmdOrdinal}} for ordinal BMD estimation,
+#' \code{\link{bmdOrdinalMA}} for model-averaged ordinal BMD,,
+#' \code{\link[reshape2]{dcast}} for data reshaping
+#'
+#' @examples
+#' \dontrun{
+#' # Typically called internally, but can be used directly:
+#' 
+#' # Assume you have a fitted ordinal model
+#' ordinal_model <- fitOrdinalModel(response ~ dose, data = ordinal_data)
+#' 
+#' # Generate nonparametric bootstrap samples
+#' boot_data_np <- bootDataGenOrdinal(ordinal_model, R = 100, 
+#'                                    bootType = "nonparametric")
+#' 
+#' # Generate parametric bootstrap samples
+#' boot_data_param <- bootDataGenOrdinal(ordinal_model, R = 100, 
+#'                                       bootType = "parametric")
+#' 
+#' # Generate model-based bootstrap samples
+#' boot_data_model <- bootDataGenOrdinal(ordinal_model, R = 100, 
+#'                                       bootType = "model")
+#' 
+#' # For hierarchical data with blocks
+#' boot_data_hier <- bootDataGenOrdinal(ordinal_model, R = 100, 
+#'                                      bootType = "hierarchical")
+#' 
+#' # Access first bootstrap sample
+#' first_sample <- boot_data_np[[1]]
+#' head(first_sample)
+#' }
 bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "parametric", "model", "hierarchical")){
   bootType <- match.arg(bootType)
-  
+  ## avoiding global binding of variables issues
+  variable <- NULL
+  row.num <- NULL
+  value <- NULL
+  row.orig <- NULL
+  rm(list=c("variable", "row.num", "value", "row.orig"))
   if(!requireNamespace("reshape2")){
     stop('package "reshape2" must be installed to use bootstrapping with ordinal dose-response model')
   }
@@ -82,6 +219,8 @@ bootDataGenOrdinal <- function(object, R = 500, bootType = c("nonparametric", "p
     } 
     
     resample_fun <- function(levels, dose, weights, blocks, data){
+      name <- NULL
+      rm(list("name"))
       data %>%
         dplyr::mutate(row.orig = 1:n()) %>% 
         dplyr::group_by(.data[[dose]]) %>% 

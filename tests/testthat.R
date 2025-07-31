@@ -8,5 +8,5 @@
 
 library(testthat)
 library(bmd)
-
+library(drc)
 test_check("bmd")

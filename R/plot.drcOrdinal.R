@@ -1,9 +1,24 @@
+
+#' Plot Method for drcOrdinal Objects
+#'
+#' Plots the fitted dose-response curve for drcOrdinal model objects.
+#'
+#' @param x A drcOrdinal model object
+#' @param ... Additional graphical parameters passed to plot
+#'
+#' @return Invisibly returns the x object
+#' @export
 plot.drcOrdinal <- function(x, ...){
   object <- x
   dots <- list(...)
   col_pal  <- dots$col_pal
   xlim <- dots$xlim
-  
+  ## avoiding global binding of variables issues
+  name <- NULL
+  value <- NULL
+  dose <- NULL
+  prop <- NULL
+  rm(list=c("name", "value", "dose", "prop"))
   if(!requireNamespace("scales")){
     stop('package "scales" must be installed to plot drcOrdinal object')
   }
@@ -20,8 +35,8 @@ plot.drcOrdinal <- function(x, ...){
   
   plotData <- tidyr::pivot_longer(object$data, cols = object$levels) %>% #-c(object$dose, object$weights)) %>% 
     dplyr::mutate(dose = eval(parse(text=object$dose)),
-           cat = factor(name, levels = object$levels),
-           prop = value/eval(parse(text=object$weights)))
+                  cat = factor(name, levels = object$levels),
+                  prop = value/eval(parse(text=object$weights)))
   
   plot <- ggplot2::ggplot(plotData) +
     ggplot2::geom_col(aes(x = dose, y = prop, fill = cat), alpha = 0.5) +

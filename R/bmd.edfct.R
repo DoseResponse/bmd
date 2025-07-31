@@ -9,7 +9,7 @@ bmd.edfct <- function(object){
     # Log-logistic
     if(identical(class(object$fct), "llogistic")){
       if(substr(object$fct$name, 3,3) == "."){
-        edfct <- function(parm, respl, reference, type, ...)
+        edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
         {
           parmVec[notFixed] <- parm
           p <- EDhelper(parmVec, respl, reference, type)
@@ -31,7 +31,7 @@ bmd.edfct <- function(object){
           return(list(EDp, EDder[notFixed]))
         }
       } else if(substr(object$fct$name, 3,3) == "2"){
-        edfct <- function(parm, respl, reference, type, ...)
+        edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
         {
           parmVec[notFixed] <- parm
           
@@ -58,7 +58,7 @@ bmd.edfct <- function(object){
     
     # Log-Normal
     if(identical(class(object$fct), "log-normal")){
-      edfct <- function(parm, respl, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         parmVec[notFixed] <- parm
         p <- absToRel(parmVec, respl, type)
@@ -102,7 +102,7 @@ bmd.edfct <- function(object){
     
     # Weibull1
     if(identical(class(object$fct), "Weibull-1")){
-      edfct <- function(parm, respl, reference, type, ...)  # function(parm, p, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)  # function(parm, p, reference, type, ...)
       {        
         parmVec[notFixed] <- parm
         p <- EDhelper(parmVec, respl, reference, type)
@@ -124,7 +124,7 @@ bmd.edfct <- function(object){
     
     # Weibull2
     if(identical(class(object$fct), "Weibull-2")){
-      edfct <- function(parm, respl, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {   
         parmVec[notFixed] <- parm
         
@@ -151,7 +151,7 @@ bmd.edfct <- function(object){
     }
     
     if(identical(class(object$fct), "Boltzmann")){
-      edfct <- function(parm, respl, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         parmVec[notFixed] <- parm
         p <- EDhelper(parmVec, respl, reference, type)
@@ -195,7 +195,7 @@ bmd.edfct <- function(object){
     }
     
     if(identical(class(object$fct), "braincousens")){
-      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         #        if (is.missing(upper)) {upper <- 1000}
         interval <- c(lower, upper)     
@@ -246,7 +246,7 @@ bmd.edfct <- function(object){
       
       p1 <- as.numeric(unlist(strsplit(object$fct$name, split = "[,()]+"))[2])
       p2 <- as.numeric(unlist(strsplit(object$fct$name, split = "[,()]+"))[3])
-      edfct <- function(parm, respl, reference, type, loged = FALSE, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         parmVec[notFixed] <- parm
         p <- EDhelper2(parmVec, respl, reference, type, parmVec[1] > 0)

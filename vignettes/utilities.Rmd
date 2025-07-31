@@ -1,0 +1,21 @@
+---
+title: "utilities"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{utilities}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bmd)
+```
+
+Utility functions included in the package `bmd` are: "PAV", "expandBinomial", "bootDataGen", "BCa"
