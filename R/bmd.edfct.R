@@ -9,10 +9,10 @@ bmd.edfct <- function(object){
     # Log-logistic
     if(identical(class(object$fct), "llogistic")){
       if(substr(object$fct$name, 3,3) == "."){
-        edfct <- function(parm, respl, reference, type, ...)
+        edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
         {
           parmVec[notFixed] <- parm
-          p <- drc:::EDhelper(parmVec, respl, reference, type)
+          p <- EDhelper(parmVec, respl, reference, type)
           
           tempVal <- log((100-p)/100)
           EDp <- parmVec[4]*(exp(-tempVal/parmVec[5])-1)^(1/parmVec[1])
@@ -31,11 +31,11 @@ bmd.edfct <- function(object){
           return(list(EDp, EDder[notFixed]))
         }
       } else if(substr(object$fct$name, 3,3) == "2"){
-        edfct <- function(parm, respl, reference, type, ...)
+        edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
         {
           parmVec[notFixed] <- parm
           
-          p <- drc:::EDhelper(parmVec, respl, reference, type)
+          p <- EDhelper(parmVec, respl, reference, type)
           
           tempVal <- log((100-p)/100)
           EDp <- exp(parmVec[4])*(exp(-tempVal/parmVec[5])-1)^(1/parmVec[1])
@@ -58,10 +58,10 @@ bmd.edfct <- function(object){
     
     # Log-Normal
     if(identical(class(object$fct), "log-normal")){
-      edfct <- function(parm, respl, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         parmVec[notFixed] <- parm
-        p <- drc:::absToRel(parmVec, respl, type)
+        p <- absToRel(parmVec, respl, type)
         
         ## Reversing p
         if (identical(type, "absolute"))
@@ -102,10 +102,10 @@ bmd.edfct <- function(object){
     
     # Weibull1
     if(identical(class(object$fct), "Weibull-1")){
-      edfct <- function(parm, respl, reference, type, ...)  # function(parm, p, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)  # function(parm, p, reference, type, ...)
       {        
         parmVec[notFixed] <- parm
-        p <- drc:::EDhelper(parmVec, respl, reference, type)
+        p <- EDhelper(parmVec, respl, reference, type)
         
         tempVal <- log(-log((100-p)/100))
         EDp <- exp(tempVal/parmVec[1] + log(parmVec[4]))
@@ -124,11 +124,11 @@ bmd.edfct <- function(object){
     
     # Weibull2
     if(identical(class(object$fct), "Weibull-2")){
-      edfct <- function(parm, respl, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {   
         parmVec[notFixed] <- parm
         
-        p <- drc:::absToRel(parmVec, respl, type)
+        p <- absToRel(parmVec, respl, type)
         
         ## Reversing p
         if ( (parmVec[1] > 0) && (reference == "control") && (type == "relative") )
@@ -151,10 +151,10 @@ bmd.edfct <- function(object){
     }
     
     if(identical(class(object$fct), "Boltzmann")){
-      edfct <- function(parm, respl, reference, type, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         parmVec[notFixed] <- parm
-        p <- drc:::EDhelper(parmVec, respl, reference, type)
+        p <- EDhelper(parmVec, respl, reference, type)
         
         #        if (parmVec[1] > 0) 
         #        {
@@ -195,17 +195,17 @@ bmd.edfct <- function(object){
     }
     
     if(identical(class(object$fct), "braincousens")){
-      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         #        if (is.missing(upper)) {upper <- 1000}
         interval <- c(lower, upper)     
         
         parmVec[notFixed] <- parm
-        p <- drc:::EDhelper(parmVec, respl, reference, type)
+        p <- EDhelper(parmVec, respl, reference, type)
         tempVal <- (100-p)/100
         
         edfct0 <- function(parmVec){
-          p <- drc:::EDhelper(parmVec, respl, reference, type)
+          p <- EDhelper(parmVec, respl, reference, type)
           tempVal <- (100-p)/100
           
           helpEqn <- function(dose) 
@@ -240,12 +240,16 @@ bmd.edfct <- function(object){
     }
     
     if(identical(class(object$fct), "fp-logistic")){
+      if(!requireNamespace("numDeriv")){
+        stop('package "numDeriv" must be installed to use FPL models')
+      }
+      
       p1 <- as.numeric(unlist(strsplit(object$fct$name, split = "[,()]+"))[2])
       p2 <- as.numeric(unlist(strsplit(object$fct$name, split = "[,()]+"))[3])
-      edfct <- function(parm, respl, reference, type, loged = FALSE, ...)
+      edfct <- function(parm, respl, reference, type, lower = 1e-3, upper = 10000, loged = FALSE, ...)
       {
         parmVec[notFixed] <- parm
-        p <- drc:::EDhelper2(parmVec, respl, reference, type, parmVec[1] > 0)
+        p <- EDhelper2(parmVec, respl, reference, type, parmVec[1] > 0)
         
         invfp <- function(resp, b, e)
         {
@@ -260,7 +264,7 @@ bmd.edfct <- function(object){
         
         EDfct0 <- function(par) 
         {
-          p <- drc:::EDhelper2(par, respl, reference, type, par[1] > 0)
+          p <- EDhelper2(par, respl, reference, type, par[1] > 0)
           invfp(log((100-p)/p), par[1], par[4])
         }
         

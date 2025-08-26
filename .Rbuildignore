@@ -4,4 +4,6 @@ cache/
 README.Rmd
 README.md
 README_files/
-^\\.github$
+^\.github$
+docs/
+example_extracts/

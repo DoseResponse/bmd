@@ -1,3 +1,13 @@
+#' Print Method for drcOrdinal Objects
+#'
+#' Prints a summary of a drcOrdinal model object.
+#'
+#' @param x A drcOrdinal model object
+#' @param ... Additional arguments (not used)
+#' @param digits Number of significant digits to use for printing values
+#'
+#' @return Invisibly returns the x object
+#' @export
 print.drcOrdinal <- function(x, ..., digits = max(3, getOption("digits") - 3)) 
 {
   object <- x

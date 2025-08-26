@@ -1,3 +1,75 @@
+#' Dose response modeling with heterogeneous variance
+#' 
+#' Fit a dose-response model with heterogeneous variance dependending on dose
+#' level.
+#' 
+#' The aim to provide an R package calculating the benchmark dose (BMD) and the
+#' lower limit of the corresponding 95\% confidence interval (BMDL) for
+#' continuous and quantal dose-response data for a range of dose-response
+#' models based on the available definitions of the benchmark dose concepts.
+#' 
+#' REFERENCES TO BE ADDED/WRITTEN
+#' 
+#' @param formula formula for the dose-response relationship
+#' @param var.formula one-sided formula specifying the dependance of the dose
+#' values and/or the fitted values on the point-wise standard error
+#' @param data data.frame containing the observations
+#' @param fct a list with three or more elements specifying the non-linear
+#' function, the accompanying self starter function, the names of the parameter
+#' in the non-linear function and, optionally, the first and second derivatives
+#' as well as information used for calculation of ED values. Currently
+#' available functions include, among others, the four- and five-parameter
+#' log-logistic models LL.4, LL.5 and the Weibull model W1.4. Use
+#' drc::getMeanFunctions for a full list.
+#' @param curveStart numerical of length equal to the number of parameters for
+#' the curve. Starting values for the curve parameters (optional).
+#' @return dose-response model with a heterogeneous variance structure of class
+#' \code{drcHetVar}.
+#' 
+#' The primary objective is to use this model for benchmark dose estimation
+#' based on the hybrid method with a heterogeneous variance structure. This can
+#' be done using the \code{bmdHetVar} function.
+#' 
+#' A plot method is available, which can be useful for assessing the fit of the
+#' variance structure.
+#' @author Signe M. Jensen and Jens Riis Baalkilde
+#' @keywords models nonlinear
+#' @examples
+#' 
+#' library(drc)
+#' library(drcData)
+#' library(bmd)
+#' # install.packages("gridExtra") # OPTIONAL - USED FOR PLOTTING A drcHetVar OBJECT.
+#' 
+#' # ryegrass data
+#' set.seed(123)
+#' ryegrass.LL.4.hetVar <- drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2),
+#'                                   data = ryegrass, fct = LL.4())
+#' plot(ryegrass.LL.4.hetVar)
+#' bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1,
+#'           def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+#' bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
+#'           def = "hybridExc", R = 50, level = 0.95, 
+#'           bootType = "parametric", progressInfo = TRUE, display = TRUE) # parametric bootstrap
+#' 
+#' # barley data
+#' set.seed(123)
+#' barley.LL.4.hetVar <- drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), data = barley, fct = LL.4())
+#' plot(barley.LL.4.hetVar)
+#' 
+#' # GiantKelp data
+#' set.seed(123)
+#' GiantKelp.LL.4.hetVarSq <- drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), 
+#'                                      data = GiantKelp, fct = LL.4())
+#' plot(GiantKelp.LL.4.hetVarSq)
+#' 
+#' GiantKelp.LL.4.hetVarLogSq <- drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), 
+#'                                         data = GiantKelp, fct = LL.4())
+#' plot(GiantKelp.LL.4.hetVarLogSq)
+#' 
+#' 
+#' 
+#' @export
 drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   call <- match.call()
   
