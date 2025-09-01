@@ -22,7 +22,7 @@ bmdBoot(
 )
 }
 \arguments{
-\item{object}{object of class \code{drc}}
+\item{object}{object of class \code{drc} or \code{drcMMRE}}
 
 \item{bmr}{numeric value of benchmark response level for which to calculate
 the benchmark dose}
@@ -30,7 +30,7 @@ the benchmark dose}
 \item{R}{number of bootstrap samples. Default is 1000}
 
 \item{bootType}{character string specifying type of bootstrap used.
-"nonparametric" (default), "semiparametric" or "parametric". "Semiparametric
+"nonparametric" (default), "semiparametric", "parametric" or "wild". "semiparametric" and "wild"
 is only available for continuous data and "nonparametric" is at present the
 only option for count data. See details below}
 
@@ -118,12 +118,12 @@ and adjusted)}
 \item{display}{logical. If TRUE the results are displayed; otherwise they
 are not}
 
-\item{level}{numeric value specifying the levle of the confidence interval
+\item{level}{numeric value specifying the level of the confidence interval
 underlying BMDL. Default is 0.95}
 }
 \value{
-A list of three elements: Results contain the estimated BMD and
-BMDL, bootEst is a vector af all of the estimated BMD values from each
+A list of four elements: Results contain the estimated BMD and
+BMDL, Boot.samples.used is the number of samples used, bootEst is a vector af all of the estimated BMD values from each
 bootstrap sample, Interval gives BMDL and BMDU, which is identical to the
 confidence interval for the percentile interval approach.
 }
@@ -134,18 +134,20 @@ dose-response models.
 \details{
 BMDL is defined as the 5th percentile in the bootstrap distribution.
 
-Bootstrapping with the argument boot = "nonparametric" is done by sampling
+Bootstrapping with the argument bootType = "nonparametric" is done by sampling
 with replacement from the original data set. Bootstrapping with the argument
-boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)),
+bootType = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)),
 assuming equal variance between groups, in case of continuous data. For
 binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i).
 In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the
 resampling always produces 0 or 1, respectively. In this case data is
 sampled from binom(N_i,(Y_i+1/4)/(N_i+1/2)). Bootstrapping with argument
-boot = "semiparametric" is done by sampling with replacement from the
-residuals.
+bootType = "semiparametric" is done by sampling with replacement from the
+residuals. Bootstrapping with argument bootType = "wild" is done by resampling
+with replacement from the residuals multiplied by a random sign (-1 or +1).
 
-All sampling is made within dose groups.
+All sampling is made within dose groups. When a meta-analytic random effects
+model is supplied, sampling is made within dose groups within each experiment.
 }
 \examples{
 
@@ -161,6 +163,17 @@ bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", R = 50)
 
 ## BMD from the same definitions but using parametric bootstrap
 bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", bootType="parametric",R = 50)
+
+## BMD on meta-analytic random effects model
+set.seed(1)
+data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
+                    y = rep(drcData::ryegrass$rootl, 2) +
+                      c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
+                        rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
+                    EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+
+modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
+bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", R = 50, bootType = "wild")
 
 }
 \author{

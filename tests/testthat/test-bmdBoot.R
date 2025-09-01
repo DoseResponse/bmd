@@ -16,6 +16,7 @@
 #   - correct bmd estimate (point, extra, hybridExc)
 # - Decreasing binomial model with multiple curves
 #   - correct bmd estimate (point, extra, hybridExc)
+# - Meta-analytic random effects model
 
 
 # Arguments and structure -------------------------------------------------
@@ -839,3 +840,48 @@ test_that("bmdBoot function computes BMD (additional) correctly for TCDD model",
   expect_equal(unname(result$interval[,"Lower"]), c(0.0542035268237113,15.6266599428455), tolerance = 1e-1)
   expect_equal(unname(result$interval[,"Upper"]), c(16.8396337661858,30.3505265877131), tolerance = 1e-1)
 })
+
+
+# Meta-analytic random effects model --------------------------------------
+
+test_that("bmdBoot function works on drcMMRE object", {
+  set.seed(1)
+  data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
+                      y = rep(drcData::ryegrass$rootl, 2) +
+                        c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
+                          rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
+                      EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+  
+  modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
+  bmdMMRE_nonparametric <- bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE, R = 50)
+  bmdMMRE_parametric <- bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE, R = 50, bootType = "parametric")
+  bmdMMRE_semiparametric <- bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE, R = 50, bootType = "semiparametric")
+  bmdMMRE_wild <- bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE, R = 50, bootType = "wild")
+  
+  # nonparametric
+  expect_true(!is.na(bmdMMRE_nonparametric$Results[1, "BMD"]))
+  expect_equal(bmdMMRE_nonparametric$Results[1, "BMD"], 1.66913593445629, tolerance = 1e-4)
+  expect_equal(bmdMMRE_nonparametric$Boot.samples.used, 50, tolerance = 1)
+  expect_equal(unname(bmdMMRE_nonparametric$interval[1,]), c(1.53350566243581,1.88283362203498), tolerance = 1e-4)
+  
+  # parametric
+  expect_true(!is.na(bmdMMRE_parametric$Results[1, "BMD"]))
+  expect_equal(bmdMMRE_parametric$Results[1, "BMD"], 1.66913593445629, tolerance = 1e-4)
+  expect_equal(bmdMMRE_parametric$Boot.samples.used, 50, tolerance = 1)
+  expect_equal(unname(bmdMMRE_parametric$interval[1,]), c(1.60484047157067,2.0338760761336), tolerance = 1e-4)
+  
+  # semiparametric
+  expect_true(!is.na(bmdMMRE_semiparametric$Results[1, "BMD"]))
+  expect_equal(bmdMMRE_semiparametric$Results[1, "BMD"], 1.66913593445629, tolerance = 1e-4)
+  expect_equal(bmdMMRE_semiparametric$Boot.samples.used, 50, tolerance = 1)
+  expect_equal(unname(bmdMMRE_semiparametric$interval[1,]), c(1.45812622298453,1.99833450821311), tolerance = 1e-4)
+  
+  # wild
+  expect_true(!is.na(bmdMMRE_wild$Results[1, "BMD"]))
+  expect_equal(bmdMMRE_wild$Results[1, "BMD"], 1.66913593445629, tolerance = 1e-4)
+  expect_equal(bmdMMRE_wild$Boot.samples.used, 50, tolerance = 1)
+  expect_equal(unname(bmdMMRE_wild$interval[1,]), c(1.48339988365339,1.97826765042898), tolerance = 1e-4)
+})
+
+
+

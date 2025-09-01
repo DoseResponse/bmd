@@ -17,7 +17,7 @@
 #' 
 #' @param formula a symbolic description of the model to be fit of the form
 #' 'response ~ dose'
-#' @param exp_id the name of the column in the data set that specifies the
+#' @param exp_id the column in the data set that specifies the
 #' hierarchical structure of the data
 #' @param data a data frame containing the variables in the model.
 #' @param fct a list with three or more elements specifying the non-linear
@@ -34,7 +34,7 @@
 #' structure of class \code{drcMMRE}.
 #' 
 #' The primary objective is to use this model for benchmark dose estimation
-#' based on dose-response data with a heterogeneous variance structure.
+#' based on dose-response data with a hierarchical variance structure.
 #' @author Signe M. Jensen and Jens Riis Baalkilde
 #' @keywords models nonlinear
 #' @examples
@@ -90,11 +90,6 @@ drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial
   drc.objList <- lapply(exp_id_unique,
                         function(exp_id){
                           drm(formula, data = subset(data, data[[exp_id_char]] == exp_id), fct = fct, type = type)
-                          # eval(substitute(drm(formula = formula0, data = subset(data, data[[exp_id_char]] == x), fct = fct0, type = type0),
-                          #            list(formula0 = formula,
-                          #                 data0 = subset(data, data[[exp_id_char]] == x),
-                          #                 fct0 = fct,
-                          #                 type0 = type)))
                         })
   names(drc.objList) <- exp_id_unique
   
@@ -108,7 +103,7 @@ drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial
                                           }
                                         ))
   
-  # Fit MA_MA_model
+  # Fit MV_MA_model
   MV_MA_model<-tryCatch( expr={metafor::rma.mv(Estimate
                                       ,(block_diag_matrix+t(block_diag_matrix))/2
                                       , mods = ~0+Coef
@@ -144,13 +139,9 @@ drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial
   object$summary <- NULL
   object$start <- NULL
   for(exp_i in exp_id_unique){
-    object$predres[data[[exp_id_char]] == exp_i,] <- drc.objList[[exp_i]]$predres
+    object$predres[data[[exp_id_char]] == exp_i,] <- drc.objList[[as.character(exp_i)]]$predres
   }
   object$call <- call_expr
-  # 
-  # object$df.residual <- NA
-  # object$sumList$df.residual <- NA
-  # object$deriv1 <- NULL
   
   # add MV_MA_model and drc.objList
   object$objList <- drc.objList
@@ -165,7 +156,7 @@ drmMMRE <- function(formula, exp_id, data, fct, type = c("continuous", "binomial
 #'
 #' @description
 #' S3 method to extract the variance-covariance matrix from fitted drcMMRE objects
-#' by delegating to the underlying model-averaged model.
+#' by delegating to the underlying multivariate meta-analytic model.
 #'
 #' @param object An object of class "drcMMRE"
 #' @param ... Additional arguments (currently unused)
