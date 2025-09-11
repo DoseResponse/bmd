@@ -108,19 +108,19 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
     fct$fct(x, t(par))
   }
   
-  # Define tau function constructor
-  makeTauFun <- function(var.formula) {
-    function(x, tauPar, curvePar) {
+  # Define sigma function constructor
+  makeSigmaFun <- function(var.formula) {
+    function(x, sigmaPar, curvePar) {
       fitted <- curveFun(x, curvePar)
       env <- data.frame(x = x, "fitted" = fitted)
       colnames(env)[1] <- dName
       design_matrix <- model.matrix(var.formula, data = env)
-      as.vector(design_matrix %*% tauPar)
+      as.vector(design_matrix %*% sigmaPar)
     }
   }
   
-  # Build tau function
-  tauFun <- makeTauFun(var.formula)
+  # Build sigma function
+  sigmaFun0 <- makeSigmaFun(var.formula)
   
   # Total number of parameters:
   # - Mean model (from fct, usually fixed length)
@@ -132,10 +132,10 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   # Negative log-likelihood
   negLogLik <- function(par) {
     curvePar <- par[1:n_mean_par]
-    tauPar <- par[-(1:n_mean_par)] 
+    sigmaPar <- par[-(1:n_mean_par)] 
     
     mu <- curveFun(dose, curvePar)
-    sigma <- tauFun(dose, tauPar, curvePar)
+    sigma <- sigmaFun0(dose, sigmaPar, curvePar)
     sigmaSq <- sigma^2
     
     if (any(sigma <= 0)) return(1e10)  # enforce positivity
@@ -145,8 +145,8 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   
   # Initial values (somewhat naive)
   # start_curve <- coef(drm(formula, data = data, fct = fct)) # rep(mean(y), n_mean_par)
-  # start_tau <- rep(sd(y), n_var_par)
-  # start <- c(start_curve, 0.05)# start_tau)
+  # start_sigma <- rep(sd(y), n_var_par)
+  # start <- c(start_curve, 0.05)# start_sigma)
   start <- unlist(drmHetVarSelfStarter(formula, var.formula, mf, fct, curveStart))
   
   fit <- optim(start, negLogLik, method = "BFGS", hessian = TRUE)
@@ -160,8 +160,9 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   names(sigmaPar) <- colnames(model.matrix(var.formula, data = tmp_env))
   
   # Define sigmaFun
+  funList <- list(curveFun = curveFun, sigmaFun = sigmaFun0)
   curve <- function(x) curveFun(x, par = curvePar)
-  sigmaFun <- function(x) tauFun(x, tauPar = sigmaPar, curvePar = curvePar)
+  sigmaFun <- function(x) sigmaFun0(x, sigmaPar = sigmaPar, curvePar = curvePar)
   
   # sumList
   sumList <- list(numObs = length(resp),
@@ -177,6 +178,7 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
     hessian = fit$hessian,
     curve = curve,
     sigmaFun = sigmaFun,
+    funList = funList,
     formula = formula,
     var.formula = var.formula,
     fct = fct,
@@ -192,3 +194,23 @@ drmHetVar <- function(formula, var.formula, data, fct, curveStart = NULL) {
   
   return(object)
 }
+
+#' Extract Variance-Covariance Matrix from drcHetVar Objects
+#'
+#' @description
+#' S3 method to extract the variance-covariance matrix from fitted drcHetVar objects
+#' by inverting the Hessian of the negative log-likelihood function.
+#'
+#' @param object An object of class "drcHetVar"
+#' @param ... Additional arguments (currently unused)
+#'
+#' @return The variance-covariance matrix of the model parameters.
+#'
+#' @seealso \code{\link{vcov}} for the generic function
+#'
+#' @method vcov drcHetVar
+#' @export
+vcov.drcHetVar <- function(object, ...){
+  solve(object$hessian)
+}
+

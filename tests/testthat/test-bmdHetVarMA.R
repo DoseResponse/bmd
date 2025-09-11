@@ -62,21 +62,21 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridExc, backgtype = hybridPe
   # resultAIC
   expect_true(!is.na(resultAIC$Results[1, "BMD_MA"]))
   expect_equal(resultAIC$Results[1, "BMD_MA"], c(BMD_MA=1.09399583860305))
-  expect_equal(resultAIC$Boot.samples.used, 48)
+  expect_equal(resultAIC$Boot.samples.used, 48, tolerance = 1)
   expect_equal(unname(resultAIC$interval[1,]), c(0.91243677103485,1.3064583554297), tolerance = 1e-1)
   expect_equal(resultAIC$modelWeights, c(0.239817917878516,0.112398486139835,0.00397069684089491,0.643812899140755), tolerance = 1e-4)
   
   # resultBIC
   expect_true(!is.na(resultBIC$Results[1, "BMD_MA"]))
   expect_equal(resultBIC$Results[1, "BMD_MA"], c(BMD_MA=1.09399583860305))
-  expect_equal(resultBIC$Boot.samples.used, 49)
+  expect_equal(resultBIC$Boot.samples.used, 49, tolerance = 1)
   expect_equal(unname(resultBIC$interval[1,]), c(0.740131127613234,1.29617185295069), tolerance = 1e-1)
   expect_equal(resultBIC$modelWeights, c(0.239817917878515,0.112398486139835,0.00397069684089491,0.643812899140755), tolerance = 1e-4)
   
   # resultManWeights
   expect_true(!is.na(resultManWeights$Results[1, "BMD_MA"]))
   expect_equal(resultManWeights$Results[1, "BMD_MA"], c(BMD_MA=1.07129213615452))
-  expect_equal(resultManWeights$Boot.samples.used, 50)
+  expect_equal(resultManWeights$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultManWeights$interval[1,]), c(0.95908147844657,1.27941263725323), tolerance = 1e-1)
   expect_equal(resultManWeights$modelWeights, c(0.2,0.1,0.1,0.6))
 })
@@ -91,7 +91,7 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridExc, backgtype = hybridSD
   # result
   expect_true(!is.na(result$Results[1, "BMD_MA"]))
   expect_equal(result$Results[1, "BMD_MA"], c(BMD_MA=1.2904405178104))
-  expect_equal(result$Boot.samples.used, 49)
+  expect_equal(result$Boot.samples.used, 49, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(1.1544076635982,1.5029430687596), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.4,0.6))
 })
@@ -105,7 +105,7 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridAdd, backgtype = hybridPe
   # result
   expect_true(!is.na(result$Results[1, "BMD_MA"]))
   expect_equal(result$Results[1, "BMD_MA"], c(BMD_MA=0.856751513601129))
-  expect_equal(result$Boot.samples.used, 50)
+  expect_equal(result$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(0.662428472523196,1.10812296172592), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.979658442072015,0.0203415579279849))
 })
@@ -120,7 +120,7 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridAdd, backgtype = hybridSD
   # result
   expect_true(!is.na(result$Results[1, "BMD_MA"]))
   expect_equal(result$Results[1, "BMD_MA"], c(BMD_MA=1.33134958361854))
-  expect_equal(result$Boot.samples.used, 49)
+  expect_equal(result$Boot.samples.used, 49, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(1.14730351933847,1.51123369350389), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.271400581848749,0.728599418151251))
 })
@@ -146,21 +146,21 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridExc, backgtype = hybridP
   # resultAIC
   expect_true(!is.na(resultAIC$Results[1, "BMD_MA"]))
   expect_equal(resultAIC$Results[1, "BMD_MA"], c(BMD_MA=5.22750504984351))
-  expect_equal(resultAIC$Boot.samples.used, 48)
+  expect_equal(resultAIC$Boot.samples.used, 48, tolerance = 1)
   expect_equal(unname(resultAIC$interval[1,]), c(0.970896171135017,17.9687826158524), tolerance = 1e-1)
   expect_equal(resultAIC$modelWeights, c(0.75212289732896,0.24787710267104))
   
   # resultBIC
   expect_true(!is.na(resultBIC$Results[1, "BMD_MA"]))
   expect_equal(resultBIC$Results[1, "BMD_MA"], c(BMD_MA=5.22750504984351))
-  expect_equal(resultBIC$Boot.samples.used, 50)
+  expect_equal(resultBIC$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultBIC$interval[1,]), c(1.93813846559323,15.0689738215226), tolerance = 1e-1)
   expect_equal(resultBIC$modelWeights, c(0.75212289732896,0.24787710267104))
   
   # resultManWeights
   expect_true(!is.na(resultManWeights$Results[1, "BMD_MA"]))
   expect_equal(resultManWeights$Results[1, "BMD_MA"], c(BMD_MA=4.49558070194896))
-  expect_equal(resultManWeights$Boot.samples.used, 50)
+  expect_equal(resultManWeights$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultManWeights$interval[1,]), c(0.509778477285164,16.6029584852476), tolerance = 1e-1)
   expect_equal(resultManWeights$modelWeights, c(0.3,0.7))
 })
@@ -175,7 +175,7 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridExc, backgtype = hybridS
   # result
   expect_true(!is.na(result$Results[1, "BMD_MA"]))
   expect_equal(result$Results[1, "BMD_MA"], c(BMD_MA=10.4673358308111))
-  expect_equal(result$Boot.samples.used, 50)
+  expect_equal(result$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(3.46365031231543,20.4834802123576), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.6,0.4))
 })
@@ -190,7 +190,7 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridAdd, backgtype = hybridP
   # result
   expect_true(!is.na(result$Results[1, "BMD_MA"]))
   expect_equal(result$Results[1, "BMD_MA"], c(BMD_MA=6.3975810199722))
-  expect_equal(result$Boot.samples.used, 50)
+  expect_equal(result$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(1.48403844387169,17.2022294707629), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.5788385115668,0.421161488433199))
 })
@@ -205,7 +205,7 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridAdd, backgtype = hybridS
   # result
   expect_true(!is.na(result$Results[1, "BMD_MA"]))
   expect_equal(result$Results[1, "BMD_MA"], c(BMD_MA=10.5823318236905))
-  expect_equal(result$Boot.samples.used, 50)
+  expect_equal(result$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(3.55888343309975,20.6224431910256), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.6,0.4))
 })

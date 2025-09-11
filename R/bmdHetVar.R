@@ -49,9 +49,11 @@
 #' is the normal distribution function and sigma(BMD) is the SD at the
 #' benchmark dose.
 #' @param interval character string specifying the type of confidence interval
-#' to use: "boot" (default) or "none"
+#' to use: "boot" (default), "delta" or "none"
 #' 
 #' "boot" - BMDL is based on percentile bootstrapping.
+#' 
+#' "delta" - BMDL is based on the delta method. 
 #' 
 #' "none" - no confidence interval is computed.
 #' @param R number of bootstrap samples. Ignored if \code{interval = "none"}
@@ -113,7 +115,7 @@
 #'           def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 #' 
 #' @export
-bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"), R = 1000, level = 0.95, bootType = "nonparametric", progressInfo = TRUE, display = TRUE){
+bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "delta", "none"), R = 1000, level = 0.95, bootType = "nonparametric", progressInfo = TRUE, display = TRUE){
   ### Assertions ###
   # object
   if(!inherits(object,"drcHetVar")){
@@ -158,14 +160,19 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
   
   level <- 1-2*(1-level)
   
+  # Model parameters
+  curveParInd <- 1:length(object$curvePar)
+  sigmaParInd <- (length(object$curvePar)+1):(length(object$curvePar)+length(object$sigmaPar))
+  
   # SLOPE
   slope <- drop(ifelse(object$curve(0)-object$curve(Inf)>0,"decreasing","increasing"))
   if(is.na(object$curve(0)-object$curve(Inf))){
     slope <- drop(ifelse(object$curve(0.00000001)-object$curve(100000000)>0,"decreasing","increasing"))
   }
   
-  # sigmaFun
-  sigmaFun0 <- object$sigmaFun # sigmaFun(object, var.formula)
+  # functions
+  curveFun0 <- object$funList$curveFun
+  sigmaFun0 <- object$funList$sigmaFun # sigmaFun(object, var.formula)
   
   # bmrScaled
   if(slope == "increasing"){
@@ -174,22 +181,22 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
       if(is.na(backg)){
         stop('backgType = absolute, but backg not supplied')
       }
-      p0 <- 1 - pnorm((backg - object$curve(0)) / sigmaFun0(0))
+      p0 <- function(par) 1 - pnorm((backg - curveFun0(0, par[curveParInd])) / sigmaFun0(0, sigmaPar = par[sigmaParInd], curvePar = par[curveParInd]))
     }
     if(identical(backgType, "hybridPercentile")) {
-      p0 <- ifelse(is.na(backg),1-0.9,1-backg)
+      p0 <- function(par) ifelse(is.na(backg),1-0.9,1-backg)
     }
     if (identical(backgType,"hybridSD")) {
-      p0 <- ifelse(is.na(backg), 1-pnorm(2), 1-pnorm(backg))
+      p0 <- function(par) ifelse(is.na(backg), 1-pnorm(2), 1-pnorm(backg))
     }
     
     # BMRSCALED
     bmrScaled <- switch(
       def,
-      hybridExc = function(x){ sigmaFun0(x) * 
-          (qnorm(1 - p0) - qnorm(1 - p0 - (1 - p0)*bmr)) + object$curve(0)},
-      hybridAdd = function(x){ sigmaFun0(x) * 
-          (qnorm(1 - p0) - qnorm(1 - (p0 + bmr))) + object$curve(0)}
+      hybridExc = function(x, par){ sigmaFun0(x) * 
+          (qnorm(1 - p0(par)) - qnorm(1 - p0(par) - (1 - p0)*bmr)) + curveFun0(0, par[curveParInd])},
+      hybridAdd = function(x, par){ sigmaFun0(x) * 
+          (qnorm(1 - p0(par)) - qnorm(1 - (p0(par) + bmr))) + curveFun0(0, par[curveParInd])}
     ) 
   } else {
     # BACKGROUND
@@ -197,27 +204,28 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
       if(is.na(backg)){
         stop('backgType = absolute, but backg not supplied')
       }
-      p0 <- pnorm((backg - object$curve(0)) / sigmaFun0(0))
+      p0 <- function(par) pnorm((backg - curveFun0(0, par[curveParInd])) / sigmaFun0(0, sigmaPar = par[sigmaParInd], curvePar = par[curveParInd]))
     }
     if(identical(backgType, "hybridPercentile")) {
-      p0 <- ifelse(is.na(backg),0.1,backg)
+      p0 <- function(par) ifelse(is.na(backg),0.1,backg)
     }
     if (identical(backgType,"hybridSD")) {
-      p0 <- ifelse(is.na(backg), pnorm(-2), pnorm(-backg))
+      p0 <- function(par) ifelse(is.na(backg), pnorm(-2), pnorm(-backg))
     }
     
     # BMRSCALED
     bmrScaled <- switch(
       def,
-      hybridExc = function(x){ sigmaFun0(x) * 
-          (qnorm(p0) - qnorm(bmr + (1-bmr) * p0)) + object$curve(0)},
-      hybridAdd = function(x){ sigmaFun0(x) * 
-          (qnorm(p0) - qnorm(bmr + p0)) + object$curve(0)}
+      hybridExc = function(x, par){ sigmaFun0(x, sigmaPar = par[sigmaParInd], curvePar = par[curveParInd]) * 
+          (qnorm(p0(par)) - qnorm(bmr + (1-bmr) * p0(par))) + curveFun0(0, par[curveParInd])},
+      hybridAdd = function(x, par){ sigmaFun0(x, sigmaPar = par[sigmaParInd], curvePar = par[curveParInd]) * 
+          (qnorm(p0(par)) - qnorm(bmr + p0(par))) + curveFun0(0, par[curveParInd])}
     ) 
   }
   
   # BMD ESTIMATION
-  f0 <- function(x) object$curve(x) - bmrScaled(x)
+  par0 <- c(object$curvePar, object$sigmaPar)
+  f0 <- function(x) curveFun0(x, par0[curveParInd]) - bmrScaled(x, par0)
   interval0 <- range(object$dataList$dose, na.rm = TRUE)
   uniroot0 <- try(uniroot(f = f0, interval = interval0), silent = TRUE)
   
@@ -228,17 +236,34 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
     bmdEst <- uniroot0$root
   }
   
+  
   # INTERVAL
   interval <- match.arg(interval)
   if(identical(interval, "none")){
     BMDL <- NA
     BMDU <- NA
-  } else {
-    # drc_obj <- eval(substitute(drm(formula0, data = object$data, fct = fct0, type = "continuous", control = drmc(maxIt = 1, noMessage = TRUE)),
-    #                            list(formula0 = object$formula,
-    #                                 fct0 = object$fct
-    #                            )))
-    # bootDataList <- bootDataGen(drc_obj, R=R, bootType="nonparametric",aggregated=FALSE)
+    SDbmd <- NA
+  } else if(identical(interval, "delta")){
+    if(!requireNamespace("numDeriv")){
+      stop('package "numDeriv" must be installed to compute delta confidence intervals with bmdHetVar')
+    }
+    
+    getBmdEst <- function(par){
+      f0 <- function(x) curveFun0(x, par[curveParInd]) - bmrScaled(x, par)
+      interval0 <- range(object$dataList$dose, na.rm = TRUE)
+      uniroot0 <- try(uniroot(f = f0, interval = interval0), silent = TRUE)
+      bmdEst <- as.numeric(uniroot0$root)
+    }
+    
+    dBmd <- try(numDeriv::grad(getBmdEst, par0))
+    
+    Vbmd <- dBmd %*% vcov(object) %*% dBmd
+    SDbmd <- sqrt(Vbmd)
+    
+    BMDL <- qnorm(c(1-level)/2, mean = bmdEst, sd = SDbmd) 
+    BMDU <- qnorm(1-(1-level)/2, mean = bmdEst, sd = SDbmd) 
+    
+  } else if(identical(interval, "boot")) {
     bootDataList <- bootDataGenHetVar(object, R = R, bootType = bootType)
     
     bmdHetVarBoot <- function(bootData){
@@ -265,9 +290,11 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
     if(length(boot0) == 0){ 
       BMDL <- NA 
       BMDU <- NA
+      SDbmd <- NA
     } else {
       BMDL <- quantile(boot0,p=c(1-level), na.rm = TRUE) # ABC percentile lims.  
       BMDU <- quantile(boot0,p=c(level), na.rm = TRUE)
+      SDbmd <- sd(boot0)
     }
   }
   
@@ -282,6 +309,7 @@ bmdHetVar <- function(object, bmr, backgType = c("absolute", "hybridSD", "hybrid
   
   resBMD<-list(Results = resMat,
                bmrScaled = bmrScaled,
+               SE = SDbmd,
                interval = bmdInterval,
                model = object)
   class(resBMD) <- c("bmdHetVar", "bmd")

@@ -10,7 +10,7 @@ bmdHetVar(
   backgType = c("absolute", "hybridSD", "hybridPercentile"),
   backg = NA,
   def = c("hybridExc", "hybridAdd"),
-  interval = c("boot", "none"),
+  interval = c("boot", "delta", "none"),
   R = 1000,
   level = 0.95,
   bootType = "nonparametric",
@@ -61,9 +61,11 @@ is the normal distribution function and sigma(BMD) is the SD at the
 benchmark dose.}
 
 \item{interval}{character string specifying the type of confidence interval
-to use: "boot" (default) or "none"
+to use: "boot" (default), "delta" or "none"
 
 "boot" - BMDL is based on percentile bootstrapping.
+
+"delta" - BMDL is based on the delta method.
 
 "none" - no confidence interval is computed.}
 
