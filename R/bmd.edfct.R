@@ -213,7 +213,17 @@ bmd.edfct <- function(object){
             expVal <- exp(parmVec[1]*(log(dose)-log(parmVec[4])))
             parmVec[5]*(1+expVal*(1-parmVec[1]))-(parmVec[3]-parmVec[2])*expVal*parmVec[1]/dose
           }
-          maxAt <- uniroot(helpEqn, interval)$root
+          maxAt <- try(uniroot(helpEqn, interval)$root, TRUE)
+          
+          # solution if maxAt fails
+          if(inherits(maxAt, "try-error")){
+            find_maxAt_tries <- 1
+            while(inherits(maxAt, "try-error") & (find_maxAt_tries<10)){
+              interval[1] <- interval[1]/1e2
+              maxAt <- try(uniroot(helpEqn, interval)$root, TRUE)
+              find_maxAt_tries <- find_maxAt_tries+1
+            }
+          }
           
           eqn <- function(dose) {tempVal*(1+exp(parmVec[1]*(log(dose)-log(parmVec[4]))))-(1+parmVec[5]*dose/(parmVec[3]-parmVec[2]))}
           EDp <- uniroot(eqn, lower = maxAt, upper = upper)$root

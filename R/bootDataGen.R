@@ -239,6 +239,23 @@ bootDataGen <- function(object, R=1000, bootType="nonparametric",aggregated=TRUE
       }
     }
   }
+  else if(bootType=="wild"){
+    if(object$type=="binomial"){
+      stop(paste("wild is not possible for binomial data", sep=""))
+    }
+    if(object$type=="continuous"){
+      data.st<-object$data
+      
+      tmp.data <- list()
+      for(i in 1:R){
+        random.sign <- sample(c(-1,1), size = length(resid(object)), replace = TRUE)
+        sampled <- data.frame(y = fitted(object)+sample(resid(object),replace=TRUE)*random.sign, 
+                              dose = object$data[,as.character(object$call$formula[[3]])])
+        colnames(sampled) <- c(as.character(object$call$formula[[2]]), as.character(object$call$formula[[3]]))
+        tmp.data[[i]] <- sampled
+      }
+    }
+  }
 tmp.data      
 }
 

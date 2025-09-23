@@ -57,10 +57,10 @@
 #' dose-response models), 2 SD for "hybridSD" background and 0.9 for
 #' "hybridpercentile"
 #' @param def character string specifying the definition of the benchmark dose
-#' to use in the calculations. "excess" , "additional" and "point" are for
-#' binomial response whereas "relative", "extra", "added", "hybridExc" (excess
+#' to use in the calculations. "excess", "additional" and "point" are for
+#' binomial response. "relative", "extra", "added", "hybridExc" (excess
 #' hybrid), "hybridAdd" (additional hybrid), and "point" are for continuous
-#' response
+#' response. "relative", "extra", and "point" are for count response data.
 #' 
 #' "excess" - BMR is defined as: BMR = (f(BMD) - p0)/(1 - p0).  Works for
 #' binomial response. BMR should be between 0 and 1.

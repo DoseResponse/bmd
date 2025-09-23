@@ -5,25 +5,27 @@
 #' 
 #' BMDL is defined as the 5th percentile in the bootstrap distribution.
 #' 
-#' Bootstrapping with the argument boot = "nonparametric" is done by sampling
+#' Bootstrapping with the argument bootType = "nonparametric" is done by sampling
 #' with replacement from the original data set. Bootstrapping with the argument
-#' boot = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)),
+#' bootType = "parametric" is done by sampling from norm(mean(Y_i),sd(Y_0)),
 #' assuming equal variance between groups, in case of continuous data. For
 #' binomial data, each bootstrap data set is sampled from binom(N_i,Y_i/N_i).
 #' In case of Y_i = 0 or Y_i = N_i shrinkage is used to avoid that the
 #' resampling always produces 0 or 1, respectively. In this case data is
 #' sampled from binom(N_i,(Y_i+1/4)/(N_i+1/2)). Bootstrapping with argument
-#' boot = "semiparametric" is done by sampling with replacement from the
-#' residuals.
+#' bootType = "semiparametric" is done by sampling with replacement from the
+#' residuals. Bootstrapping with argument bootType = "wild" is done by resampling 
+#' with replacement from the residuals multiplied by a random sign (-1 or +1).
 #' 
-#' All sampling is made within dose groups.
+#' All sampling is made within dose groups. When a meta-analytic random effects 
+#' model is supplied, sampling is made within dose groups within each experiment.
 #' 
-#' @param object object of class \code{drc}
+#' @param object object of class \code{drc} or \code{drcMMRE}
 #' @param bmr numeric value of benchmark response level for which to calculate
 #' the benchmark dose
 #' @param R number of bootstrap samples. Default is 1000
 #' @param bootType character string specifying type of bootstrap used.
-#' "nonparametric" (default), "semiparametric" or "parametric". "Semiparametric
+#' "nonparametric" (default), "semiparametric", "parametric" or "wild". "semiparametric" and "wild"
 #' is only available for continuous data and "nonparametric" is at present the
 #' only option for count data. See details below
 #' @param bmdType Type of estimate for BMD. Default is "orig" the bmd estimate
@@ -102,10 +104,10 @@
 #' and adjusted)
 #' @param display logical. If TRUE the results are displayed; otherwise they
 #' are not
-#' @param level numeric value specifying the levle of the confidence interval
+#' @param level numeric value specifying the level of the confidence interval
 #' underlying BMDL. Default is 0.95
-#' @return A list of three elements: Results contain the estimated BMD and
-#' BMDL, bootEst is a vector af all of the estimated BMD values from each
+#' @return A list of four elements: Results contain the estimated BMD and
+#' BMDL, Boot.samples.used is the number of samples used, bootEst is a vector af all of the estimated BMD values from each
 #' bootstrap sample, Interval gives BMDL and BMDU, which is identical to the
 #' confidence interval for the percentile interval approach.
 #' @author Signe M. Jensen
@@ -124,6 +126,17 @@
 #' 
 #' ## BMD from the same definitions but using parametric bootstrap
 #' bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", bootType="parametric",R = 50)
+#' 
+#' ## BMD on meta-analytic random effects model
+#' set.seed(1)
+#' data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
+#'                     y = rep(drcData::ryegrass$rootl, 2) +
+#'                       c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
+#'                         rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
+#'                     EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+#' 
+#' modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
+#' bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", R = 50, bootType = "wild")
 #' 
 #' @export
 bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "orig",
@@ -183,7 +196,16 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
               interval = "delta", display = FALSE)
   
   get.drm.list <- function(tmp.data){
-    if(ncol(object$parmMat) == 1){
+    if(inherits(object, "drcMMRE")){
+      drm.list.tmp <- lapply(tmp.data, function(x){
+        try(eval(substitute(drmMMRE(formula0, exp_id = exp_id0, data = x, type = object$type, fct = object[["fct"]]),
+                            list(formula0 = object$call$formula,
+                                 exp_id0 = object$call$exp_id)
+        )), TRUE)
+      }
+      )
+    }
+    else if(ncol(object$parmMat) == 1){
       drm.list.tmp <- lapply(tmp.data, function(x){
         try(eval(substitute(drm(formula0, data = x, type = object$type, fct = object[["fct"]],
                                 control = drmc(noMessage = TRUE)),
@@ -193,9 +215,6 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       )
     } else if(is.null(object$call$pmodels)){
       drm.list.tmp <- lapply(tmp.data, function(x){
-        # if(object$type != "binomial"){
-        #   x[[as.character(object$call$curveid)]] <- x[[paste0("orig.", as.character(object$call$curveid))]]
-        # }
         try(
           eval(substitute(drm(object$call$formula, weights = weights0, curveid = curveid0,
                               data = x, type = object$type, fct = object$fct, control = drmc(noMessage = TRUE)),
@@ -206,9 +225,6 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
       })
     } else {
       drm.list.tmp <- lapply(tmp.data, function(x){
-        # if(object$type != "binomial"){
-        #   x[[as.character(object$call$curveid)]] <- x[[paste0("orig.", as.character(object$call$curveid))]]
-        # }
         try(
           eval(substitute(drm(formula0, weights = weights0, curveid = curveid0, pmodels = pmodels0,
                               data = x, type = object$type, fct = object$fct, control = drmc(noMessage = TRUE)),
@@ -233,11 +249,14 @@ bmdBoot <- function(object, bmr, R=1000, bootType="nonparametric", bmdType = "or
   }
  
   if (object$type %in% c("binomial","continuous")) {
-    
-    tmp.data <- bootDataGen(object,R,bootType,aggregated=FALSE)
+    if(inherits(object, "drcMMRE")){
+      tmp.data <- bootDataGenMMRE(object,R,bootType)
+    } else {
+      tmp.data <- bootDataGen(object,R,bootType,aggregated=FALSE)
+    }
     
     drm.list.tmp <- get.drm.list(tmp.data)
-    list.condition <- sapply(drm.list.tmp, function(x) class(x)=="drc")
+    list.condition <- sapply(drm.list.tmp, inherits, "drc")
     drm.list  <- drm.list.tmp[list.condition]
     
     bmd.list.try <- lapply(drm.list,get.bmd)

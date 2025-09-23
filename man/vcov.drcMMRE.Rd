@@ -16,7 +16,7 @@ The variance-covariance matrix of the model parameters.
 }
 \description{
 S3 method to extract the variance-covariance matrix from fitted drcMMRE objects
-by delegating to the underlying model-averaged model.
+by delegating to the underlying multivariate meta-analytic model.
 }
 \seealso{
 \code{\link{vcov}} for the generic function

@@ -22,7 +22,7 @@ bmd(
 )
 }
 \arguments{
-\item{object}{object of class \code{drc}}
+\item{object}{object of class \code{drc} or \code{drcMMRE}}
 
 \item{bmr}{numeric value of benchmark response level for which to calculate
 the benchmark dose}
@@ -200,6 +200,16 @@ bmd(ryegrass.m1, 0.05, backgType = "modelBased", def = "relative", display = TRU
 ## BMD using the hybrid method, background risk is 2 SD, hybrid definition using excess risk
 bmd(ryegrass.m1, 0.05, backg = 2, backgType = "hybridSD", def = "hybridAdd", display = TRUE)
 
+## BMD on meta-analytic random effects model
+set.seed(1)
+data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
+                    y = rep(drcData::ryegrass$rootl, 2) +
+                      c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
+                        rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
+                    EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+
+modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
+bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative")
 
 }
 \references{

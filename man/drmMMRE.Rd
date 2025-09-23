@@ -10,7 +10,7 @@ drmMMRE(formula, exp_id, data, fct, type = c("continuous", "binomial"))
 \item{formula}{a symbolic description of the model to be fit of the form
 'response ~ dose'}
 
-\item{exp_id}{the name of the column in the data set that specifies the
+\item{exp_id}{the column in the data set that specifies the
 hierarchical structure of the data}
 
 \item{data}{a data frame containing the variables in the model.}
@@ -32,7 +32,7 @@ meta-analytic dose-response model with a hierarchical variance
 structure of class \code{drcMMRE}.
 
 The primary objective is to use this model for benchmark dose estimation
-based on dose-response data with a heterogeneous variance structure.
+based on dose-response data with a hierarchical variance structure.
 }
 \description{
 Fits a meta-analytic hierarchical dose-response model.

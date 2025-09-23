@@ -44,6 +44,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridPerce
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultSemiParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "semiparametric", progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", interval = "delta", level = 0.95, progressInfo = FALSE, display = FALSE)
   
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
@@ -66,6 +67,13 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridPerce
   expect_equal(resultParametric$bmrScaled[1,1], unname(object0$curve(resultParametric$Results[1, "BMD"])))
   expect_equal(unname(resultParametric$interval[1,]), c(1.00050130374069,1.44861779926571), tolerance = 1e-1)
   
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=1.22216776066126))
+  expect_equal(resultDelta$bmrScaled[1,1], 7.53945959231123)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(1.00860956659033,1.43572595473219), tolerance = 1e-1)
+  
 })
 
 test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridSD", {
@@ -74,6 +82,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridSD", 
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", interval = "delta", level = 0.95, progressInfo = FALSE, display = FALSE)
   
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
@@ -89,6 +98,13 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridSD", 
   expect_equal(resultParametric$bmrScaled[1,1], unname(object0$curve(resultParametric$Results[1, "BMD"])))
   expect_equal(unname(resultParametric$interval[1,]), c(1.17597981534217,1.63561245267409), tolerance = 1e-1)
   
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=1.40198831069816))
+  expect_equal(resultDelta$bmrScaled[1,1], 7.29990540347001)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(1.1792789819111,1.62469763948522), tolerance = 1e-1)
+  
 })
 
 test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridPercentile", {
@@ -97,6 +113,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridPerce
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", interval = "delta", level = 0.95, progressInfo = FALSE, display = FALSE)
   
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
@@ -112,6 +129,13 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridPerce
   expect_equal(resultParametric$bmrScaled[1,1], unname(object0$curve(resultParametric$Results[1, "BMD"])))
   expect_equal(unname(resultParametric$interval[1,]), c(1.03249045631134,1.51113175875138), tolerance = 1e-1)
   
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=1.23980768008069))
+  expect_equal(resultDelta$bmrScaled[1,1], 7.52040683311043)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(1.02539210721749,1.45422325294389), tolerance = 1e-1)
+  
 })
 
 test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridSD", {
@@ -120,6 +144,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridSD", 
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", interval = "delta", level = 0.95, progressInfo = FALSE, display = FALSE)
   
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
@@ -135,6 +160,13 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridSD", 
   expect_equal(resultParametric$bmrScaled[1,1], unname(object0$curve(resultParametric$Results[1, "BMD"])))
   expect_equal(unname(resultParametric$interval[1,]), c(1.18001446789916,1.63934271919724), tolerance = 1e-1)
   
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=1.40629441578573))
+  expect_equal(resultDelta$bmrScaled[1,1], 7.29301416210028)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(1.18333441770616,1.62925441386531), tolerance = 1e-1)
+  
 })
 
 
@@ -149,6 +181,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridPerc
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultSemiParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "semiparametric", progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", interval = "delta", level = 0.95, progressInfo = FALSE, display = FALSE)
   
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
@@ -170,6 +203,14 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridPerc
   expect_equal(resultParametric$bmrScaled[1,1], 17.4208624811968)
   expect_equal(resultParametric$bmrScaled[1,1], unname(object0$curve(resultParametric$Results[1, "BMD"])))
   expect_equal(unname(resultParametric$interval[1,]), c(3.18753866045103,10.1753755402802), tolerance = 1e-1)
+  
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=5.62878374597309))
+  expect_equal(resultDelta$bmrScaled[1,1], 17.4208624811968)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(1.69037392480733,9.56719356713885), tolerance = 1e-1)
+  
 })
 
 test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridSD", {
@@ -177,6 +218,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridSD",
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, interval = "delta", progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
   
   # result
@@ -185,6 +227,13 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridSD",
   expect_equal(result$bmrScaled[1,1], 16.5889266156056)
   expect_equal(result$bmrScaled[1,1], unname(object0$curve(result$Results[1, "BMD"])))
   expect_equal(unname(result$interval[1,]), c(3.34558983991111,21.1813243422884), tolerance = 1e-1)
+  
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=10.3172737799034))
+  expect_equal(resultDelta$bmrScaled[1,1], 16.5889266156056)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(5.32007255587995,15.3144750039268), tolerance = 1e-1)
   
   # resultParametric
   expect_true(!is.na(resultParametric$Results[1, "BMD"]))
@@ -200,6 +249,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridPerc
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
@@ -208,6 +258,13 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridPerc
   expect_equal(result$bmrScaled[1,1], unname(object0$curve(result$Results[1, "BMD"])))
   expect_equal(unname(result$interval[1,]), c(1.23069860312066,16.0998877338217), tolerance = 1e-1)
   
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=6.05249924528408))
+  expect_equal(resultDelta$bmrScaled[1,1], 17.3478591564324)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(2.49449673051078,13.1075678518146), tolerance = 1e-1)
+  
 })
 
 test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridSD", {
@@ -215,6 +272,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridSD",
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
+  resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", interval = "delta", level = 0.95, progressInfo = FALSE, display = FALSE)
   
   # result
   expect_true(!is.na(result$Results[1, "BMD"]))
@@ -222,6 +280,13 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridSD",
   expect_equal(result$bmrScaled[1,1], 16.5674974609854)
   expect_equal(result$bmrScaled[1,1], unname(object0$curve(result$Results[1, "BMD"])))
   expect_equal(unname(result$interval[1,]), c(3.4430271147214,21.3097574205103), tolerance = 1e-1)
+  
+  # resultDelta
+  expect_true(!is.na(resultDelta$Results[1, "BMD"]))
+  expect_equal(resultDelta$Results[1, "BMD"], c(BMD=10.4365491827332))
+  expect_equal(resultDelta$bmrScaled[1,1], 16.5674974609854)
+  expect_equal(resultDelta$bmrScaled[1,1], unname(object0$curve(resultDelta$Results[1, "BMD"])))
+  expect_equal(unname(resultDelta$interval[1,]), c(5.42047691586401,15.4526214496023), tolerance = 1e-1)
   
 })
 
