@@ -57,8 +57,8 @@ computeWeightsFromSplit <- function(trainData, validateData, modelList){
     objective <- CVXR::Minimize(sum((predMatrix %*% alphaHat - validateData[[as.character(modelList[[1]]$call$formula[[2]][[2]])]])^2))
   }
   problem <- CVXR::Problem(objective, constraints = list(alphaHat <= 1, alphaHat >= 0,sum(alphaHat) == 1))
-  result <- CVXR::solve(problem)
-  res <- result$getValue(alphaHat)
+  opt_value <- CVXR::psolve(problem) # solves the constrained optimisation problem
+  res <- CVXR::value(alphaHat) # returns the value of alpha under the constrained optimisation
   
   # Initialise weights to zero
   tmpWeights <- numeric(length(modelList))
@@ -243,6 +243,10 @@ getDataSplits <- function(object, nSplits){
 getStackingWeights <- function(modelList, nSplits = 2){
   if(!requireNamespace("CVXR")){
     stop('package "CVXR" must be installed to estimate stacking weights')
+  }
+  
+  if (packageVersion("CVXR") < "1.8.0") {
+    stop("Please update CVXR. Version 1.8.0 or newer is required.")
   }
   
   if(nSplits %in% c("LOO")){

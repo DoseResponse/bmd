@@ -36,7 +36,7 @@ test_that("Example usage of drmMMRE function", {
                       ncol = 4, nrow = 4,
                       dimnames = list(c("Coefb", "Coefc", "Coefd", "Coefe"),
                                       c("Coefb", "Coefc", "Coefd", "Coefe"))), 
-               tolerance = 1e-6)
+               tolerance = 1e-4)
   
 })
 

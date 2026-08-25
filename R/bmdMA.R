@@ -285,8 +285,8 @@ bmdMA <- function(modelList, modelWeights, bmr,
       modelWeights0 <- modelWeights
     }
     
-    if(identical(modelList[[1]]$type,"continuous")){
-      my.fun<-function(x,y){drm(y$call$formula, data = x, fct = y[["fct"]])}
+    if(identical(modelList[[1]]$type,"continuous") | identical(modelList[[1]]$type,"Poisson")){
+      my.fun<-function(x,y){drm(y$call$formula, data = x, fct = y[["fct"]], type = y[["type"]])}
       
       if(identical(type,"Kang")){
         maBMD <- sum(modelWeights0 * sapply(bmdList, function(x){x$Results[,1]}))
@@ -321,7 +321,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         
         bmdMAboot <- function(data){
           bootModelList <- lapply(modelList, function(model) try(
-            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, weights = weights0, start = start0,
+            eval(substitute(drm(formula = formula0, data = data, fct = model$fct, type = model$type, weights = weights0, start = start0,
                                 control = drmc(noMessage = TRUE)),
                             list(formula0 = model$call$formula, 
                                  weights0 = model$call$weights,
@@ -723,6 +723,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         }
       }
     }
+    
   } 
   
   if (nCurves > 1){
@@ -755,7 +756,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
         modelWeights0 <- modelWeights
       }
       
-      if(identical(modelList[[1]]$type,"continuous")){
+      if(identical(modelList[[1]]$type,"continuous") | identical(modelList[[1]]$type,"Poisson")){
         if(identical(type,"Kang")){
           maBMD <- colSums(modelWeights0 * t(sapply(bmdList, function(x) x$Results[,1])))
           maBMDL <- colSums(modelWeights0 * t(sapply(bmdList, function(x) x$interval[,1])))
@@ -1274,6 +1275,7 @@ bmdMA <- function(modelList, modelWeights, bmr,
           }
         }
       }
+      
     } else {
       # CURVES FITTED INDEPENDENTLY
       modelListList <- lapply(1:length(modelList[[1]]$objList), function(i) lapply(modelList, function(object) object$objList[[i]]))

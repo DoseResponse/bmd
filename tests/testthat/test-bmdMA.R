@@ -9,6 +9,8 @@
 #   - correct bmd estimate (all definitions)
 # - TCDD model (binomial)
 #   - correct bmd estimate (excess + additional)
+# - Lemna model (count)
+#   - correct bmd estimate (all definitions)
 # - S.alba model (continuous with multiple curves)
 #   - correct bmd estimate (point, extra, hybridExc)
 # - Decreasing binomial model with multiple curves
@@ -205,6 +207,7 @@ test_that("bmdMA handles seed correctly when using Stacking weights",{
   
   expect_equal(twoNormalVariables.seed1, c(oneNormalVariable.seed1, secondNormalVariable.seed1))
   expect_equal(bmdMAStackingWeights.seed123.inside$modelWeights, bmdMAStackingWeights.seed123.outside$modelWeights, tolerance = 1e-4)
+  expect_equal(bmdMAStackingWeights.seed123.inside$modelWeights, c(9.23081721161721e-07, 3.65643449053248e-07, 0.33333311279605, 0.66666559847878), tolerance = 1e-6)
   
   # second set of seed (156, 999)
   set.seed(156, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -617,6 +620,196 @@ test_that("bmdMA function computes BMD (additional) correctly for TCDD models", 
 })
 
 
+# lemna results -----------------------------------------------------------
+
+test_that("bmdMA function computes BMD (point) correctly for lemna models", {
+  # data and fitted models
+  data0 <- drcData::lemna
+  object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
+  object.LN <- drm(frond.num ~ conc, data = data0, fct = LN.3(), type = "Poisson")  
+  object.W1 <- drm(frond.num ~ conc, data = data0, fct = W1.3(), type = "Poisson") 
+  object.W2 <- drm(frond.num ~ conc, data = data0, fct = W2.3(), type = "Poisson") 
+  modelList0 <- list(object.LL, object.LN, object.W1, object.W2)
+  
+  # results
+  resultKang <- bmdMA(modelList0, modelWeights = "AIC", bmr = 52, def = "point", backgType = "modelBased", type = "Kang", display = FALSE)
+  resultBuckland <- bmdMA(modelList0, modelWeights = "AIC", bmr = 52, def = "point", backgType = "modelBased", type = "Buckland", display = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultBoot <- bmdMA(modelList0, modelWeights = "AIC", bmr = 52, def = "point", backgType = "modelBased", type = "bootstrap", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultCurve <- bmdMA(modelList0, modelWeights = "AIC", bmr = 52, def = "point", backgType = "modelBased", type = "curve", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultBootBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 52, def = "point", backgType = "modelBased", type = "bootstrap", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultCurveBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 52, def = "point", backgType = "modelBased", type = "curve", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
+  
+  # Expected results based on manual calculation (checked in v2.7.6)
+  # Kang
+  expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
+  expect_equal(resultKang$Results[1, "BMD_MA"], 4.20666707444774)
+  expect_equal(resultKang$SE[1,1], NA)
+  expect_equal(unname(resultKang$interval[1,]), c(0.735395381212274,7.67793876768321), tolerance = 1e-6)
+  
+  # Buckland
+  expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
+  expect_equal(resultBuckland$Results[1, "BMD_MA"], 4.20666707444774)
+  expect_equal(resultBuckland$SE[1,1], 2.11445972559811)
+  expect_equal(unname(resultBuckland$interval[1,]), c(0.728690325754875,7.68464382314061), tolerance = 1e-6)
+  
+  # Boot
+  expect_true(!is.na(resultBoot$Results[1, "BMD_MA"]))
+  expect_equal(resultBoot$Results[1, "BMD_MA"], 4.20666707444774)
+  expect_equal(resultBoot$Boot.samples.used, 50)
+  expect_equal(unname(resultBoot$interval[1,]), c(3.51653291754643,5.06353543927267), tolerance = 1e-4)
+  
+  # Curve
+  expect_true(!is.na(resultCurve$Results[1, "BMD_MA"]))
+  expect_equal(resultCurve$Results[1, "BMD_MA"], 4.19604169207832)
+  expect_equal(resultCurve$Boot.samples.used, 50)
+  expect_equal(unname(resultCurve$interval[1,]), c(3.47683102683814,4.99243797156008), tolerance = 1e-4)
+  
+  # BootBCa
+  expect_true(all(!is.na(resultBootBCa$Results[, "BMD_MA"])))
+  expect_equal(unname(resultBootBCa$Results[, "BMD_MA"]), c(4.20666707444774))
+  expect_equal(resultBootBCa$Boot.samples.used, 50)
+  expect_equal(unname(resultBootBCa$Results[,"BMDL_MA"]), c(3.56675301982365), tolerance = 1e-4)
+  expect_equal(unname(resultBootBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
+  
+  # CurveBCa
+  expect_true(all(!is.na(resultCurveBCa$Results[, "BMD_MA"])))
+  expect_equal(unname(resultCurveBCa$Results[, "BMD_MA"]), c(4.19604169207832))
+  expect_equal(resultCurveBCa$Boot.samples.used, 50)
+  expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(3.52753413584386), tolerance = 1e-4)
+  expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
+  
+})
+
+test_that("bmdMA function computes BMD (extra) correctly for lemna models", {
+  # data and fitted models
+  data0 <- drcData::lemna
+  object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
+  object.LN <- drm(frond.num ~ conc, data = data0, fct = LN.3(), type = "Poisson")  
+  object.W1 <- drm(frond.num ~ conc, data = data0, fct = W1.3(), type = "Poisson") 
+  object.W2 <- drm(frond.num ~ conc, data = data0, fct = W2.3(), type = "Poisson") 
+  modelList0 <- list(object.LL, object.LN, object.W1, object.W2)
+  
+  # results
+  resultKang <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "extra", backgType = "modelBased", type = "Kang", display = FALSE)
+  resultBuckland <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "extra", backgType = "modelBased", type = "Buckland", display = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultBoot <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "extra", backgType = "modelBased", type = "bootstrap", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultCurve <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "extra", backgType = "modelBased", type = "curve", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultBootBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "extra", backgType = "modelBased", type = "bootstrap", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultCurveBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "extra", backgType = "modelBased", type = "curve", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
+  
+  # Expected results based on manual calculation (checked in v2.6.7)
+  # Kang
+  expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
+  expect_equal(resultKang$Results[1, "BMD_MA"], 0.853320135656905)
+  expect_equal(resultKang$SE[1,1], NA)
+  expect_equal(unname(resultKang$interval[1,]), c(-1.09581446544656,2.80245473676037), tolerance = 1e-6)
+  
+  # Buckland
+  expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
+  expect_equal(resultBuckland$Results[1, "BMD_MA"], 0.853320135656905)
+  expect_equal(resultBuckland$SE[1,1], 1.2172299131057)
+  expect_equal(unname(resultBuckland$interval[1,]), c(-1.14884490174883,2.85548517306264), tolerance = 1e-6)
+  
+  # Boot
+  expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
+  expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(0.853320135656905))
+  expect_equal(resultBoot$Boot.samples.used, 50)
+  expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(0.511946652480417), tolerance = 1e-4)
+  expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(1.15648988912451), tolerance = 1e-4)
+  
+  # Curve
+  expect_true(all(!is.na(resultCurve$Results[, "BMD_MA"])))
+  expect_equal(unname(resultCurve$Results[, "BMD_MA"]), c(0.85650746114556))
+  expect_equal(resultCurve$Boot.samples.used, 50)
+  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(0.564987166410153), tolerance = 1e-4)
+  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(1.29046349839692), tolerance = 1e-4)
+  
+  # BootBCa
+  expect_true(all(!is.na(resultBootBCa$Results[, "BMD_MA"])))
+  expect_equal(unname(resultBootBCa$Results[, "BMD_MA"]), c(0.853320135656905))
+  expect_equal(resultBootBCa$Boot.samples.used, 50)
+  expect_equal(unname(resultBootBCa$Results[,"BMDL_MA"]), c(0.534491473150658), tolerance = 1e-4)
+  expect_equal(unname(resultBootBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
+  
+  # CurveBCa
+  expect_true(all(!is.na(resultCurveBCa$Results[, "BMD_MA"])))
+  expect_equal(unname(resultCurveBCa$Results[, "BMD_MA"]), c(0.85650746114556))
+  expect_equal(resultCurveBCa$Boot.samples.used, 50)
+  expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(0.548606564117917), tolerance = 1e-4)
+  expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
+})
+
+test_that("bmdMA function computes BMD (relative) correctly for lemna models", {
+  # data and fitted models
+  data0 <- drcData::lemna
+  object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
+  object.LN <- drm(frond.num ~ conc, data = data0, fct = LN.3(), type = "Poisson")  
+  object.W1 <- drm(frond.num ~ conc, data = data0, fct = W1.3(), type = "Poisson") 
+  object.W2 <- drm(frond.num ~ conc, data = data0, fct = W2.3(), type = "Poisson") 
+  modelList0 <- list(object.LL, object.LN, object.W1, object.W2)
+  
+  # results
+  resultKang <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", type = "Kang", display = FALSE)
+  resultBuckland <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", type = "Buckland", display = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultBoot <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", type = "bootstrap", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultCurve <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", type = "curve", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultBootBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", type = "bootstrap", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
+  set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  resultCurveBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", type = "curve", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
+  
+  # Expected results based on manual calculation (checked in v2.6.7)
+  # Kang
+  expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
+  expect_equal(resultKang$Results[1, "BMD_MA"], 0.853320135656905)
+  expect_equal(resultKang$SE[1,1], NA)
+  expect_equal(unname(resultKang$interval[1,]), c(-0.923557891551217,2.63019816286503), tolerance = 1e-6)
+  
+  # Buckland
+  expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
+  expect_equal(resultBuckland$Results[1, "BMD_MA"], 0.853320135656905)
+  expect_equal(resultBuckland$SE[1,1], 1.11688376601134)
+  expect_equal(unname(resultBuckland$interval[1,]), c(-0.983790177750073,2.69043044906388), tolerance = 1e-6)
+  
+  # Boot
+  expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
+  expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(0.853320135656905))
+  expect_equal(resultBoot$Boot.samples.used, 50)
+  expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(0.511946652480417), tolerance = 1e-4)
+  expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(1.15648988912451), tolerance = 1e-4)
+  
+  # Curve
+  expect_true(all(!is.na(resultCurve$Results[, "BMD_MA"])))
+  expect_equal(unname(resultCurve$Results[, "BMD_MA"]), c(0.85650746114556))
+  expect_equal(resultCurve$Boot.samples.used, 50)
+  expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(0.564987166410153), tolerance = 1e-4)
+  expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(1.29046349839692), tolerance = 1e-4)
+  
+  # BootBCa
+  expect_true(all(!is.na(resultBootBCa$Results[, "BMD_MA"])))
+  expect_equal(unname(resultBootBCa$Results[, "BMD_MA"]), c(0.853320135656905))
+  expect_equal(resultBootBCa$Boot.samples.used, 50)
+  expect_equal(unname(resultBootBCa$Results[,"BMDL_MA"]), c(0.534491473150658), tolerance = 1e-4)
+  expect_equal(unname(resultBootBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
+  
+  # CurveBCa
+  expect_true(all(!is.na(resultCurveBCa$Results[, "BMD_MA"])))
+  expect_equal(unname(resultCurveBCa$Results[, "BMD_MA"]), c(0.85650746114556))
+  expect_equal(resultCurveBCa$Boot.samples.used, 50)
+  expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(0.548606564117917), tolerance = 1e-4)
+  expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
+})
+
 
 
 # S.alba models -----------------------------------------------------------
@@ -782,6 +975,7 @@ test_that("bmdMA function handles modelWeights argument on S.alba data with mult
   expect_equal(bmdMABICWeights$interval[1,2], sum(bmduVals[1,] * BICWeights0))
   expect_equal(bmdMABICWeights$interval[2,2], sum(bmduVals[2,] * BICWeights0))
   
+  expect_equal(stackingWeights0, c(0.302283264429429, 5.25311121531472e-06, 0.447718064962311, 0.249993417497045), tolerance = 1e-6)
   expect_equal(bmdMAStackingWeights$modelWeights, stackingWeights0)
   expect_equal(bmdMAStackingWeights$Results[1,1], sum(bmdVals[1,] * stackingWeights0), tolerance = 1e-4)
   expect_equal(bmdMAStackingWeights$Results[2,1], sum(bmdVals[2,] * stackingWeights0), tolerance = 1e-4)
@@ -1131,10 +1325,13 @@ test_that("bmdMA function computes BMD (point with stacking weights) correctly f
   expect_equal(resultKang$Boot.samples.used, NA)
   expect_equal(unname(resultKang$interval[,"BMDL_MA"]), c(6.06814221070238,21.8988805204411), tolerance = 1)
   expect_equal(unname(resultKang$interval[,"BMDU_MA"]), c(27.231549080278,38.7342484788404), tolerance = 1)
+  expect_equal(resultKang$modelWeights, c(6.99464226206443e-07, 0.44271627558062, 2.55154979958813e-06, 0.557280473405355), tolerance = 1e-6)
   # resultBoot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
   expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(16.6498456454902, 30.3165644996408), tolerance = 1e-1)
   expect_equal(resultBoot$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(2.12333205792999,25.08635184492), tolerance = 1)
   expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(27.8840479507664,38.6902619548875), tolerance = 1)
+  expect_equal(resultBoot$modelWeights, c(6.99464226206443e-07, 0.44271627558062, 2.55154979958813e-06, 0.557280473405355), tolerance = 1e-6)
+  expect_equal(resultKang$modelWeights, resultBoot$modelWeights)
 })

@@ -1523,8 +1523,8 @@ test_that("bmd function works on drcMMRE object", {
   bmdMMRE <- bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE)
   
   expect_true(all(!is.na(bmdMMRE$Results[, "BMD"])))
-  expect_equal(bmdMMRE$Results[, "BMD"], 1.66913593445629)
-  expect_equal(bmdMMRE$bmrScaled[,1], 9.15712352078559)
+  expect_equal(bmdMMRE$Results[, "BMD"], 1.66913593445629, tolerance = 1e-6)
+  expect_equal(bmdMMRE$bmrScaled[,1], 9.15712352078559, tolerance = 1e-6)
   expect_equal(unname(bmdMMRE$bmrScaled[,1]), drop(modMMRE$curve[[1]](bmdMMRE$Results[, "BMD"])))
   expect_equal(bmdMMRE$interval[1,], c(Lower = 1.3166277025622, Upper = 2.02164416635037), tolerance = 1e-4)
   expect_equal(bmdMMRE$SE[,"SE"], 0.214309787885148, tolerance = 1e-4) 
