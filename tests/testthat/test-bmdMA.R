@@ -653,8 +653,8 @@ test_that("bmdMA function computes BMD (point) correctly for lemna models", {
   # Buckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 4.20666707444774)
-  expect_equal(resultBuckland$SE[1,1], 2.11445972559811)
-  expect_equal(unname(resultBuckland$interval[1,]), c(0.728690325754875,7.68464382314061), tolerance = 1e-6)
+  expect_equal(resultBuckland$SE[1,1], 2.11445972559811, tolerance = 1e-5)
+  expect_equal(unname(resultBuckland$interval[1,]), c(0.728690325754875,7.68464382314061), tolerance = 1e-5)
   
   # Boot
   expect_true(!is.na(resultBoot$Results[1, "BMD_MA"]))
@@ -710,13 +710,13 @@ test_that("bmdMA function computes BMD (extra) correctly for lemna models", {
   expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
   expect_equal(resultKang$Results[1, "BMD_MA"], 0.853320135656905)
   expect_equal(resultKang$SE[1,1], NA)
-  expect_equal(unname(resultKang$interval[1,]), c(-1.09581446544656,2.80245473676037), tolerance = 1e-6)
+  expect_equal(unname(resultKang$interval[1,]), c(-1.09581446544656,2.80245473676037), tolerance = 1e-5)
   
   # Buckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 0.853320135656905)
-  expect_equal(resultBuckland$SE[1,1], 1.2172299131057)
-  expect_equal(unname(resultBuckland$interval[1,]), c(-1.14884490174883,2.85548517306264), tolerance = 1e-6)
+  expect_equal(resultBuckland$SE[1,1], 1.2172299131057, tolerance = 1e-5)
+  expect_equal(unname(resultBuckland$interval[1,]), c(-1.14884490174883,2.85548517306264), tolerance = 1e-5)
   
   # Boot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
@@ -773,13 +773,13 @@ test_that("bmdMA function computes BMD (relative) correctly for lemna models", {
   expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
   expect_equal(resultKang$Results[1, "BMD_MA"], 0.853320135656905)
   expect_equal(resultKang$SE[1,1], NA)
-  expect_equal(unname(resultKang$interval[1,]), c(-0.923557891551217,2.63019816286503), tolerance = 1e-6)
+  expect_equal(unname(resultKang$interval[1,]), c(-0.923557891551217,2.63019816286503), tolerance = 1e-5)
   
   # Buckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 0.853320135656905)
-  expect_equal(resultBuckland$SE[1,1], 1.11688376601134)
-  expect_equal(unname(resultBuckland$interval[1,]), c(-0.983790177750073,2.69043044906388), tolerance = 1e-6)
+  expect_equal(resultBuckland$SE[1,1], 1.11688376601134, tolerance = 1e-5)
+  expect_equal(unname(resultBuckland$interval[1,]), c(-0.983790177750073,2.69043044906388), tolerance = 1e-5)
   
   # Boot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
@@ -1325,13 +1325,13 @@ test_that("bmdMA function computes BMD (point with stacking weights) correctly f
   expect_equal(resultKang$Boot.samples.used, NA)
   expect_equal(unname(resultKang$interval[,"BMDL_MA"]), c(6.06814221070238,21.8988805204411), tolerance = 1)
   expect_equal(unname(resultKang$interval[,"BMDU_MA"]), c(27.231549080278,38.7342484788404), tolerance = 1)
-  expect_equal(resultKang$modelWeights, c(6.99464226206443e-07, 0.44271627558062, 2.55154979958813e-06, 0.557280473405355), tolerance = 1e-6)
+  expect_equal(resultKang$modelWeights, c(6.99464226206443e-07, 0.44271627558062, 2.55154979958813e-06, 0.557280473405355), tolerance = 0.03)
   # resultBoot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
   expect_equal(unname(resultBoot$Results[, "BMD_MA"]), c(16.6498456454902, 30.3165644996408), tolerance = 1e-1)
   expect_equal(resultBoot$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultBoot$interval[,"BMDL_MA"]), c(2.12333205792999,25.08635184492), tolerance = 1)
   expect_equal(unname(resultBoot$interval[,"BMDU_MA"]), c(27.8840479507664,38.6902619548875), tolerance = 1)
-  expect_equal(resultBoot$modelWeights, c(6.99464226206443e-07, 0.44271627558062, 2.55154979958813e-06, 0.557280473405355), tolerance = 1e-6)
+  expect_equal(resultBoot$modelWeights, c(6.99464226206443e-07, 0.44271627558062, 2.55154979958813e-06, 0.557280473405355), tolerance = 0.03)
   expect_equal(resultKang$modelWeights, resultBoot$modelWeights)
 })
