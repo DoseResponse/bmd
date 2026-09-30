@@ -395,7 +395,7 @@ qplotDrc <- function(x, add = FALSE, level = NULL, type = c("average", "all", "b
       obsLayer +
       scale_x_continuous(trans = xtrans, limits = xLimits) +
       scale_y_continuous(trans = ytrans, limits = yLimits) +
-      labs(x = xlab, y = ylab, col = "", fill = "", shape = "", linetype = "")
+      labs(x = xlab, y = ylab, col = NULL, fill = NULL, shape = NULL, linetype = NULL)
   } else {
     list(
       confBandLayer = confBandLayer,
