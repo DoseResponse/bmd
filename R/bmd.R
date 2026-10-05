@@ -237,7 +237,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   }
   
   # Extract information from model
-  # EDlist <- object$fct[["edfct"]] # Change after drc package has been updated with with edfct 
+  # EDlist <- object$fct[["edfct"]] # Change after drc package has been updated with with edfct
   EDlist <- bmd.edfct(object)
   parmMat <- object$parmMat
   nCurves <- ncol(parmMat)
@@ -306,6 +306,8 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
           slope <- drop(ifelse(object$curve[[1]](0.00000001)-object$curve[[1]](100000000)>0,"decreasing","increasing"))
         }
         
+        tmpVals[,"Lower"] <- max(tmpVals[,"Lower"], 1e-16) # ensure positive lower limit is supplied to bmdProfileCI
+        
         tmpInterval <- bmdProfileCI(object, slope, bmr, backgType, backg, def, respTrans, level = level, gridSize = profileGridSize,
                                     bmdEst = bmdVal, lower = tmpVals[,"Lower"], upper = tmpVals[,"Upper"])
       } else {
@@ -313,7 +315,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
         if(missing(profileGridSize)){
           profileGridSize <- 50
         }
-        tmpInterval <- bmdProfileCIgrid(object, bmr = bmr, backgType = backgType, def = def, level = level,
+        tmpInterval <- bmdProfileCIgrid(object, bmr = bmr, backgType = backgType, backg = backg, controlSD = controlSD, def = def, level = level,
                                         gridSize = profileGridSize, progressInfo = profileProgressInfo)
       }
       intMat <- matrix(tmpInterval, ncol = 2)
@@ -321,7 +323,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
     
   if(interval == "profileGrid"){
     if(is.na(profileGridSize)){profileGridSize <- 50}
-    tmpInterval <- bmdProfileCIgrid(object, bmr = bmr, backgType = backgType, def = def, level = level,
+    tmpInterval <- bmdProfileCIgrid(object, bmr = bmr, backgType = backgType, backg = backg, controlSD = controlSD, def = def, level = level,
                                     gridSize = profileGridSize, progressInfo = profileProgressInfo)
     intMat <- matrix(tmpInterval, ncol = 2)
   }

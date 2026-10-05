@@ -218,7 +218,7 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
         dFullParmVec <- switch(def, 
                                relative = dBackground - bmr * dBackground,
                                added = dBackground,
-                               extra = dBackground - bmr* ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))),
+                               extra = dBackground + bmr* ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))),
                                point = rep(0, length(fullParmVec)))
       }
       if (respType %in% c("Poisson","negbin1","negbin2") & (def %in% c("excess","additional","hybridExc","hybridAdd"))) {
@@ -243,7 +243,7 @@ getBmrScaledList <- function(object, bmr, backgType = c("modelBased", "absolute"
                                relative =  dBackground - bmr * dBackground, 
                                added = dBackground,
                                point = rep(0, length(fullParmVec)),
-                               extra = dBackground - bmr*ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))),
+                               extra = dBackground + bmr*ifelse(rep(f0_par_ind==2, length(fullParmVec)), c(0,-1,1, rep(0,length(fullParmVec)-3)), c(0,1,-1, rep(0,length(fullParmVec)-3))),
                                hybridAdd = useSD * 
                                  (dBackground/dnorm(qnorm(background)) - dBackground/dnorm(qnorm(background + bmr))) + 
                                  zero_one_vector(f0_par_ind, length(fullParmVec)),
