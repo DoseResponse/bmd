@@ -36,10 +36,10 @@ bmdProfileCI <- function(object, slope, bmr, backgType, backg, # controlSD,
   # Then, search for endpoints of CI between grid points
   CIlower <- uniroot(function(x) 2 * (llMod - profileLogLikFixedBmd(x)) - quant,
                      lower = grid[which(grid == min(grid[accept])) - 1],
-                     upper = min(grid[accept]))$root |> try(silent = TRUE) |> as.numeric()
+                     upper = min(grid[accept]), tol = 1e-8)$root |> try(silent = TRUE) |> as.numeric()
   CIupper <- uniroot(function(x) 2 * (llMod - profileLogLikFixedBmd(x)) - quant,
                      lower = max(grid[accept]),
-                     upper = grid[which(grid == max(grid[accept])) + 1])$root |> try(silent = TRUE) |> as.numeric()
+                     upper = grid[which(grid == max(grid[accept])) + 1], tol = 1e-8)$root |> try(silent = TRUE) |> as.numeric()
   
   c(BMDL = CIlower, BMDU = CIupper)
 }

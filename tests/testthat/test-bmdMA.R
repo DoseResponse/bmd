@@ -340,8 +340,8 @@ test_that("bmdMA function computes BMD (extra) correctly for ryegrass models", {
   # Expected results based on manual calculation (checked in v2.6.7)
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 1.52703134707651)
-  expect_equal(resultBuckland$SE[1,1], 0.210054516104069, tolerance = 1e-4)
-  expect_equal(unname(resultBuckland$interval[1,]), c(1.1815224144052,1.87254027974782), tolerance = 1e-4)
+  expect_equal(resultBuckland$SE[1,1], 0.191187427997257, tolerance = 1e-4)
+  expect_equal(unname(resultBuckland$interval[1,]), c(1.21255601270766, 1.84150668144528), tolerance = 1e-4)
 })
 
 test_that("bmdMA function computes BMD (relative) correctly for ryegrass models", {
@@ -710,13 +710,13 @@ test_that("bmdMA function computes BMD (extra) correctly for lemna models", {
   expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
   expect_equal(resultKang$Results[1, "BMD_MA"], 0.853320135656905)
   expect_equal(resultKang$SE[1,1], NA)
-  expect_equal(unname(resultKang$interval[1,]), c(-1.09581446544656,2.80245473676037), tolerance = 1e-5)
+  expect_equal(unname(resultKang$interval[1,]), c(-0.923557891551217,2.63019816286503), tolerance = 1e-5)
   
   # Buckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 0.853320135656905)
-  expect_equal(resultBuckland$SE[1,1], 1.2172299131057, tolerance = 1e-5)
-  expect_equal(unname(resultBuckland$interval[1,]), c(-1.14884490174883,2.85548517306264), tolerance = 1e-5)
+  expect_equal(resultBuckland$SE[1,1], 1.11688376601134, tolerance = 1e-5)
+  expect_equal(unname(resultBuckland$interval[1,]), c(-0.983790177750073,2.69043044906388), tolerance = 1e-5)
   
   # Boot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))

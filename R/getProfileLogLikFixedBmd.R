@@ -78,14 +78,22 @@ getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start){
     }
   } else if(identical(object$type, "Poisson")){
     profileLogLikFixedBmd <- function(BMD){
-      fn0 <- function(par){sum(response * log(curveRepar(BMD, par, bmr)(dose)) - curveRepar(BMD, par, bmr)(dose) )} # sum(response * log(curveRepar(BMD, par, bmr)(dose)) - curveRepar(BMD, par, bmr)(dose) - log(foctorial(response)) )
+      # fn0 <- function(par){sum(response * log(curveRepar(BMD, par, bmr)(dose)) - curveRepar(BMD, par, bmr)(dose) )} # sum(response * log(curveRepar(BMD, par, bmr)(dose)) - curveRepar(BMD, par, bmr)(dose) - log(foctorial(response)) )
+      fn0 <- function(par){
+        lambda <- weights * curveRepar(BMD, par, bmr)(dose)
+        value <- -sum(-lambda + response*log(lambda))
+        value
+        # -value + sum(log(gamma(response + 1)))
+        } 
       constrOptim0 <- constrOptim(theta=start, 
                                   f = fn0,
                                   grad = NULL,
                                   ui = ui,
                                   ci = ci)
+      # constrOptim0 <- optim(start, fn0)
       
-      llVal <- constrOptim0$value
+      # llVal <- constrOptim0$value
+      llVal <- -constrOptim0$value + sum(log(gamma(response + 1)))
       llVal
     }
   }
