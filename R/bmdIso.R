@@ -105,7 +105,6 @@
 #'       
 #' ## Data on root length in ryegrass after exposure to ferulic acid
 #' require(drc)
-#' require(drcData)
 #' data(ryegrass)
 #' 
 #' # As isotonic regression only wors for increasing dose-response relationship 

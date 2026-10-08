@@ -71,7 +71,6 @@
 #' @examples
 #' 
 #' library(drc)
-#' library(drcData)
 #' library(ggplot2)
 #' 
 #' ## Fitting models to be plotted below

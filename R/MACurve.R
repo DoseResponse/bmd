@@ -33,7 +33,6 @@
 #' 
 #' library(bmd)
 #' library(drc)
-#' library(drcData)
 #' library(ggplot2)
 #' 
 #' # fit models to aconiazide data

@@ -76,11 +76,11 @@
 #' @examples
 #' 
 #' library(drc)
-#' library(drcData)
 #' library(bmd)
 #' # install.packages("gridExtra") # OPTIONAL - USED FOR PLOTTING A drcHetVar OBJECT.
 #' 
 #' # ryegrass data
+#' \dontrun{
 #' set.seed(123)
 #' ryegrass.hetVar.list <- list(
 #'   drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = ryegrass, fct = LL.4()),
@@ -92,8 +92,10 @@
 #' bmdHetVarMA(ryegrass.hetVar.list, modelWeights = c(0.4, 0.2, 0.1, 0.3), bmr = 0.1, 
 #'             backgType = "hybridPercentile", backg = 0.1, 
 #'             def = "hybridExc", R = 50, level = 0.95) # user-defined weights
+#' }
 #' 
 #' # barley data
+#' \dontrun{
 #' set.seed(123)
 #' barley.hetVar.list <- list(drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), 
 #'                                      data = barley, fct = LL.4()),
@@ -101,8 +103,10 @@
 #'                                      data = barley, fct = W2.4()))
 #' bmdHetVarMA(barley.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridSD", backg = 2,
 #'             def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+#' }
 #' 
 #' # GiantKelp data
+#' \dontrun{
 #' set.seed(123)
 #' GiantKelp.hetVar.list <- list(
 #'   drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), data = GiantKelp, fct = LL.4()),
@@ -110,6 +114,7 @@
 #' bmdHetVarMA(GiantKelp.hetVar.list, modelWeights = "AIC", bmr = 0.1, backgType = "hybridSD",
 #'             backg = 1, def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, 
 #'             display = TRUE)
+#' }
 #' 
 #' @export
 bmdHetVarMA <- function(modelList, modelWeights = c("AIC", "BIC"), bmr, backgType = c("absolute", "hybridSD", "hybridPercentile"), backg = NA, def = c("hybridExc", "hybridAdd"), interval = c("boot", "none"), R = 1000, level = 0.95, progressInfo = TRUE, display = TRUE){

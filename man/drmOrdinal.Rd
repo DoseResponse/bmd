@@ -49,7 +49,6 @@ fitting a series of binomial dose-response models.
 \examples{
 
 library(drc)
-library(drcData)
 data(guthion)
 guthionS <- subset(guthion, trt == "S")
 

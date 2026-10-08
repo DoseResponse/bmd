@@ -153,7 +153,6 @@ model is supplied, sampling is made within dose groups within each experiment.
 
 ## Data on root length in ryegrass after exposure to ferulic acid
 require(drc)
-require(drcData)
 data(ryegrass)
 
 ryegrass.m1 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
@@ -166,11 +165,11 @@ bmdBoot(ryegrass.m1, 0.05, backgType = "hybridSD", def = "hybridAdd", bootType="
 
 ## BMD on meta-analytic random effects model
 set.seed(1)
-data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
-                    y = rep(drcData::ryegrass$rootl, 2) +
-                      c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
-                        rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
-                    EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+data0 <- data.frame(x = rep(ryegrass$conc, 2),
+                    y = rep(ryegrass$rootl, 2) +
+                      c(rnorm(n = nrow(ryegrass), mean = 2, sd = 0.5),
+                        rnorm(n = nrow(ryegrass), mean = 2.7, sd = 0.7)),
+                    EXP_ID = rep(as.character(1:2), each = nrow(ryegrass)))
 
 modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
 bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", R = 50, bootType = "wild")

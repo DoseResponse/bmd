@@ -48,25 +48,23 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridExc, backgtype = hybridPe
                      drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = LN.4()),
                      drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W1.4()),
                      drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4()))
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
+  # resultAIC
   resultAIC <- bmdHetVarMA(modelList0, modelWeights = "AIC", bmr = 0.1, backgType = "hybridPercentile", 
                         backg = 0.1, def = "hybridExc", interval = "boot", R = 50, level = 0.95, 
                         progressInfo = FALSE, display = FALSE)
-  resultBIC <- bmdHetVarMA(modelList0, modelWeights = "BIC", bmr = 0.1, backgType = "hybridPercentile", 
-                           backg = 0.1, def = "hybridExc", interval = "boot", R = 50, level = 0.95, 
-                           progressInfo = FALSE, display = FALSE)
-  resultManWeights <- bmdHetVarMA(modelList0, modelWeights = c(0.2, 0.1, 0.1, 0.6), bmr = 0.1, backgType = "hybridPercentile", 
-                                  backg = 0.1, def = "hybridExc", interval = "boot", R = 50, level = 0.95, 
-                                  progressInfo = FALSE, display = FALSE)
-  
-  # resultAIC
   expect_true(!is.na(resultAIC$Results[1, "BMD_MA"]))
   expect_equal(resultAIC$Results[1, "BMD_MA"], c(BMD_MA=1.09399583860305))
   expect_equal(resultAIC$Boot.samples.used, 48, tolerance = 1)
   expect_equal(unname(resultAIC$interval[1,]), c(0.91243677103485,1.3064583554297), tolerance = 1e-1)
   expect_equal(resultAIC$modelWeights, c(0.239817917878516,0.112398486139835,0.00397069684089491,0.643812899140755), tolerance = 1e-4)
   
+  skip_on_cran()
   # resultBIC
+  resultBIC <- bmdHetVarMA(modelList0, modelWeights = "BIC", bmr = 0.1, backgType = "hybridPercentile", 
+                           backg = 0.1, def = "hybridExc", interval = "boot", R = 50, level = 0.95, 
+                           progressInfo = FALSE, display = FALSE)
   expect_true(!is.na(resultBIC$Results[1, "BMD_MA"]))
   expect_equal(resultBIC$Results[1, "BMD_MA"], c(BMD_MA=1.09399583860305))
   expect_equal(resultBIC$Boot.samples.used, 49, tolerance = 1)
@@ -74,6 +72,9 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridExc, backgtype = hybridPe
   expect_equal(resultBIC$modelWeights, c(0.239817917878515,0.112398486139835,0.00397069684089491,0.643812899140755), tolerance = 1e-4)
   
   # resultManWeights
+  resultManWeights <- bmdHetVarMA(modelList0, modelWeights = c(0.2, 0.1, 0.1, 0.6), bmr = 0.1, backgType = "hybridPercentile", 
+                                  backg = 0.1, def = "hybridExc", interval = "boot", R = 50, level = 0.95, 
+                                  progressInfo = FALSE, display = FALSE)
   expect_true(!is.na(resultManWeights$Results[1, "BMD_MA"]))
   expect_equal(resultManWeights$Results[1, "BMD_MA"], c(BMD_MA=1.07129213615452))
   expect_equal(resultManWeights$Boot.samples.used, 50, tolerance = 1)
@@ -81,7 +82,10 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridExc, backgtype = hybridPe
   expect_equal(resultManWeights$modelWeights, c(0.2,0.1,0.1,0.6))
 })
 
+
 test_that("bmdHetVarMA on Ryegrass models, def = hybridExc, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ fitted + I(fitted^2)
   modelList0 <- list(drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = LL.4()),
                   drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4()))
@@ -96,7 +100,11 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridExc, backgtype = hybridSD
   expect_equal(result$modelWeights, c(0.4,0.6))
 })
 
+
+
 test_that("bmdHetVarMA on Ryegrass models, def = hybridAdd, backgtype = hybridPercentile", {
+  skip_on_cran()
+  
   modelList0 <- list(drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2), data = drcData::ryegrass, fct = LL.4()),
                      drmHetVar(rootl ~ conc, ~ fitted, data = drcData::ryegrass, fct = LL.4()))
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -110,7 +118,11 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridAdd, backgtype = hybridPe
   expect_equal(result$modelWeights, c(0.979658442072015,0.0203415579279849))
 })
 
+
+
 test_that("bmdHetVarMA on Ryegrass models, def = hybridAdd, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ fitted + I(fitted^2)
   modelList0 <- list(drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = LL.4()),
                      drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4()))
@@ -127,10 +139,13 @@ test_that("bmdHetVarMA on Ryegrass models, def = hybridAdd, backgtype = hybridSD
 
 
 
+
 # GiantKelp model ---------------------------------------------------------
 
 
 test_that("bmdHetVarMA on GiantKelp models, def = hybridExc, backgtype = hybridPercentile", {
+  skip_on_cran()
+  
   modelList0 <- list(drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log(dose+1)^2), data = drcData::GiantKelp, fct = LL.4()),
                      drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), data = drcData::GiantKelp, fct = LL.4()))
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -163,9 +178,11 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridExc, backgtype = hybridP
   expect_equal(resultManWeights$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(resultManWeights$interval[1,]), c(0.509778477285164,16.6029584852476), tolerance = 1e-1)
   expect_equal(resultManWeights$modelWeights, c(0.3,0.7))
-})
+}) 
 
 test_that("bmdHetVarMA on GiantKelp models, def = hybridExc, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
   modelList0 <- list(drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4()),
                      drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LN.4()))
@@ -178,9 +195,11 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridExc, backgtype = hybridS
   expect_equal(result$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(3.46365031231543,20.4834802123576), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.6,0.4))
-})
+}) 
 
 test_that("bmdHetVarMA on GiantKelp models, def = hybridAdd, backgtype = hybridPercentile", {
+  skip_on_cran()
+  
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
   modelList0 <- list(drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4()),
                      drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LN.4()))
@@ -193,9 +212,11 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridAdd, backgtype = hybridP
   expect_equal(result$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(1.48403844387169,17.2022294707629), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.5788385115668,0.421161488433199))
-})
+}) 
 
 test_that("bmdHetVarMA on GiantKelp models, def = hybridAdd, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
   modelList0 <- list(drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4()),
                      drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LN.4()))
@@ -208,7 +229,7 @@ test_that("bmdHetVarMA on GiantKelp models, def = hybridAdd, backgtype = hybridS
   expect_equal(result$Boot.samples.used, 50, tolerance = 1)
   expect_equal(unname(result$interval[1,]), c(3.55888343309975,20.6224431910256), tolerance = 1e-1)
   expect_equal(result$modelWeights, c(0.6,0.4))
-})
+}) 
 
 
 

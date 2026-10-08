@@ -106,7 +106,6 @@ interval = "confidence" and level=confidence.level.
 \examples{
 
 library(drc)
-library(drcData)
 library(ggplot2)
 
 ## Fitting models to be plotted below

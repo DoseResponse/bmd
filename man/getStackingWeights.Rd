@@ -32,7 +32,6 @@ Details on the implemented definitions and methods can be found in Crump
 
 library(bmd)
 library(drc)
-library(drcData)
 
 # fit models to aconiazide data
 aconiazide.LL.3 <- drm(weightChange ~ dose,data = aconiazide,fct = LL.3())

@@ -122,7 +122,6 @@ Details on the implemented definitions and methods can be found in Crump
 \examples{
 
 library(drc)
-library(drcData)
 data(guthion)
 
 guthionS <- subset(guthion, trt == "S")

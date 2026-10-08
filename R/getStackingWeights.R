@@ -225,7 +225,6 @@ getDataSplits <- function(object, nSplits){
 #' 
 #' library(bmd)
 #' library(drc)
-#' library(drcData)
 #' 
 #' # fit models to aconiazide data
 #' aconiazide.LL.3 <- drm(weightChange ~ dose,data = aconiazide,fct = LL.3())

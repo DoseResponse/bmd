@@ -47,7 +47,6 @@ Details on the implemented definitions and methods can be found in Crump
 
 library(bmd)
 library(drc)
-library(drcData)
 library(ggplot2)
 
 # fit models to aconiazide data

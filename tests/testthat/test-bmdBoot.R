@@ -124,6 +124,8 @@ test_that("bmdBoot function computes BMD (extra, bmr = 0.1, bmdType = \"median\"
 # Ryegrass results --------------------------------------------------------
 
 test_that("bmdBoot function computes BMD (point) correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -133,9 +135,11 @@ test_that("bmdBoot function computes BMD (point) correctly for ryegrass model", 
   expect_true(!is.na(result$Results[1, "BMD"]))
   expect_equal(result$Results[1, "BMD"], 3.64586140417992)
   expect_equal(unname(result$interval[1,]), c(3.26263598876729,3.96031450591884), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (extra) correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -146,9 +150,11 @@ test_that("bmdBoot function computes BMD (extra) correctly for ryegrass model", 
   expect_equal(result$Results[1, "BMD"], 1.46370565552042)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.34582379343345,1.65744656451026), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative) correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -159,9 +165,11 @@ test_that("bmdBoot function computes BMD (relative) correctly for ryegrass model
   expect_equal(result$Results[1, "BMD"], 1.49902599632103)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.36986151499048,1.69766970621146), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (added) correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -172,9 +180,11 @@ test_that("bmdBoot function computes BMD (added) correctly for ryegrass model", 
   expect_equal(result$Results[1, "BMD"], 0.728443033284576)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(0.601335381833136,0.938357650485433), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridAdd with hybridSD background) correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -185,9 +195,11 @@ test_that("bmdBoot function computes BMD (hybridAdd with hybridSD background) co
   expect_equal(result$Results[1, "BMD"], 1.21255236145362)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.03230812002555,1.38259567213485), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridSD background) correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -198,9 +210,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background) co
   expect_equal(result$Results[1, "BMD"], 1.20672107998472)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.02698170147848,1.37683954154201), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile background) correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -211,9 +225,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   expect_equal(result$Results[1, "BMD"], 1.06888690340628)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(0.901388142148037,1.24291597301057), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -224,9 +240,11 @@ test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correct
   expect_equal(result$Results[1, "BMD"], 3.64586140417992)
   expect_equal(result$Results[1, "BMDL"], 3.40461643409508, tolerance = 1e-2)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative, bootInterval = \"BCa\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -238,9 +256,11 @@ test_that("bmdBoot function computes BMD (relative, bootInterval = \"BCa\") corr
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(result$Results[1,"BMDL"], 1.3364409073126, tolerance = 1e-2)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bootInterval = \"BCa\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -252,9 +272,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bo
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(result$Results[1,"BMDL"], 1.0046419139129, tolerance = 1e-2)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile background, bootInterval = \"BCa\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -266,9 +288,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(result$Results[1,"BMDL"], 0.854123185248857, tolerance = 1e-2)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -279,9 +303,11 @@ test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") corr
   expect_equal(result$Results[1, "BMD"], 3.64586140417992)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(3.12856944661618,4.34780971634149), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative, bootType = \"parametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -292,9 +318,11 @@ test_that("bmdBoot function computes BMD (relative, bootType = \"parametric\") c
   expect_equal(result$Results[1, "BMD"], 1.49902599632103)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.40708736919832,1.80364105456897), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bootType = \"parametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -305,9 +333,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bo
   expect_equal(result$Results[1, "BMD"], 1.20672107998472)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.06044718186996,1.69830235608345), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile background, bootType = \"parametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -318,9 +348,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   expect_equal(result$Results[1, "BMD"], 1.06888690340628)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(0.928960505221601,1.57848224390949), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bootType = \"semiparametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -331,9 +363,11 @@ test_that("bmdBoot function computes BMD (point, bootType = \"semiparametric\") 
   expect_equal(result$Results[1, "BMD"], 3.64586140417992)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(3.46643051130734,3.82733853806115), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative, bootType = \"semiparametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -344,9 +378,11 @@ test_that("bmdBoot function computes BMD (relative, bootType = \"semiparametric\
   expect_equal(result$Results[1, "BMD"], 1.49902599632103)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.33189055276109,1.70994880678072), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bootType = \"semiparametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -357,9 +393,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bo
   expect_equal(result$Results[1, "BMD"], 1.20672107998472)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(0.942978153279434,1.36895504286135), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile background, bootType = \"semiparametric\") correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   
@@ -370,9 +408,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   expect_equal(result$Results[1, "BMD"], 1.06888690340628)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(0.823230827522055,1.23451763714964), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative) correctly for ryegrass hormesis model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
   
@@ -383,9 +423,11 @@ test_that("bmdBoot function computes BMD (relative) correctly for ryegrass horme
   expect_equal(result$Results[1, "BMD"], 1.55704870290614)
   expect_equal(result$Boot.samples.used, 42)
   expect_equal(unname(result$interval[1,]), c(1.44434658745943,1.75290180636397), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative) with log-transformed response correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(log(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
 
@@ -396,9 +438,11 @@ test_that("bmdBoot function computes BMD (relative) with log-transformed respons
   expect_equal(result$Results[1, "BMD"], 0.804218529940602)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(0.635058621791563,1.03367363699335), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative) with square root-transformed response correctly for ryegrass model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(sqrt(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
 
@@ -409,10 +453,12 @@ test_that("bmdBoot function computes BMD (relative) with square root-transformed
   expect_equal(result$Results[1, "BMD"], 1.29590294092622)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.20489647805449,1.47017774750813), tolerance = 1e-2)
-})
+}) 
 
 
 test_that("bmdBoot function output remains consistent", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
   result <- bmdBoot(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE, R = 50)
@@ -426,13 +472,15 @@ test_that("bmdBoot function output remains consistent", {
   
   # Store a snapshot of the entire result object
   expect_snapshot_value(snapshot_data, style = "deparse")
-})
+}) 
 
 
 
 # TCDD results ------------------------------------------------------------
 
 test_that("bmdBoot function computes BMD (point) correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -443,9 +491,12 @@ test_that("bmdBoot function computes BMD (point) correctly for TCDD model", {
   expect_equal(result$Results[1, "BMD"], 7.77184985530323)
   expect_equal(result$Boot.samples.used, 49)
   expect_equal(unname(result$interval[1,]), c(6.5722041232272,23.4873980148745), tolerance = 1e-1)
-})
+}) 
+
 
 test_that("bmdBoot function computes BMD (excess) correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -456,9 +507,12 @@ test_that("bmdBoot function computes BMD (excess) correctly for TCDD model", {
   expect_equal(result$Results[1, "BMD"], 5.56116921034511)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.28179749253742,4.68414395623765), tolerance = 1e-1)
-})
+}) 
+
 
 test_that("bmdBoot function computes BMD (additional) correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -469,9 +523,11 @@ test_that("bmdBoot function computes BMD (additional) correctly for TCDD model",
   expect_equal(result$Results[1, "BMD"], 6.36475841679501)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(3.18111681473504,6.6921148746103), tolerance = 1e-1)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -483,9 +539,11 @@ test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correct
   expect_equal(result$Boot.samples.used, 49)
   expect_equal(result$Results[1, "BMDL"], 5.18330205847931, tolerance = 1e-1)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (excess, bootInterval = \"BCa\") correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -497,9 +555,11 @@ test_that("bmdBoot function computes BMD (excess, bootInterval = \"BCa\") correc
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(result$Results[1, "BMDL"], 6.14136910217948, tolerance = 1e-1)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (additional, bootInterval = \"BCa\") correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -511,9 +571,11 @@ test_that("bmdBoot function computes BMD (additional, bootInterval = \"BCa\") co
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(result$Results[1, "BMDL"], 6.15359416425459, tolerance = 1e-1)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -524,9 +586,11 @@ test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") corr
   expect_equal(result$Results[1, "BMD"], 7.77184985530323)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(6.0472767939815,15.9893339617481), tolerance = 1e-1)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (excess, bootType = \"parametric\") correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -537,9 +601,11 @@ test_that("bmdBoot function computes BMD (excess, bootType = \"parametric\") cor
   expect_equal(result$Results[1, "BMD"], 5.56116921034511)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(1.28296661360405,4.74870734366396), tolerance = 1e-1)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (additional, bootType = \"parametric\") correctly for TCDD model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
   
@@ -550,13 +616,15 @@ test_that("bmdBoot function computes BMD (additional, bootType = \"parametric\")
   expect_equal(result$Results[1, "BMD"], 6.36475841679501)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(2.67704520143454,6.38843750211448), tolerance = 1e-1)
-})
+}) 
 
 
 
 # lemna results ----------------------------------------------------------
 
 test_that("bmdBoot function computes BMD (point) correctly for lemna model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
   
@@ -570,6 +638,8 @@ test_that("bmdBoot function computes BMD (point) correctly for lemna model", {
 })
 
 test_that("bmdBoot function computes BMD (extra) correctly for lemna model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
   
@@ -580,9 +650,11 @@ test_that("bmdBoot function computes BMD (extra) correctly for lemna model", {
   expect_equal(result$Results[1, "BMD"], 0.644966972651776)
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[1,]), c(0.403304817944331,0.819989014246345), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative) correctly for lemna model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
   
@@ -597,6 +669,8 @@ test_that("bmdBoot function computes BMD (relative) correctly for lemna model", 
 
 
 test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correctly for lemna model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
   
@@ -608,9 +682,11 @@ test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correct
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(result$Results[1, "BMDL"], 3.89226934419482, tolerance = 1e-2)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative, bootInterval = \"BCa\") correctly for lemna model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
   
@@ -622,7 +698,7 @@ test_that("bmdBoot function computes BMD (relative, bootInterval = \"BCa\") corr
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(result$Results[1,"BMDL"], 0.46010142747602, tolerance = 1e-2)
   expect_equal(result$interval[1,2], "Not available for BCa bootstrap")
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") correctly for lemna model", {
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -638,7 +714,7 @@ test_that("bmdBoot function computes BMD (point, bootType = \"semiparametric\") 
   
   expect_error(bmdBoot(object0, bmr = 52, def = "point", backgType = "modelBased", bootType = "semiparametric", display = FALSE, R = 50),
                "\"Poisson\" only works with nonparametric bootstrap")
-})
+}) 
 
 
 
@@ -647,6 +723,8 @@ test_that("bmdBoot function computes BMD (point, bootType = \"semiparametric\") 
 # S.alba results ----------------------------------------------------------
 
 test_that("bmdBoot function computes BMD (point) correctly for S.alba model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
   
@@ -664,9 +742,11 @@ test_that("bmdBoot function computes BMD (point) correctly for S.alba model", {
   expect_equal(resultBCa$Boot.samples.used, 50)
   expect_equal(unname(resultBCa$Results[,"BMDL"]), c(34.0193865555056,19.45281610897), tolerance = 1e-2)
   expect_equal(unname(resultBCa$interval[,"Upper"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bmdType = \"mean\") correctly for S.alba model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
   
@@ -678,9 +758,11 @@ test_that("bmdBoot function computes BMD (point, bmdType = \"mean\") correctly f
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[,"Lower"]), c(30.0422707998487,18.5473504361089), tolerance = 1e-2)
   expect_equal(unname(result$interval[,"Upper"]), c(44.5736649922485,25.8729296047688), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (point, bmdType = \"median\") correctly for S.alba model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
   
@@ -692,9 +774,11 @@ test_that("bmdBoot function computes BMD (point, bmdType = \"median\") correctly
   expect_equal(result$Boot.samples.used, 50)
   expect_equal(unname(result$interval[,"Lower"]), c(30.0422707998487,18.5473504361089), tolerance = 1e-2)
   expect_equal(unname(result$interval[,"Upper"]), c(44.5736649922485,25.8729296047688), tolerance = 1e-2)
-})
+}) 
 
 test_that("bmdBoot function computes BMD (relative) correctly for S.alba model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
   
@@ -709,6 +793,8 @@ test_that("bmdBoot function computes BMD (relative) correctly for S.alba model",
 })
 
 test_that("bmdBoot function computes BMD (hybridExc with hybridSD background) correctly for S.alba model", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
   
@@ -727,9 +813,11 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background) co
   expect_equal(resultBCa$Boot.samples.used, 50)
   expect_equal(unname(resultBCa$Results[,"BMDL"]), c(17.8777299232804,14.558986489691), tolerance = 1e-2)
   expect_equal(unname(resultBCa$interval[,"Upper"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
-})
+}) 
 
 test_that("bmdBoot function output remains consistent with model with multiple curves", {
+  skip_on_cran()
+  
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
   result <- bmdBoot(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE, R = 50)
@@ -743,11 +831,14 @@ test_that("bmdBoot function output remains consistent with model with multiple c
   
   # Store a snapshot of the entire result object
   expect_snapshot_value(snapshot_data, style = "deparse")
-})
+}) 
 
 
 # Decreasing binomial model with multiple curves --------------------------
+
 test_that("bmdBoot function computes BMD (point) correctly for TCDD model", {
+  skip_on_cran()
+  
   data0 <- data.frame(
     conc = c(0, rep(c(20, 40, 80, 160, 320), 2)),
     total = c(50, rep(20, 5*2)),
@@ -779,9 +870,12 @@ test_that("bmdBoot function computes BMD (point) correctly for TCDD model", {
   expect_equal(resultBCa$Boot.samples.used, 44)
   expect_equal(unname(resultBCa$Results[,"BMDL"]), c(12.2322036611872,25.3303655120452), tolerance = 1e-1)
   expect_equal(unname(resultBCa$interval[,"Upper"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
-})
+}) 
+
 
 test_that("bmdBoot function computes BMD (excess) correctly for TCDD model", {
+  skip_on_cran()
+  
   data0 <- data.frame(
     conc = c(0, rep(c(20, 40, 80, 160, 320), 2)),
     total = c(50, rep(20, 5*2)),
@@ -812,9 +906,11 @@ test_that("bmdBoot function computes BMD (excess) correctly for TCDD model", {
   expect_equal(resultBCa$Boot.samples.used, 46)
   expect_equal(unname(resultBCa$Results[,"BMDL"]), c(14.1406750203466,17.9700937734153), tolerance = 1e-1)
   expect_equal(unname(resultBCa$interval[,"Upper"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
-})
+}) 
+
 
 test_that("bmdBoot function computes BMD (additional) correctly for TCDD model", {
+  skip_on_cran()
   data0 <- data.frame(
     conc = c(0, rep(c(20, 40, 80, 160, 320), 2)),
     total = c(50, rep(20, 5*2)),

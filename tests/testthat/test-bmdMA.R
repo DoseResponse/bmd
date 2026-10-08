@@ -440,6 +440,8 @@ test_that("bmdMA function computes BMD (hybridExc with hybridPercentile backgrou
 })
 
 test_that("bmdMA function computes BMD (relative) with log-transformed response correctly for ryegrass models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::ryegrass
   object.LL <- drm(log(rootl) ~ conc, data = data0, fct = LL.4()) 
@@ -474,9 +476,11 @@ test_that("bmdMA function computes BMD (relative) with log-transformed response 
   expect_equal(resultCurve$Boot.samples.used, 1000)
   expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(1.01029775850722), tolerance = 1e-4)
   expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(1.75309602794422), tolerance = 1e-4)
-})
+}) 
 
 test_that("bmdMA function computes BMD (relative) with square root-transformed response correctly for ryegrass models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::ryegrass
   object.LL.2 <- drm(sqrt(rootl) ~ conc, data = data0, fct = LL.4()) 
@@ -511,7 +515,7 @@ test_that("bmdMA function computes BMD (relative) with square root-transformed r
   expect_equal(resultCurve$Boot.samples.used, 1000)
   expect_equal(unname(resultCurve$interval[,"BMDL_MA"]), c(1.36000313896168), tolerance = 1e-4)
   expect_equal(unname(resultCurve$interval[,"BMDU_MA"]), c(1.74646551140735), tolerance = 1e-4)
-})
+}) 
 
 
 
@@ -522,6 +526,8 @@ test_that("bmdMA function computes BMD (relative) with square root-transformed r
 
 
 test_that("bmdMA function computes BMD (point) correctly for TCDD models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::TCDD
   object.LL <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LL.4(), type = "binomial") 
@@ -579,9 +585,11 @@ test_that("bmdMA function computes BMD (point) correctly for TCDD models", {
   expect_equal(resultCurveBCa$Boot.samples.used, 48, tolerance = 1)
   expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(5.91280712553062), tolerance = 1e-1)
   expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
-})
+}) 
 
 test_that("bmdMA function computes BMD (excess) correctly for TCDD models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::TCDD
   object.LL <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LL.4(), type = "binomial") 
@@ -601,6 +609,8 @@ test_that("bmdMA function computes BMD (excess) correctly for TCDD models", {
 })
 
 test_that("bmdMA function computes BMD (additional) correctly for TCDD models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::TCDD
   object.LL <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LL.4(), type = "binomial") 
@@ -623,6 +633,8 @@ test_that("bmdMA function computes BMD (additional) correctly for TCDD models", 
 # lemna results -----------------------------------------------------------
 
 test_that("bmdMA function computes BMD (point) correctly for lemna models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::lemna
   object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
@@ -682,9 +694,11 @@ test_that("bmdMA function computes BMD (point) correctly for lemna models", {
   expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(3.52753413584386), tolerance = 1e-4)
   expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
   
-})
+}) 
 
 test_that("bmdMA function computes BMD (extra) correctly for lemna models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::lemna
   object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
@@ -745,9 +759,11 @@ test_that("bmdMA function computes BMD (extra) correctly for lemna models", {
   expect_equal(resultCurveBCa$Boot.samples.used, 50)
   expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(0.548606564117917), tolerance = 1e-4)
   expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap"))
-})
+}) 
 
 test_that("bmdMA function computes BMD (relative) correctly for lemna models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::lemna
   object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
@@ -815,6 +831,8 @@ test_that("bmdMA function computes BMD (relative) correctly for lemna models", {
 # S.alba models -----------------------------------------------------------
 
 test_that("bmdMA function computes BMD (point) correctly for S.alba models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4())
@@ -878,7 +896,7 @@ test_that("bmdMA function computes BMD (point) correctly for S.alba models", {
   expect_equal(resultCurveBCa$Boot.samples.used, 50)
   expect_equal(unname(resultCurveBCa$Results[,"BMDL_MA"]), c(30.9098852016046,18.4608747446523), tolerance = 1e-2)
   expect_equal(unname(resultCurveBCa$interval[,"BMDU_MA"]), c("Not available for BCa bootstrap","Not available for BCa bootstrap"))
-})
+}) 
 
 test_that("bmdMA function computes BMD (relative) correctly for S.alba models", {
   # data and fitted models
@@ -902,6 +920,8 @@ test_that("bmdMA function computes BMD (relative) correctly for S.alba models", 
 })
 
 test_that("bmdMA function computes BMD (hybridExc with hybridSD background) correctly for S.alba models", {
+  skip_on_cran()
+  
   # data and fitted models
   data0 <- drcData::S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4())
@@ -983,7 +1003,7 @@ test_that("bmdMA function handles modelWeights argument on S.alba data with mult
   expect_equal(bmdMAStackingWeights$Results[2,2], sum(bmdlVals[2,] * stackingWeights0), tolerance = 1e-4)
   expect_equal(bmdMAStackingWeights$interval[1,2], sum(bmduVals[1,] * stackingWeights0), tolerance = 1e-4)
   expect_equal(bmdMAStackingWeights$interval[2,2], sum(bmduVals[2,] * stackingWeights0), tolerance = 1e-4)
-})
+}) 
 
 test_that("bmdMA function computes BMD (relative) correctly for S.alba models fitted separately", {
   # data and fitted models
@@ -1075,6 +1095,8 @@ test_that("bmdMA function output remains consistent with model with multiple cur
 
 # Decreasing binomial model with multiple curves --------------------------
 test_that("bmdMA function computes BMD (point) correctly for Decreasing binomial model with multiple curves", {
+  skip_on_cran()
+  
   data0 <- data.frame(
     conc = c(0, rep(c(20, 40, 80, 160, 320), 2)),
     total = c(50, rep(20, 5*2)),
@@ -1150,6 +1172,8 @@ test_that("bmdMA function computes BMD (point) correctly for Decreasing binomial
 })
 
 test_that("bmdMA function computes BMD (excess) correctly for Decreasing binomial model with multiple curves", {
+  skip_on_cran()
+  
   data0 <- data.frame(
     conc = c(0, rep(c(20, 40, 80, 160, 320), 2)),
     total = c(50, rep(20, 5*2)),
@@ -1225,6 +1249,8 @@ test_that("bmdMA function computes BMD (excess) correctly for Decreasing binomia
 })
 
 test_that("bmdMA function computes BMD (additional) correctly for Decreasing binomial model with multiple curves", {
+  skip_on_cran()
+  
   data0 <- data.frame(
     conc = c(0, rep(c(20, 40, 80, 160, 320), 2)),
     total = c(50, rep(20, 5*2)),
@@ -1287,6 +1313,8 @@ test_that("bmdMA function computes BMD (additional) correctly for Decreasing bin
 
 
 test_that("bmdMA function computes BMD (point with stacking weights) correctly for decreasing binomial model with multiple curves", {
+  skip_on_cran()
+  
   data0 <- data.frame(
     conc = c(0, rep(c(20, 40, 80, 160, 320), 2)),
     total = c(50, rep(20, 5*2)),

@@ -89,11 +89,11 @@
 #' # Typically called internally by bmdBoot, but can be used directly:
 #' 
 #' set.seed(1)
-#' data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
-#'                     y = rep(drcData::ryegrass$rootl, 2) +
-#'                       c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
-#'                         rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
-#'                     EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+#' data0 <- data.frame(x = rep(drc::ryegrass$conc, 2),
+#'                     y = rep(drc::ryegrass$rootl, 2) +
+#'                       c(rnorm(n = nrow(drc::ryegrass), mean = 2, sd = 0.5),
+#'                         rnorm(n = nrow(drc::ryegrass), mean = 2.7, sd = 0.7)),
+#'                     EXP_ID = rep(as.character(1:2), each = nrow(drc::ryegrass)))
 #' 
 #' modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
 #' boot_data <- bootDataGenMMRE(modMMRE, R = 1000, bootType = "parametric")

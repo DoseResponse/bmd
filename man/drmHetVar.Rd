@@ -51,7 +51,6 @@ REFERENCES TO BE ADDED/WRITTEN
 \examples{
 
 library(drc)
-library(drcData)
 library(bmd)
 # install.packages("gridExtra") # OPTIONAL - USED FOR PLOTTING A drcHetVar OBJECT.
 
@@ -60,11 +59,13 @@ set.seed(123)
 ryegrass.LL.4.hetVar <- drmHetVar(rootl ~ conc, ~ fitted + I(fitted^2),
                                   data = ryegrass, fct = LL.4())
 plot(ryegrass.LL.4.hetVar)
+\dontrun{
 bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1,
           def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
 bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, 
           def = "hybridExc", R = 50, level = 0.95, 
           bootType = "parametric", progressInfo = TRUE, display = TRUE) # parametric bootstrap
+}
 
 # barley data
 set.seed(123)

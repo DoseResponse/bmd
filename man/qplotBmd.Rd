@@ -42,7 +42,6 @@ This function is a simple function to plot benchmark dose values
 \examples{
 
 library(drc)
-library(drcData)
 
 ## Fitting model and calculating BMD. 
 model <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())

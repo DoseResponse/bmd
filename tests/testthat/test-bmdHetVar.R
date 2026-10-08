@@ -76,7 +76,10 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridPerce
   
 })
 
+
 test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ fitted + I(fitted^2)
   object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -107,7 +110,10 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridSD", 
   
 })
 
+
 test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridPercentile", {
+  skip_on_cran()
+  
   var.formula0 <- ~ fitted + I(fitted^2)
   object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -138,7 +144,11 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridPerce
   
 })
 
+
+
 test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ fitted + I(fitted^2)
   object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -175,6 +185,8 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridSD", 
 
 
 test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridPercentile", {
+  skip_on_cran()
+  
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -213,7 +225,10 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridPerc
   
 })
 
+
 test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -244,7 +259,10 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridSD",
   
 })
 
+
 test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridPercentile", {
+  skip_on_cran()
+  
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -267,7 +285,11 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridPerc
   
 })
 
+
+
 test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridSD", {
+  skip_on_cran()
+  
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
   object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
@@ -289,6 +311,5 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridSD",
   expect_equal(unname(resultDelta$interval[1,]), c(5.42047691586401,15.4526214496023), tolerance = 1e-1)
   
 })
-
 
 

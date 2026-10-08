@@ -109,7 +109,6 @@ REFERENCES TO BE ADDED/WRITTEN
 \examples{
 
 library(drc)
-library(drcData)
 library(bmd)
 # install.packages("gridExtra") # OPTIONAL - USED FOR PLOTTING A drcHetVar OBJECT.
 
@@ -126,13 +125,16 @@ bmdHetVar(ryegrass.LL.4.hetVar, bmr = 0.1, backgType = "hybridPercentile", backg
           bootType = "parametric", progressInfo = TRUE, display = TRUE) # parametric bootstrap
 
 # barley data
+\dontrun{
 set.seed(123)
 barley.LL.4.hetVar <- drmHetVar(weight ~ Dose, ~ fitted + I(fitted^2), data = barley, fct = LL.4())
 plot(barley.LL.4.hetVar)
 bmdHetVar(barley.LL.4.hetVar, bmr = 0.1, backgType = "hybridSD", backg = 1, 
           def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+}
 
 # GiantKelp data
+\dontrun{
 set.seed(123)
 GiantKelp.LL.4.hetVarSq <- drmHetVar(tubeLength ~ dose, ~ fitted + I(fitted^2), 
                                      data = GiantKelp, fct = LL.4())
@@ -145,6 +147,7 @@ GiantKelp.LL.4.hetVarLogSq <- drmHetVar(tubeLength ~ dose, ~ log(dose+1) + I(log
 plot(GiantKelp.LL.4.hetVarLogSq)
 bmdHetVar(GiantKelp.LL.4.hetVarLogSq, bmr = 0.1, backgType = "hybridSD", backg = 1, 
           def = "hybridExc", R = 50, level = 0.95, progressInfo = TRUE, display = TRUE)
+}
 
 }
 \author{

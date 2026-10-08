@@ -20,7 +20,6 @@ This package is currently maintained by Jens Riis Baalkilde and Signe Marie Jens
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-library(drcData)
 library(drc)
 library(bmd)
 ```
@@ -29,13 +28,11 @@ library(bmd)
 Installation
 -------------------------
 
-Install the bmd package from GitHub. The bmd package works best with the drc package installed from GitHub as well.
+Install the bmd package from GitHub.
 
 ```{r installation, eval=FALSE}
-install.packages("devtools")
-devtools::install_github("DoseResponse/drcData")
-devtools::install_github("DoseResponse/drc")
-devtools::install_github("DoseResponse/bmd")
+install.packages("remotes")
+remotes::install_github("DoseResponse/bmd")
 ```
 
 Key features
@@ -56,7 +53,7 @@ In the following it is demonstrated how to use the functions in the bmd package 
 
 ### Example 1 (secalonic)
 
-First, the data set from the drcData package is loaded, and a dose-response model is fitted. 
+First, the data set from the drc package is loaded, and a dose-response model is fitted. 
 
 ```{r secalonic}
 data("secalonic")

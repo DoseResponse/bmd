@@ -166,7 +166,6 @@
 #' @examples
 #' 
 #' library(drc)
-#' library(drcData)
 #' 
 #' ## Fitting 4 different two-parameter models to binomial data
 #' deguelin.m1 <- drm(r/n~dose, weights=n, data=deguelin, fct=LL.2(), type="binomial")
@@ -188,7 +187,7 @@
 #'       type = "curve", bootstrapType = "parametric", bootInterval = "percentile", R=50)
 #' 
 #' 
-#' ## Fitting 4 different two-parameter models to binomial data
+#' ## Fitting 4 different two-parameter models to continuous data
 #' ryegrass.m1<-drm(rootl~conc, data=ryegrass, fct=LL.4())
 #' ryegrass.m2<-drm(rootl~conc, data=ryegrass, fct=W1.4())
 #' ryegrass.m3<-drm(rootl~conc, data=ryegrass, fct=W2.4())
