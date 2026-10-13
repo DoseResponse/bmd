@@ -93,7 +93,7 @@ getProfileLogLikFixedBmd <- function(object, curveRepar, bmr, start){
       # constrOptim0 <- optim(start, fn0)
       
       # llVal <- constrOptim0$value
-      llVal <- -constrOptim0$value + sum(log(gamma(response + 1)))
+      llVal <- -constrOptim0$value - sum(log(gamma(response + 1)))
       llVal
     }
   }
