@@ -227,13 +227,14 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   }
   respTrans <- match.arg(respTrans)
   
-  if(inherits(object$fct, "braincousens") & is.null(object$fct$fixed)){
-    if(object$fct$name == "BC.4"){
-      object$fct$fixed <- c(NA, 0, NA, NA, NA)
-    } else if(object$fct$name == "BC.5"){
-      object$fct$fixed <- c(NA, NA, NA, NA, NA)
-    }
-  }
+  # Not needed after updating drc package (>= 4.0.3)
+  # if(inherits(object$fct, "braincousens") & is.null(object$fct$fixed)){
+  #   if(object$fct$name == "BC.4"){
+  #     object$fct$fixed <- c(NA, 0, NA, NA, NA)
+  #   } else if(object$fct$name == "BC.5"){
+  #     object$fct$fixed <- c(NA, NA, NA, NA, NA)
+  #   }
+  # }
   
   # Extract information from model
   # EDlist <- object$fct[["edfct"]] # Change after drc package has been updated with with edfct
@@ -245,10 +246,11 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   bmrScaledList <- getBmrScaledList(object, bmr, backgType, backg, controlSD, def, respTrans)
   
   fctDerivx <- object$fct$derivx
-  if(is.null(fctDerivx)){
-    fctDerivx <- getFctDerivx(object)
-    if(is.null(fctDerivx) & (interval == "delta")) stop(paste0("Derivative of dose-response curve not defined for model: ", object$fct$name, "\nDelta confidence interval not available."))
-  }
+  # Not needed after updating drc package (>= 4.0.3)
+  # if(is.null(fctDerivx)){
+  #   fctDerivx <- getFctDerivx(object)
+  #   if(is.null(fctDerivx) & (interval == "delta")) stop(paste0("Derivative of dose-response curve not defined for model: ", object$fct$name, "\nDelta confidence interval not available."))
+  # }
   
   # SINGLE CURVE
   if(nCurves == 1){
