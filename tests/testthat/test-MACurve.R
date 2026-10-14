@@ -7,8 +7,8 @@
 # Arguments and structure -------------------------------------------------
 
 test_that("MACurve function handles missing required arguments", {
-  aconiazide.LL.3 <- drm(weightChange ~ dose,data = drcData::aconiazide,fct = LL.3())
-  aconiazide.W2.3 <- drm(weightChange ~ dose,data = drcData::aconiazide,fct = W2.3())
+  aconiazide.LL.3 <- drm(weightChange ~ dose,data = aconiazide,fct = LL.3())
+  aconiazide.W2.3 <- drm(weightChange ~ dose,data = aconiazide,fct = W2.3())
   
   expect_error(MACurve(modelList = list(aconiazide.LL.3, aconiazide.W2.3), modelWeights = "AIC"), 'argument "x" is missing, with no default')
   expect_error(MACurve(x = 1:10, modelWeights = "AIC"), 'argument "modelList" is missing, with no default')
@@ -19,10 +19,10 @@ test_that("MACurve function handles missing required arguments", {
 # aconiazide models -------------------------------------------------------
 
 test_that("MACurve handles modelWeights argument", {
-  aconiazide.LL.3 <- drm(weightChange ~ dose,data = drcData::aconiazide, fct = LL.3())
-  aconiazide.LN.3 <- drm(weightChange ~ dose,data = drcData::aconiazide, fct = LN.3())
-  aconiazide.W1.3 <- drm(weightChange ~ dose,data= drcData::aconiazide, fct = W1.3())
-  aconiazide.W2.3 <- drm(weightChange ~ dose,data= drcData::aconiazide, fct = W2.3())
+  aconiazide.LL.3 <- drm(weightChange ~ dose,data = aconiazide, fct = LL.3())
+  aconiazide.LN.3 <- drm(weightChange ~ dose,data = aconiazide, fct = LN.3())
+  aconiazide.W1.3 <- drm(weightChange ~ dose,data= aconiazide, fct = W1.3())
+  aconiazide.W2.3 <- drm(weightChange ~ dose,data= aconiazide, fct = W2.3())
   modelList0 <- list(aconiazide.LL.3, aconiazide.LN.3,aconiazide.W1.3, aconiazide.W2.3)
   
   # model weights

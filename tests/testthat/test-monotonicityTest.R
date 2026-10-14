@@ -93,7 +93,7 @@ test_that("monotonicityTest (test = 'jonckheere') on simple data set without tre
 # Ryegrass ----------------------------------------------------------------
 
 test_that("monotonicityTest (test = 'bartholomew') on Ryegrass data set", {
-  result <- monotonicityTest("conc", "rootl", data = drcData::ryegrass, test = "bartholomew")
+  result <- monotonicityTest("conc", "rootl", data = ryegrass, test = "bartholomew")
   
   expect_equal(result$p.value, 0)
   expect_true(result$acceptMonotonicity)
@@ -101,7 +101,7 @@ test_that("monotonicityTest (test = 'bartholomew') on Ryegrass data set", {
 
 
 test_that("monotonicityTest (test = 'jonckheere') on Ryegrass data set", {
-  result <- monotonicityTest("conc", "rootl", data = drcData::ryegrass, test = "jonckheere")
+  result <- monotonicityTest("conc", "rootl", data = ryegrass, test = "jonckheere")
   
   expect_equal(result$p.value, 7.16211783824569e-09)
   expect_true(result$acceptMonotonicity)

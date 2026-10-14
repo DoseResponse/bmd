@@ -2,7 +2,7 @@
 
 test_that("bmd profile interval for ryegrass model", {
   skip_on_cran()
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", level = 0.95, display = FALSE, interval = "profile")
   
   bmr <- 0.1
@@ -94,7 +94,7 @@ test_that("bmd profile interval for ryegrass model", {
 
 test_that("bmd profile interval for lemna model", {
   skip_on_cran()
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", level = 0.95, display = FALSE, interval = "profile")
   
   bmr <- 0.1

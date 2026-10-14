@@ -12,7 +12,7 @@
 # Arguments and structure -------------------------------------------------
 
 test_that("bmdOrdinal handles missing required arguments",{
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
   
   expect_error(drmOrdinal(weights = "total", dose = "dose", data = guthionS, fct = LL.2()), 'argument "levels" is missing, with no default')
   expect_error(drmOrdinal(levels = c("alive", "moribund", "dead"), dose = "dose", data = guthionS, fct = LL.2()), 'argument "weights" is missing, with no default')
@@ -26,7 +26,7 @@ test_that("bmdOrdinal handles missing required arguments",{
 # guthionS model ----------------------------------------------------------
 
 test_that("bmdOrdinal computes correct bmd estimates (def = point) for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
   
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   

@@ -133,7 +133,7 @@ test_that("trendTest (test = 'tukey') on simple data set with mixed trend", {
 # Ryegrass ----------------------------------------------------------------
 
 test_that("trendTest (test = 'william') on Ryegrass data set", {
-  result <- trendTest("conc", "rootl", data = drcData::ryegrass, test = "william")
+  result <- trendTest("conc", "rootl", data = ryegrass, test = "william")
   
   expect_null(result$p.values)
   expect_equal(result$decisions, matrix(c("reject", "accept", "accept", "accept", "accept", "accept"), 
@@ -143,7 +143,7 @@ test_that("trendTest (test = 'william') on Ryegrass data set", {
 
 
 test_that("trendTest (test = 'shirley') on Ryegrass data set", {
-  result <- trendTest("conc", "rootl", data = drcData::ryegrass, test = "shirley")
+  result <- trendTest("conc", "rootl", data = ryegrass, test = "shirley")
   
   expect_null(result$p.values)
   expect_equal(result$decisions, matrix(c("reject", "accept", "accept", "accept", "accept", "accept"), 
@@ -152,7 +152,7 @@ test_that("trendTest (test = 'shirley') on Ryegrass data set", {
 })
 
 test_that("trendTest (test = 'tukey') on Ryegrass data set", {
-  result <- trendTest("conc", "rootl", data = drcData::ryegrass, test = "tukey")
+  result <- trendTest("conc", "rootl", data = ryegrass, test = "tukey")
   
   expect_equal(result$p.values, c("xari: xari" = 2.36404196218842e-09, "xord: xord" = 0, "xarilog: xarilog" = 0))
   expect_equal(result$decisions, c("xari: xari" = "accept", "xord: xord" = "accept", "xarilog: xarilog" = "accept"))

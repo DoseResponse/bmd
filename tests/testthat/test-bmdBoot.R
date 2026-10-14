@@ -127,7 +127,7 @@ test_that("bmdBoot function computes BMD (point) correctly for ryegrass model", 
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -141,7 +141,7 @@ test_that("bmdBoot function computes BMD (extra) correctly for ryegrass model", 
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -156,7 +156,7 @@ test_that("bmdBoot function computes BMD (relative) correctly for ryegrass model
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -171,7 +171,7 @@ test_that("bmdBoot function computes BMD (added) correctly for ryegrass model", 
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "added", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -186,7 +186,7 @@ test_that("bmdBoot function computes BMD (hybridAdd with hybridSD background) co
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridAdd", backgType = "hybridSD", backg = 2, display = FALSE, R = 50)
   
@@ -201,7 +201,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background) co
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, display = FALSE, R = 50)
   
@@ -216,7 +216,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, display = FALSE, R = 50)
   
@@ -231,7 +231,7 @@ test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correct
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50)
   
@@ -246,7 +246,7 @@ test_that("bmdBoot function computes BMD (relative, bootInterval = \"BCa\") corr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50)
   
@@ -262,7 +262,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bo
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, bootInterval = "BCa", display = FALSE, R = 50)
   
@@ -278,7 +278,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, bootInterval = "BCa", display = FALSE, R = 50)
   
@@ -294,7 +294,7 @@ test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") corr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", bootType = "parametric", display = FALSE, R = 50)
   
@@ -309,7 +309,7 @@ test_that("bmdBoot function computes BMD (relative, bootType = \"parametric\") c
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", bootType = "parametric", display = FALSE, R = 50)
   
@@ -324,7 +324,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bo
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, bootType = "parametric", display = FALSE, R = 50)
   
@@ -339,7 +339,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, bootType = "parametric", display = FALSE, R = 50)
   
@@ -354,7 +354,7 @@ test_that("bmdBoot function computes BMD (point, bootType = \"semiparametric\") 
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", bootType = "semiparametric", display = FALSE, R = 50)
   
@@ -369,7 +369,7 @@ test_that("bmdBoot function computes BMD (relative, bootType = \"semiparametric\
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", bootType = "semiparametric", display = FALSE, R = 50)
   
@@ -384,7 +384,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background, bo
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, bootType = "semiparametric", display = FALSE, R = 50)
   
@@ -399,7 +399,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridPercentile backgr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, bootType = "semiparametric", display = FALSE, R = 50)
   
@@ -414,7 +414,7 @@ test_that("bmdBoot function computes BMD (relative) correctly for ryegrass horme
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -429,7 +429,7 @@ test_that("bmdBoot function computes BMD (relative) with log-transformed respons
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(log(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(log(rootl) ~ conc, data = ryegrass, fct = LL.4())
 
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", display = FALSE, R = 50)
 
@@ -444,7 +444,7 @@ test_that("bmdBoot function computes BMD (relative) with square root-transformed
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(sqrt(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(sqrt(rootl) ~ conc, data = ryegrass, fct = LL.4())
 
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", display = FALSE, R = 50)
 
@@ -460,7 +460,7 @@ test_that("bmdBoot function output remains consistent", {
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   result <- bmdBoot(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE, R = 50)
   
   snapshot_data <- list(
@@ -482,7 +482,7 @@ test_that("bmdBoot function computes BMD (point) correctly for TCDD model", {
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.22, def = "point", backgType = "modelBased", display = FALSE, R = 50))
   
@@ -498,7 +498,7 @@ test_that("bmdBoot function computes BMD (excess) correctly for TCDD model", {
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.05, def = "excess", backgType = "modelBased", display = FALSE, R = 50))
   
@@ -514,7 +514,7 @@ test_that("bmdBoot function computes BMD (additional) correctly for TCDD model",
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.1, def = "additional", backgType = "modelBased", display = FALSE, R = 50))
   
@@ -529,7 +529,7 @@ test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correct
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.22, def = "point", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50))
   
@@ -545,7 +545,7 @@ test_that("bmdBoot function computes BMD (excess, bootInterval = \"BCa\") correc
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.05, def = "excess", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50))
   
@@ -561,7 +561,7 @@ test_that("bmdBoot function computes BMD (additional, bootInterval = \"BCa\") co
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.1, def = "additional", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50))
   
@@ -577,7 +577,7 @@ test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") corr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.22, def = "point", backgType = "modelBased", bootType = "parametric", display = FALSE, R = 50))
   
@@ -592,7 +592,7 @@ test_that("bmdBoot function computes BMD (excess, bootType = \"parametric\") cor
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.05, def = "excess", backgType = "modelBased", bootType = "parametric", display = FALSE, R = 50))
   
@@ -607,7 +607,7 @@ test_that("bmdBoot function computes BMD (additional, bootType = \"parametric\")
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- suppressWarnings(bmdBoot(object0, bmr = 0.1, def = "additional", backgType = "modelBased", bootType = "parametric", display = FALSE, R = 50))
   
@@ -626,7 +626,7 @@ test_that("bmdBoot function computes BMD (point) correctly for lemna model", {
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmdBoot(object0, bmr = 52, def = "point", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -641,7 +641,7 @@ test_that("bmdBoot function computes BMD (extra) correctly for lemna model", {
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmdBoot(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -656,7 +656,7 @@ test_that("bmdBoot function computes BMD (relative) correctly for lemna model", 
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -672,7 +672,7 @@ test_that("bmdBoot function computes BMD (point, bootInterval = \"BCa\") correct
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmdBoot(object0, bmr = 52, def = "point", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50)
   
@@ -688,7 +688,7 @@ test_that("bmdBoot function computes BMD (relative, bootInterval = \"BCa\") corr
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmdBoot(object0, bmr = 0.1, def = "relative", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50)
   
@@ -702,7 +702,7 @@ test_that("bmdBoot function computes BMD (relative, bootInterval = \"BCa\") corr
 
 test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") correctly for lemna model", {
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   expect_error(bmdBoot(object0, bmr = 52, def = "point", backgType = "modelBased", bootType = "parametric", display = FALSE, R = 50),
                "\"Poisson\" only works with nonparametric bootstrap")
@@ -710,7 +710,7 @@ test_that("bmdBoot function computes BMD (point, bootType = \"parametric\") corr
 
 test_that("bmdBoot function computes BMD (point, bootType = \"semiparametric\") correctly for lemna model", {
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   expect_error(bmdBoot(object0, bmr = 52, def = "point", backgType = "modelBased", bootType = "semiparametric", display = FALSE, R = 50),
                "\"Poisson\" only works with nonparametric bootstrap")
@@ -726,7 +726,7 @@ test_that("bmdBoot function computes BMD (point) correctly for S.alba model", {
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE, R = 50)
   resultBCa <- suppressWarnings(bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", bootInterval = "BCa", display = FALSE, R = 50))
@@ -748,7 +748,7 @@ test_that("bmdBoot function computes BMD (point, bmdType = \"mean\") correctly f
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE, R = 50, bmdType = "mean")
   
@@ -764,7 +764,7 @@ test_that("bmdBoot function computes BMD (point, bmdType = \"median\") correctly
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE, R = 50, bmdType = "median")
   
@@ -780,7 +780,7 @@ test_that("bmdBoot function computes BMD (relative) correctly for S.alba model",
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.08, def = "relative", backgType = "modelBased", display = FALSE, R = 50)
   
@@ -796,7 +796,7 @@ test_that("bmdBoot function computes BMD (hybridExc with hybridSD background) co
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, display = FALSE, R = 50)
   resultBCa <- suppressWarnings(bmdBoot(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, bootInterval = "BCa", display = FALSE, R = 50))
@@ -819,7 +819,7 @@ test_that("bmdBoot function output remains consistent with model with multiple c
   skip_on_cran()
   
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   result <- bmdBoot(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE, R = 50)
   
   snapshot_data <- list(
@@ -942,11 +942,11 @@ test_that("bmdBoot function computes BMD (additional) correctly for TCDD model",
 
 test_that("bmdBoot function works on drcMMRE object", {
   set.seed(1)
-  data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
-                      y = rep(drcData::ryegrass$rootl, 2) +
-                        c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
-                          rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
-                      EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+  data0 <- data.frame(x = rep(ryegrass$conc, 2),
+                      y = rep(ryegrass$rootl, 2) +
+                        c(rnorm(n = nrow(ryegrass), mean = 2, sd = 0.5),
+                          rnorm(n = nrow(ryegrass), mean = 2.7, sd = 0.7)),
+                      EXP_ID = rep(as.character(1:2), each = nrow(ryegrass)))
   
   modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
   bmdMMRE_nonparametric <- bmdBoot(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE, R = 50)

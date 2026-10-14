@@ -19,7 +19,7 @@
 # guthionS model ----------------------------------------------------------
 
 test_that("bmdOrdinalMA computes correct bmd estimates (def = point) for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
 
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = W1.2())
@@ -71,7 +71,7 @@ test_that("bmdOrdinalMA computes correct bmd estimates (def = point) for gutionS
 })
 
 test_that("bmdOrdinal computes correct bmd estimates (def = excess) for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
 
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = W1.2())
@@ -88,7 +88,7 @@ test_that("bmdOrdinal computes correct bmd estimates (def = excess) for gutionS 
 })
 
 test_that("bmdOrdinal computes correct bmd estimates (def = additional) for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
   
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   guthionS.W1 <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = W1.2())

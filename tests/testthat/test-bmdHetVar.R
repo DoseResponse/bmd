@@ -16,9 +16,9 @@ test_that("bmdHetVar handles missing required arguments", {
   lm_object <- lm(y ~ x, 
                   data = data.frame(x = 0:4, 
                                     y = 1:5 + c(-0.4, 0, 0.2, -0.1, 0.13)))
-  ryegrass.W2.4 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = W2.4())
+  ryegrass.W2.4 <- drm(rootl ~ conc, data = ryegrass, fct = W2.4())
   var.formula0 <- ~ fitted + I(fitted^2)
-  ryegrass.W2.4.hetVar <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
+  ryegrass.W2.4.hetVar <- drmHetVar(rootl ~ conc, var.formula0, data = ryegrass, fct = W2.4())
   
   expect_error(bmdHetVar(lm_object), 'object must be a dose-response model with a heterogeneous variance structure of class "drcHetVar"')
   expect_error(bmdHetVar(ryegrass.W2.4), 'object must be a dose-response model with a heterogeneous variance structure of class "drcHetVar"')
@@ -39,7 +39,7 @@ test_that("bmdHetVar handles missing required arguments", {
 
 test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridPercentile", {
   var.formula0 <- ~ fitted + I(fitted^2)
-  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
+  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = ryegrass, fct = W2.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultSemiParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "semiparametric", progressInfo = FALSE, display = FALSE)
@@ -81,7 +81,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridExc, backgtype = hybridSD", 
   skip_on_cran()
   
   var.formula0 <- ~ fitted + I(fitted^2)
-  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
+  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = ryegrass, fct = W2.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
@@ -115,7 +115,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridPerce
   skip_on_cran()
   
   var.formula0 <- ~ fitted + I(fitted^2)
-  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
+  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = ryegrass, fct = W2.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
@@ -150,7 +150,7 @@ test_that("bmdHetVar on Ryegrass model, def = hybridAdd, backgtype = hybridSD", 
   skip_on_cran()
   
   var.formula0 <- ~ fitted + I(fitted^2)
-  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
+  object0 <- drmHetVar(rootl ~ conc, var.formula0, data = ryegrass, fct = W2.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", R = 50, level = 0.95, bootType = "parametric", progressInfo = FALSE, display = FALSE)
@@ -188,7 +188,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridPerc
   skip_on_cran()
   
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
-  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
+  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultSemiParametric <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridExc", R = 50, level = 0.95, bootType = "semiparametric", progressInfo = FALSE, display = FALSE)
@@ -230,7 +230,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridExc, backgtype = hybridSD",
   skip_on_cran()
   
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
-  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
+  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridExc", R = 50, level = 0.95, interval = "delta", progressInfo = FALSE, display = FALSE)
@@ -264,7 +264,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridPerc
   skip_on_cran()
   
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
-  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
+  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridPercentile", backg = 0.1, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
@@ -291,7 +291,7 @@ test_that("bmdHetVar on GiantKelp model, def = hybridAdd, backgtype = hybridSD",
   skip_on_cran()
   
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
-  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
+  object0 <- drmHetVar(tubeLength ~ dose, var.formula0, data = GiantKelp, fct = LL.4())
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   result <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", R = 50, level = 0.95, progressInfo = FALSE, display = FALSE)
   resultDelta <- bmdHetVar(object0, bmr = 0.1, backgType = "hybridSD", backg = 2, def = "hybridAdd", interval = "delta", level = 0.95, progressInfo = FALSE, display = FALSE)

@@ -20,11 +20,11 @@ test_that("drmHetVar handles missing required arguments", {
   expect_error(drmHetVar(), "argument \"formula\" is missing, with no default")
   expect_error(drmHetVar(rootl ~ conc), "argument \"var.formula\" is missing, with no default")
   expect_error(drmHetVar(rootl ~ conc, ~fitted), "argument \"data\" must be supplied")
-  expect_error(drmHetVar(rootl ~ conc, ~fitted, data = drcData::ryegrass), "argument \"fct\" must be supplied")
+  expect_error(drmHetVar(rootl ~ conc, ~fitted, data = ryegrass), "argument \"fct\" must be supplied")
 })
 
 test_that("drmHetVar handles missing observations", {
-  ryegrass <- drcData::ryegrass
+  ryegrass <- ryegrass
   
   expect_equal(drmHetVar(rootl ~ conc, ~fitted, data = rbind(ryegrass, c(NA, 0)), fct = LL.4())$curvePar,
                c(b = 2.70146939078469, c = 0.411238515917276, d = 7.79533990962011, e = 3.11280193302478), tolerance = 1e-8)
@@ -47,7 +47,7 @@ test_that("drmHetVar handles missing observations", {
 
 test_that("drmHetVar on Ryegrass model", {
   var.formula0 <- ~ fitted + I(fitted^2)
-  ryegrass.W2.4.hetVar <- drmHetVar(rootl ~ conc, var.formula0, data = drcData::ryegrass, fct = W2.4())
+  ryegrass.W2.4.hetVar <- drmHetVar(rootl ~ conc, var.formula0, data = ryegrass, fct = W2.4())
   
   expect_equal(unname(ryegrass.W2.4.hetVar$sigmaFun(0:30)), 
                c(0.445223595938359, 0.452982799562158, 0.684142804788777, 0.729133309006225, 0.62712931196859, 
@@ -72,7 +72,7 @@ test_that("drmHetVar on Ryegrass model", {
 
 test_that("drmHetVar on GiantKelp model", {
   var.formula0 <- ~ log(dose+1) + I(log(dose+1)^2)
-  GiantKelp.LL.4.hetVar <- drmHetVar(tubeLength ~ dose, var.formula0, data = drcData::GiantKelp, fct = LL.4())
+  GiantKelp.LL.4.hetVar <- drmHetVar(tubeLength ~ dose, var.formula0, data = GiantKelp, fct = LL.4())
   
   expect_equal(unname(GiantKelp.LL.4.hetVar$sigmaFun(0:30)), 
                c(1.11726591406817, 1.55167099990238, 1.73263234952392, 1.82828103973254, 

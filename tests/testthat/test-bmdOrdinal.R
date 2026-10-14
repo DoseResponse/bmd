@@ -19,7 +19,7 @@
 # guthionS model ----------------------------------------------------------
 
 test_that("bmdOrdinal computes correct bmd estimates (def = point) for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
   
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   result <- bmdOrdinal(guthionS.LL, bmr = 0.2, backgType = "modelBased", def = "point", display = FALSE)
@@ -32,7 +32,7 @@ test_that("bmdOrdinal computes correct bmd estimates (def = point) for gutionS m
 })
 
 test_that("bmdOrdinal computes correct bmd estimates (def = excess) for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
   
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   result <- bmdOrdinal(guthionS.LL, bmr = 0.1, backgType = "modelBased", def = "excess", display = FALSE)
@@ -45,7 +45,7 @@ test_that("bmdOrdinal computes correct bmd estimates (def = excess) for gutionS 
 })
 
 test_that("bmdOrdinal computes correct bmd estimates (def = additional) for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
   
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   result <- bmdOrdinal(guthionS.LL, bmr = 0.1, backgType = "modelBased", def = "additional", display = FALSE)
@@ -58,7 +58,7 @@ test_that("bmdOrdinal computes correct bmd estimates (def = additional) for guti
 })
 
 test_that("bmdOrdinal computes correct confidence intervals for gutionS model", {
-  guthionS <- subset(drcData::guthion, trt == "S")
+  guthionS <- subset(guthion, trt == "S")
   
   guthionS.LL <- drmOrdinal(levels = c("alive", "moribund", "dead"), weights = "total", dose = "dose", data = guthionS, fct = LL.2())
   result.delta <- bmdOrdinal(guthionS.LL, bmr = 0.1, backgType = "modelBased", def = "excess", display = FALSE)

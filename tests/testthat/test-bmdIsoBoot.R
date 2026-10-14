@@ -143,7 +143,7 @@ test_that("bmdIsoBoot function computes BMD (additional, boot = \"pseudorandom\"
 ## ryegrass example from bmdIsoBoot.Rd
 
 test_that("bmdIsoBoot function computes BMD (point) correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
@@ -163,7 +163,7 @@ test_that("bmdIsoBoot function computes BMD (point) correctly for ryegrass model
 })
 
 test_that("bmdIsoBoot function computes BMD (relative) correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
@@ -183,7 +183,7 @@ test_that("bmdIsoBoot function computes BMD (relative) correctly for ryegrass mo
 })
 
 test_that("bmdIsoBoot function computes BMD (hybridExc with hydridSD background) correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
@@ -204,7 +204,7 @@ test_that("bmdIsoBoot function computes BMD (hybridExc with hydridSD background)
 })
 
 test_that("bmdIsoBoot function computes BMD (point, boot = \"pseudorandom\") correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
@@ -225,7 +225,7 @@ test_that("bmdIsoBoot function computes BMD (point, boot = \"pseudorandom\") cor
 })
 
 test_that("bmdIsoBoot function computes BMD (relative, boot = \"pseudorandom\") correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
@@ -246,7 +246,7 @@ test_that("bmdIsoBoot function computes BMD (relative, boot = \"pseudorandom\") 
 })
 
 test_that("bmdIsoBoot function computes BMD (hybridExc with hydridSD background, boot = \"pseudorandom\") correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05

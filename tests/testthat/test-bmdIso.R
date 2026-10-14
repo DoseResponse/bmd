@@ -77,7 +77,7 @@ test_that("bmdIso function computes BMD (additional) correctly for formaldehyde 
 ## ryegrass example from bmdIso.Rd
 
 test_that("bmdIso function computes BMD (point) correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
@@ -94,7 +94,7 @@ test_that("bmdIso function computes BMD (point) correctly for ryegrass model", {
 })
 
 test_that("bmdIso function computes BMD (relative) correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05
@@ -111,7 +111,7 @@ test_that("bmdIso function computes BMD (relative) correctly for ryegrass model"
 })
 
 test_that("bmdIso function computes BMD (hybridExc with hydridSD background) correctly for ryegrass model", {
-  ryegrass1 <- drcData::ryegrass
+  ryegrass1 <- ryegrass
   ryegrass1$rootl <- 100-ryegrass1$rootl
   
   # Estimating BMD from isotonic regression using relative risk definition and a BMR=0.05

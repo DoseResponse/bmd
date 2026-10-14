@@ -267,7 +267,7 @@ test_that("bmdMA function output remains consistent", {
 
 test_that("bmdMA function computes BMD (point) correctly for ryegrass models", {
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(rootl ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(rootl ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(rootl ~ conc, data = data0, fct = W1.4()) 
@@ -327,7 +327,7 @@ test_that("bmdMA function computes BMD (point) correctly for ryegrass models", {
 
 test_that("bmdMA function computes BMD (extra) correctly for ryegrass models", {
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(rootl ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(rootl ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(rootl ~ conc, data = data0, fct = W1.4()) 
@@ -346,7 +346,7 @@ test_that("bmdMA function computes BMD (extra) correctly for ryegrass models", {
 
 test_that("bmdMA function computes BMD (relative) correctly for ryegrass models", {
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(rootl ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(rootl ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(rootl ~ conc, data = data0, fct = W1.4()) 
@@ -365,7 +365,7 @@ test_that("bmdMA function computes BMD (relative) correctly for ryegrass models"
 
 test_that("bmdMA function computes BMD (added) correctly for ryegrass models", {
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(rootl ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(rootl ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(rootl ~ conc, data = data0, fct = W1.4()) 
@@ -384,7 +384,7 @@ test_that("bmdMA function computes BMD (added) correctly for ryegrass models", {
 
 test_that("bmdMA function computes BMD (hybridAdd with hybridSD background) correctly for ryegrass models", {
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(rootl ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(rootl ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(rootl ~ conc, data = data0, fct = W1.4()) 
@@ -403,7 +403,7 @@ test_that("bmdMA function computes BMD (hybridAdd with hybridSD background) corr
 
 test_that("bmdMA function computes BMD (hybridExc with hybridSD background) correctly for ryegrass models", {
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(rootl ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(rootl ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(rootl ~ conc, data = data0, fct = W1.4()) 
@@ -422,7 +422,7 @@ test_that("bmdMA function computes BMD (hybridExc with hybridSD background) corr
 
 test_that("bmdMA function computes BMD (hybridExc with hybridPercentile background) correctly for ryegrass models", {
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(rootl ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(rootl ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(rootl ~ conc, data = data0, fct = W1.4()) 
@@ -443,7 +443,7 @@ test_that("bmdMA function computes BMD (relative) with log-transformed response 
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL <- drm(log(rootl) ~ conc, data = data0, fct = LL.4()) 
   object.LN <- drm(log(rootl) ~ conc, data = data0, fct = LN.4()) 
   object.W1 <- drm(log(rootl) ~ conc, data = data0, fct = W1.4()) 
@@ -482,7 +482,7 @@ test_that("bmdMA function computes BMD (relative) with square root-transformed r
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::ryegrass
+  data0 <- ryegrass
   object.LL.2 <- drm(sqrt(rootl) ~ conc, data = data0, fct = LL.4()) 
   object.LN.2 <- drm(sqrt(rootl) ~ conc, data = data0, fct = LN.4()) 
   object.W1.2 <- drm(sqrt(rootl) ~ conc, data = data0, fct = W1.4()) 
@@ -529,7 +529,7 @@ test_that("bmdMA function computes BMD (point) correctly for TCDD models", {
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::TCDD
+  data0 <- TCDD
   object.LL <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LL.4(), type = "binomial") 
   object.LN <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LN.4(), type = "binomial") 
   object.W1 <- drm(incidence/total ~ conc, weights = total, data = data0, fct = W1.4(), type = "binomial") 
@@ -591,7 +591,7 @@ test_that("bmdMA function computes BMD (excess) correctly for TCDD models", {
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::TCDD
+  data0 <- TCDD
   object.LL <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LL.4(), type = "binomial") 
   object.LN <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LN.4(), type = "binomial") 
   object.W1 <- drm(incidence/total ~ conc, weights = total, data = data0, fct = W1.4(), type = "binomial") 
@@ -612,7 +612,7 @@ test_that("bmdMA function computes BMD (additional) correctly for TCDD models", 
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::TCDD
+  data0 <- TCDD
   object.LL <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LL.4(), type = "binomial") 
   object.LN <- drm(incidence/total ~ conc, weights = total, data = data0, fct = LN.4(), type = "binomial") 
   object.W1 <- drm(incidence/total ~ conc, weights = total, data = data0, fct = W1.4(), type = "binomial") 
@@ -636,7 +636,7 @@ test_that("bmdMA function computes BMD (point) correctly for lemna models", {
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::lemna
+  data0 <- lemna
   object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
   object.LN <- drm(frond.num ~ conc, data = data0, fct = LN.3(), type = "Poisson")  
   object.W1 <- drm(frond.num ~ conc, data = data0, fct = W1.3(), type = "Poisson") 
@@ -700,7 +700,7 @@ test_that("bmdMA function computes BMD (extra) correctly for lemna models", {
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::lemna
+  data0 <- lemna
   object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
   object.LN <- drm(frond.num ~ conc, data = data0, fct = LN.3(), type = "Poisson")  
   object.W1 <- drm(frond.num ~ conc, data = data0, fct = W1.3(), type = "Poisson") 
@@ -765,7 +765,7 @@ test_that("bmdMA function computes BMD (relative) correctly for lemna models", {
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::lemna
+  data0 <- lemna
   object.LL <- drm(frond.num ~ conc, data = data0, fct = LL.3(), type = "Poisson") 
   object.LN <- drm(frond.num ~ conc, data = data0, fct = LN.3(), type = "Poisson")  
   object.W1 <- drm(frond.num ~ conc, data = data0, fct = W1.3(), type = "Poisson") 
@@ -834,7 +834,7 @@ test_that("bmdMA function computes BMD (point) correctly for S.alba models", {
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::S.alba
+  data0 <- S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4())
   object.LN <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LN.4())
   object.W1 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = W1.4())
@@ -900,7 +900,7 @@ test_that("bmdMA function computes BMD (point) correctly for S.alba models", {
 
 test_that("bmdMA function computes BMD (relative) correctly for S.alba models", {
   # data and fitted models
-  data0 <- drcData::S.alba
+  data0 <- S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4())
   object.LN <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LN.4())
   object.W1 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = W1.4())
@@ -923,7 +923,7 @@ test_that("bmdMA function computes BMD (hybridExc with hybridSD background) corr
   skip_on_cran()
   
   # data and fitted models
-  data0 <- drcData::S.alba
+  data0 <- S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4())
   object.LN <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LN.4())
   object.W1 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = W1.4())
@@ -944,7 +944,7 @@ test_that("bmdMA function computes BMD (hybridExc with hybridSD background) corr
 
 test_that("bmdMA function handles modelWeights argument on S.alba data with multiple curves", {
   # data and fitted models
-  data0 <- drcData::S.alba
+  data0 <- S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4())
   object.LN <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LN.4())
   object.W1 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = W1.4())
@@ -1007,7 +1007,7 @@ test_that("bmdMA function handles modelWeights argument on S.alba data with mult
 
 test_that("bmdMA function computes BMD (relative) correctly for S.alba models fitted separately", {
   # data and fitted models
-  data0 <- drcData::S.alba
+  data0 <- S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4(), separate = TRUE)
   object.LN <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LN.4(), separate = TRUE)
   object.W1 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = W1.4(), separate = TRUE)
@@ -1035,7 +1035,7 @@ test_that("bmdMA function computes BMD (relative) correctly for S.alba models fi
 
 test_that("bmdMA function output remains consistent with model with multiple curves", {
   # data and fitted models
-  data0 <- drcData::S.alba
+  data0 <- S.alba
   object.LL <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LL.4())
   object.LN <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = LN.4())
   object.W1 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = data0, fct = W1.4())

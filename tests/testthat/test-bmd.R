@@ -173,7 +173,7 @@ test_that("bmd function computes correct sandwich confidence interval for a simp
 # Ryegrass results --------------------------------------------------------
 
 test_that("bmd function computes BMD (point) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 3.2, def = "point", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -205,7 +205,7 @@ test_that("bmd function computes BMD (point) correctly for ryegrass model", {
 })
 
 test_that("bmd function computes BMD (extra) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -240,7 +240,7 @@ test_that("bmd function computes BMD (extra) correctly for ryegrass model", {
 })
 
 test_that("bmd function computes BMD (relative) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -277,7 +277,7 @@ test_that("bmd function computes BMD (relative) correctly for ryegrass model", {
 })
 
 test_that("bmd function computes BMD (added) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "added", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "added", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -312,7 +312,7 @@ test_that("bmd function computes BMD (added) correctly for ryegrass model", {
 })
 
 test_that("bmd function computes BMD (hybridAdd with hybridSD background) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridAdd", backgType = "hybridSD", backg = 2, display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "hybridAdd", backgType = "hybridSD", backg = 2, sandwich.vcov = TRUE, display = FALSE)
@@ -350,7 +350,7 @@ test_that("bmd function computes BMD (hybridAdd with hybridSD background) correc
 })
 
 test_that("bmd function computes BMD (hybridExc with hybridSD background) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, sandwich.vcov = TRUE, display = FALSE)
@@ -376,7 +376,7 @@ test_that("bmd function computes BMD (hybridExc with hybridSD background) correc
 })
 
 test_that("bmd function computes BMD (hybridExc with hybridPercentile background) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, sandwich.vcov = TRUE, display = FALSE)
@@ -398,7 +398,7 @@ test_that("bmd function computes BMD (hybridExc with hybridPercentile background
 })
 
 test_that("bmd function computes BMD (hybridExc with absolute background) correctly for ryegrass model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "absolute", backg = 7, display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "absolute", backg = 7, sandwich.vcov = TRUE, display = FALSE)
@@ -430,7 +430,7 @@ test_that("bmd function computes BMD (hybridExc with absolute background) correc
 })
 
 test_that("bmd function computes BMD (relative) with log-transformed response correctly for ryegrass model", {
-  object0 <- drm(log(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(log(rootl) ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", sandwich.vcov = TRUE, display = FALSE)
@@ -461,7 +461,7 @@ test_that("bmd function computes BMD (relative) with log-transformed response co
 })
 
 test_that("bmd function computes BMD (relative) with square root-transformed response correctly for ryegrass model", {
-  object0 <- drm(sqrt(rootl) ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(sqrt(rootl) ~ conc, data = ryegrass, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", sandwich.vcov = TRUE, display = FALSE)
@@ -492,7 +492,7 @@ test_that("bmd function computes BMD (relative) with square root-transformed res
 
 
 test_that("bmd function output remains consistent", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = LL.4())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = LL.4())
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
   snapshot_data <- list(
@@ -511,7 +511,7 @@ test_that("bmd function output remains consistent", {
 # Ryegrass hormesis -------------------------------------------------------
 
 test_that("bmd function computes BMD (point) correctly for ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE)
   
@@ -524,7 +524,7 @@ test_that("bmd function computes BMD (point) correctly for ryegrass hormesis mod
 })
 
 test_that("bmd function computes BMD (extra) correctly for ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
@@ -538,7 +538,7 @@ test_that("bmd function computes BMD (extra) correctly for ryegrass hormesis mod
 })
 
 test_that("bmd function computes BMD (relative) correctly for ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", display = FALSE)
   
@@ -553,7 +553,7 @@ test_that("bmd function computes BMD (relative) correctly for ryegrass hormesis 
 })
 
 test_that("bmd function computes BMD (added) correctly for ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "added", backgType = "modelBased", display = FALSE)
   
@@ -568,7 +568,7 @@ test_that("bmd function computes BMD (added) correctly for ryegrass hormesis mod
 })
 
 test_that("bmd function computes BMD (hybridAdd with hybridSD background) correctly for ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridAdd", backgType = "hybridSD", backg = 2, display = FALSE)
   
@@ -582,7 +582,7 @@ test_that("bmd function computes BMD (hybridAdd with hybridSD background) correc
 })
 
 test_that("bmd function computes BMD (hybridExc with hybridSD background) correctly for ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, display = FALSE)
   
@@ -596,7 +596,7 @@ test_that("bmd function computes BMD (hybridExc with hybridSD background) correc
 })
 
 test_that("bmd function computes BMD (hybridExc with hybridPercentile background) correctly for ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, display = FALSE)
   
@@ -610,7 +610,7 @@ test_that("bmd function computes BMD (hybridExc with hybridPercentile background
 })
 
 test_that("bmd function computes BMD (relative) with log-transformed response correctly for ryegrass hormesis model", {
-  object0 <- drm(log(rootl) ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(log(rootl) ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", display = FALSE)
   
@@ -625,7 +625,7 @@ test_that("bmd function computes BMD (relative) with log-transformed response co
 })
 
 test_that("bmd function computes BMD (relative) with square root-transformed response correctly for ryegrass hormesis model", {
-  object0 <- drm(sqrt(rootl) ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(sqrt(rootl) ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "sqrt", display = FALSE)
   
@@ -639,7 +639,7 @@ test_that("bmd function computes BMD (relative) with square root-transformed res
 })
 
 test_that("bmd function computes correct delta confidence interval for a ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
   
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
@@ -652,7 +652,7 @@ test_that("bmd function computes correct delta confidence interval for a ryegras
 })
 
 test_that("bmd function computes correct profile confidence interval for a ryegrass hormesis model", {
-  object0 <- drm(rootl ~ conc, data = drcData::ryegrass, fct = BC.5())
+  object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
 
   invisible(
     capture.output(
@@ -674,7 +674,7 @@ test_that("bmd function computes correct profile confidence interval for a ryegr
 # TCDD results ------------------------------------------------------------
 
 test_that("bmd function computes BMD (point) correctly for TCDD model", {
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -709,7 +709,7 @@ test_that("bmd function computes BMD (point) correctly for TCDD model", {
 })
 
 test_that("bmd function computes BMD (excess) correctly for TCDD model", {
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -749,7 +749,7 @@ test_that("bmd function computes BMD (excess) correctly for TCDD model", {
 })
 
 test_that("bmd function computes BMD (additional) correctly for TCDD model", {
-  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = drcData::TCDD, type = "binomial")
+  object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -796,7 +796,7 @@ test_that("bmd function computes BMD (additional) correctly for TCDD model", {
 # Chlorac results ---------------------------------------------------------
 
 test_that("bmd function computes BMD (point) correctly for Chlorac model", {
-  object0 <- drm(num.dead/total ~ conc, weights = total, data = drcData::chlorac, fct = LN.3u(), type = "binomial")
+  object0 <- drm(num.dead/total ~ conc, weights = total, data = chlorac, fct = LN.3u(), type = "binomial")
   
   result <- bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.22, def = "point", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -834,7 +834,7 @@ test_that("bmd function computes BMD (point) correctly for Chlorac model", {
 })
 
 test_that("bmd function computes BMD (excess) correctly for Chlorac model", {
-  object0 <- drm(num.dead/total ~ conc, weights = total, data = drcData::chlorac, fct = LN.3u(), type = "binomial")
+  object0 <- drm(num.dead/total ~ conc, weights = total, data = chlorac, fct = LN.3u(), type = "binomial")
   
   result <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.05, def = "excess", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -880,7 +880,7 @@ test_that("bmd function computes BMD (excess) correctly for Chlorac model", {
 })
 
 test_that("bmd function computes BMD (additional) correctly for Chlorac model", {
-  object0 <- drm(num.dead/total ~ conc, weights = total, data = drcData::chlorac, fct = LN.3u(), type = "binomial")
+  object0 <- drm(num.dead/total ~ conc, weights = total, data = chlorac, fct = LN.3u(), type = "binomial")
   
   result <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", display = FALSE)
   resultSandwich <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", sandwich.vcov = TRUE, display = FALSE)
@@ -932,7 +932,7 @@ test_that("bmd function computes BMD (additional) correctly for Chlorac model", 
 # lemna results -----------------------------------------------------------
 
 test_that("bmd function computes BMD (point) correctly for lemna model", {
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmd(object0, bmr = 52, def = "point", backgType = "modelBased", display = FALSE)
   # resultProfile <- bmd(object0, bmr = 52, def = "point", backgType = "modelBased", interval = "profile", display = FALSE)
@@ -951,7 +951,7 @@ test_that("bmd function computes BMD (point) correctly for lemna model", {
 })
 
 test_that("bmd function computes BMD (extra) correctly for lemna model", {
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   resultInv <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", interval = "inv", display = FALSE)
@@ -977,7 +977,7 @@ test_that("bmd function computes BMD (extra) correctly for lemna model", {
 })
 
 test_that("bmd function computes BMD (relative) correctly for lemna model", {
-  object0 <- drm(frond.num ~ conc, data = drcData::lemna, fct = LL.3(), type = "Poisson")
+  object0 <- drm(frond.num ~ conc, data = lemna, fct = LL.3(), type = "Poisson")
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", display = FALSE)
   resultInv <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", interval = "inv", display = FALSE)
@@ -1009,7 +1009,7 @@ test_that("bmd function computes BMD (relative) correctly for lemna model", {
 # S.alba results ----------------------------------------------------------
 
 test_that("bmd function computes BMD (point) correctly for S.alba model", {
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmd(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE)
   
@@ -1021,7 +1021,7 @@ test_that("bmd function computes BMD (point) correctly for S.alba model", {
 })
 
 test_that("bmd function computes BMD (relative) correctly for S.alba model", {
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.08, def = "relative", backgType = "modelBased", display = FALSE)
   
@@ -1033,7 +1033,7 @@ test_that("bmd function computes BMD (relative) correctly for S.alba model", {
 })
 
 test_that("bmd function computes BMD (hybridExc with hybridSD background) correctly for S.alba model", {
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, display = FALSE)
   
@@ -1046,7 +1046,7 @@ test_that("bmd function computes BMD (hybridExc with hybridSD background) correc
 
 
 test_that("bmd function computes correct delta confidence interval for a S.alba model", {
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
@@ -1059,7 +1059,7 @@ test_that("bmd function computes correct delta confidence interval for a S.alba 
 })
 
 test_that("bmd function computes BMD (point) correctly for S.alba model with independently fitted curves", {
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4(), separate = TRUE)
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4(), separate = TRUE)
   
   result <- bmd(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE)
   
@@ -1071,7 +1071,7 @@ test_that("bmd function computes BMD (point) correctly for S.alba model with ind
 })
 
 test_that("bmd function computes BMD (relative) correctly for S.alba model with independently fitted curves", {
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4(), separate = TRUE)
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4(), separate = TRUE)
   
   result <- bmd(object0, bmr = 0.08, def = "relative", backgType = "modelBased", display = FALSE)
   
@@ -1084,7 +1084,7 @@ test_that("bmd function computes BMD (relative) correctly for S.alba model with 
 
 
 test_that("bmd function output remains consistent with model with multiple curves", {
-  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = drcData::S.alba, fct = LL.4())
+  object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
   snapshot_data <- list(
@@ -1578,11 +1578,11 @@ test_that("bmd function computes BMD (additional) correctly for TCDD model", {
 
 test_that("bmd function works on drcMMRE object", {
   set.seed(1)
-  data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
-                      y = rep(drcData::ryegrass$rootl, 2) +
-                        c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
-                          rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
-                      EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+  data0 <- data.frame(x = rep(ryegrass$conc, 2),
+                      y = rep(ryegrass$rootl, 2) +
+                        c(rnorm(n = nrow(ryegrass), mean = 2, sd = 0.5),
+                          rnorm(n = nrow(ryegrass), mean = 2.7, sd = 0.7)),
+                      EXP_ID = rep(as.character(1:2), each = nrow(ryegrass)))
   
   modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
   bmdMMRE <- bmd(modMMRE, bmr = 0.1, backgType = "modelBased", def = "relative", display = FALSE)

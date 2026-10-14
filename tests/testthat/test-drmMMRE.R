@@ -17,11 +17,11 @@ NULL
 # Example -----------------------------------------------------------------
 test_that("Example usage of drmMMRE function", {
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
-  data0 <- data.frame(x = rep(drcData::ryegrass$conc, 2),
-                      y = rep(drcData::ryegrass$rootl, 2) +
-                        c(rnorm(n = nrow(drcData::ryegrass), mean = 2, sd = 0.5),
-                          rnorm(n = nrow(drcData::ryegrass), mean = 2.7, sd = 0.7)),
-                      EXP_ID = rep(as.character(1:2), each = nrow(drcData::ryegrass)))
+  data0 <- data.frame(x = rep(ryegrass$conc, 2),
+                      y = rep(ryegrass$rootl, 2) +
+                        c(rnorm(n = nrow(ryegrass), mean = 2, sd = 0.5),
+                          rnorm(n = nrow(ryegrass), mean = 2.7, sd = 0.7)),
+                      EXP_ID = rep(as.character(1:2), each = nrow(ryegrass)))
   
   modMMRE <- drmMMRE(y~x, exp_id = EXP_ID, data = data0, fct = LL.4())
   
