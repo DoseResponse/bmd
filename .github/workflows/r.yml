@@ -51,17 +51,18 @@ jobs:
 #          key: ${{ runner.os }}-r-${{ matrix.config.r }}-${{ hashFiles('DESCRIPTION') }}
 #          restore-keys: |
 #            ${{ runner.os }}-r-${{ matrix.config.r }}-
-      - name: Install dependencies
-        run: |
-          install.packages(c("sandwich", "CVXR", "multcomp", "gridExtra", "isotone", 
-          "reshape2", "dplyr", "car", "Matrix", "RLRsim", "scales", "remotes"))
-          remotes::install_github("doseresponse/drcData")
-          remotes::install_github("doseresponse/drc")
-        shell: Rscript {0}
+      # - name: Install dependencies
+      #   run: |
+      #     install.packages(c("sandwich", "CVXR", "multcomp", "gridExtra", "isotone", 
+      #     "reshape2", "dplyr", "car", "Matrix", "RLRsim", "scales", "remotes"))
+      #     remotes::install_github("doseresponse/drcData")
+      #     remotes::install_github("doseresponse/drc")
+      #   shell: Rscript {0}
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: rcmdcheck
+          cache: false
 
       - uses: r-lib/actions/check-r-package@v2
 
