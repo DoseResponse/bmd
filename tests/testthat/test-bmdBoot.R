@@ -39,19 +39,19 @@ test_that("bmdBoot function accepts correct def", {
   object.poisson <- drm(y ~ x, data = data.frame(x = 1:5, y = c(12,11,3,0,0)), fct = LL.3(), type = "Poisson")
   
   # Binomial bmd def with continuous model
-  expect_error(bmdBoot(object.cont, def = "excess", backgType = "modelBased", R = 1), '"excess" is not available for continuous data')
-  expect_error(bmdBoot(object.cont, def = "additional", backgType = "modelBased", R = 1), '"additional" is not available for continuous data')
+  expect_error(bmdBoot(object.cont, bmr = 0.1, def = "excess", backgType = "modelBased", R = 1), '"excess" is not available for continuous data')
+  expect_error(bmdBoot(object.cont, bmr = 0.1, def = "additional", backgType = "modelBased", R = 1), '"additional" is not available for continuous data')
   
   # Binomial bmd def with Poisson model
-  expect_error(bmdBoot(object.poisson, def = "excess", backgType = "modelBased", R = 1), '"excess" is not available for count data')
-  expect_error(bmdBoot(object.poisson, def = "additional", backgType = "modelBased", R = 1), '"additional" is not available for count data')
+  expect_error(bmdBoot(object.poisson, bmr = 0.1, def = "excess", backgType = "modelBased", R = 1), '"excess" is not available for count data')
+  expect_error(bmdBoot(object.poisson, bmr = 0.1, def = "additional", backgType = "modelBased", R = 1), '"additional" is not available for count data')
   
   # Cont bmd def with binomial model
-  expect_error(bmdBoot(object.binom, def = "relative", backgType = "modelBased", R = 1), '"relative" is not available for quantal data')
-  expect_error(bmdBoot(object.binom, def = "extra", backgType = "modelBased", R = 1), '"extra" is not available for quantal data')
-  expect_error(bmdBoot(object.binom, def = "added", backgType = "modelBased", R = 1), '"added" is not available for quantal data')
-  expect_error(bmdBoot(object.binom, def = "hybridExc", backgType = "modelBased", R = 1), '"hybridExc" is not available for quantal data')
-  expect_error(bmdBoot(object.binom, def = "hybridAdd", backgType = "modelBased", R = 1), '"hybridAdd" is not available for quantal data')
+  expect_error(bmdBoot(object.binom, bmr = 0.1, def = "relative", backgType = "modelBased", R = 1), '"relative" is not available for quantal data')
+  expect_error(bmdBoot(object.binom, bmr = 0.1, def = "extra", backgType = "modelBased", R = 1), '"extra" is not available for quantal data')
+  expect_error(bmdBoot(object.binom, bmr = 0.1, def = "added", backgType = "modelBased", R = 1), '"added" is not available for quantal data')
+  expect_error(bmdBoot(object.binom, bmr = 0.1, def = "hybridExc", backgType = "modelBased", R = 1), '"hybridExc" is not available for quantal data')
+  expect_error(bmdBoot(object.binom, bmr = 0.1, def = "hybridAdd", backgType = "modelBased", R = 1), '"hybridAdd" is not available for quantal data')
 })
 
 test_that("bmdBoot function returns expected structure", {

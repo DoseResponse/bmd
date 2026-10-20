@@ -42,19 +42,19 @@ test_that("bmdMA function accepts correct def", {
   object.poisson <- drm(y ~ x, data = data.frame(x = 1:5, y = c(12,11,3,0,0)), fct = LL.3(), type = "Poisson")
   
   # Binomial bmd def with continuous model
-  expect_error(bmdMA(list(object.cont), modelWeights = 1, def = "excess", backgType = "modelBased", type = "Kang"), '"excess" is not available for continuous data')
-  expect_error(bmdMA(list(object.cont), modelWeights = 1, def = "additional", backgType = "modelBased", type = "Kang"), '"additional" is not available for continuous data')
+  expect_error(bmdMA(list(object.cont), modelWeights = 1, bmr = 0.1, def = "excess", backgType = "modelBased", type = "Kang"), '"excess" is not available for continuous data')
+  expect_error(bmdMA(list(object.cont), modelWeights = 1, bmr = 0.1, def = "additional", backgType = "modelBased", type = "Kang"), '"additional" is not available for continuous data')
   
   # Binomial bmd def with Poisson model
-  expect_error(bmdMA(list(object.poisson), modelWeights = 1, def = "excess", backgType = "modelBased", type = "Kang"), '"excess" is not available for count data')
-  expect_error(bmdMA(list(object.poisson), modelWeights = 1, def = "additional", backgType = "modelBased", type = "Kang"), '"additional" is not available for count data')
+  expect_error(bmdMA(list(object.poisson), modelWeights = 1, bmr = 0.1, def = "excess", backgType = "modelBased", type = "Kang"), '"excess" is not available for count data')
+  expect_error(bmdMA(list(object.poisson), modelWeights = 1, bmr = 0.1, def = "additional", backgType = "modelBased", type = "Kang"), '"additional" is not available for count data')
   
   # Cont bmd def with binomial model
-  expect_error(bmdMA(list(object.binom), modelWeights = 1, def = "relative", backgType = "modelBased", type = "Kang"), '"relative" is not available for quantal data')
-  expect_error(bmdMA(list(object.binom), modelWeights = 1, def = "extra", backgType = "modelBased", type = "Kang"), '"extra" is not available for quantal data')
-  expect_error(bmdMA(list(object.binom), modelWeights = 1, def = "added", backgType = "modelBased", type = "Kang"), '"added" is not available for quantal data')
-  expect_error(bmdMA(list(object.binom), modelWeights = 1, def = "hybridExc", backgType = "modelBased", type = "Kang"), '"hybridExc" is not available for quantal data')
-  expect_error(bmdMA(list(object.binom), modelWeights = 1, def = "hybridAdd", backgType = "modelBased", type = "Kang"), '"hybridAdd" is not available for quantal data')
+  expect_error(bmdMA(list(object.binom), modelWeights = 1, bmr = 0.1, def = "relative", backgType = "modelBased", type = "Kang"), '"relative" is not available for quantal data')
+  expect_error(bmdMA(list(object.binom), modelWeights = 1, bmr = 0.1, def = "extra", backgType = "modelBased", type = "Kang"), '"extra" is not available for quantal data')
+  expect_error(bmdMA(list(object.binom), modelWeights = 1, bmr = 0.1, def = "added", backgType = "modelBased", type = "Kang"), '"added" is not available for quantal data')
+  expect_error(bmdMA(list(object.binom), modelWeights = 1, bmr = 0.1, def = "hybridExc", backgType = "modelBased", type = "Kang"), '"hybridExc" is not available for quantal data')
+  expect_error(bmdMA(list(object.binom), modelWeights = 1, bmr = 0.1, def = "hybridAdd", backgType = "modelBased", type = "Kang"), '"hybridAdd" is not available for quantal data')
 })
 
 test_that("bmdMA function returns expected structure", {

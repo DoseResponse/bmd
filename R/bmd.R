@@ -242,6 +242,9 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   parmMat <- object$parmMat
   nCurves <- ncol(parmMat)
   
+  # save bmdOpts
+  bmdOpts <- list(bmr=bmr, backgType=backgType, backg=backg, controlSD=controlSD, def=def, respTrans=respTrans)
+  
   # bmrScaledList
   bmrScaledList <- getBmrScaledList(object, bmr, backgType, backg, controlSD, def, respTrans)
   
@@ -402,6 +405,7 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
                bmrScaled = bmrScaled,
                interval = bmdInterval,
                SE = bmdSE,
+               bmdOpts = bmdOpts,
                model = object)
   class(resBMD) <- "bmd"
   invisible(resBMD) 

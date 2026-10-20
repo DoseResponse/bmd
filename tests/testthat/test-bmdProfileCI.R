@@ -115,7 +115,7 @@ test_that("bmd profile interval for lemna model", {
   bmrScaled <- result$bmrScaled
   tmpVals <- ED(object0, bmrScaled, interval = "delta",
                 level = level, type = "absolute", vcov. = vcov, display = FALSE)[,c("Lower", "Upper"), drop = FALSE]
-  expect_equal(unname(drop(tmpVals)), c(0.083994991,1.205938947)) # THIS MIGHT CHANGE BETWEEN DRC VERSIONS
+  expect_equal(unname(drop(tmpVals)), c(0.083994991,1.205938947), tolerance = 1e-5) # THIS MIGHT CHANGE BETWEEN DRC VERSIONS
   
   # tmpVals[,] <- c(1.14157927967681,1.78583203136398)
   # The mystery is resolved: The change in confidence intervals is due to different tmpVals. 

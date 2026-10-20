@@ -38,11 +38,11 @@ test_that("bmd function handles missing required arguments", {
   object0 <- drm(y ~ x, data = data.frame(x = 1:5, y = c(1,1,0.5,0,0)), fct = LL.2())
   
   expect_error(bmd(), "object is missing")
-  expect_error(bmd(object0), "def is missing")
-  expect_error(bmd(lm(1:10 ~ 1)), 'object must be of class "drc"')
-  expect_error(bmd(object0, def = "invalid_def", backgType = "modelBased"), "Could not recognize def")
-  expect_error(bmd(object0, def = "excess", backgType = "invalid_type"), "Could not recognize backgType")
-  expect_error(bmd(object0, def = "excess"), "\"excess\" is not available for continuous data")
+  expect_error(bmd(object0, bmr = 0.1), "def is missing")
+  expect_error(bmd(lm(1:10 ~ 1), bmr = 0.1), 'object must be of class "drc"')
+  expect_error(bmd(object0, bmr = 0.1, def = "invalid_def", backgType = "modelBased"), "Could not recognize def")
+  expect_error(bmd(object0, bmr = 0.1, def = "excess", backgType = "invalid_type"), "Could not recognize backgType")
+  expect_error(bmd(object0, bmr = 0.1, def = "excess"), "\"excess\" is not available for continuous data")
 })
 
 
@@ -52,19 +52,19 @@ test_that("bmd function accepts correct def", {
   object.poisson <- drm(y ~ x, data = data.frame(x = 1:5, y = c(12,11,3,0,0)), fct = LL.3(), type = "Poisson")
   
   # Binomial bmd def with continuous model
-  expect_error(bmd(object.cont, def = "excess", backgType = "modelBased"), '"excess" is not available for continuous data')
-  expect_error(bmd(object.cont, def = "additional", backgType = "modelBased"), '"additional" is not available for continuous data')
+  expect_error(bmd(object.cont, bmr = 0.1, def = "excess", backgType = "modelBased"), '"excess" is not available for continuous data')
+  expect_error(bmd(object.cont, bmr = 0.1, def = "additional", backgType = "modelBased"), '"additional" is not available for continuous data')
   
   # Binomial bmd def with Poisson model
-  expect_error(bmd(object.poisson, def = "excess", backgType = "modelBased"), '"excess" is not available for count data')
-  expect_error(bmd(object.poisson, def = "additional", backgType = "modelBased"), '"additional" is not available for count data')
+  expect_error(bmd(object.poisson, bmr = 0.1, def = "excess", backgType = "modelBased"), '"excess" is not available for count data')
+  expect_error(bmd(object.poisson, bmr = 0.1, def = "additional", backgType = "modelBased"), '"additional" is not available for count data')
   
   # Cont bmd def with binomial model
-  expect_error(bmd(object.binom, def = "relative", backgType = "modelBased"), '"relative" is not available for quantal data')
-  expect_error(bmd(object.binom, def = "extra", backgType = "modelBased"), '"extra" is not available for quantal data')
-  expect_error(bmd(object.binom, def = "added", backgType = "modelBased"), '"added" is not available for quantal data')
-  expect_error(bmd(object.binom, def = "hybridExc", backgType = "modelBased"), '"hybridExc" is not available for quantal data')
-  expect_error(bmd(object.binom, def = "hybridAdd", backgType = "modelBased"), '"hybridAdd" is not available for quantal data')
+  expect_error(bmd(object.binom, bmr = 0.1, def = "relative", backgType = "modelBased"), '"relative" is not available for quantal data')
+  expect_error(bmd(object.binom, bmr = 0.1, def = "extra", backgType = "modelBased"), '"extra" is not available for quantal data')
+  expect_error(bmd(object.binom, bmr = 0.1, def = "added", backgType = "modelBased"), '"added" is not available for quantal data')
+  expect_error(bmd(object.binom, bmr = 0.1, def = "hybridExc", backgType = "modelBased"), '"hybridExc" is not available for quantal data')
+  expect_error(bmd(object.binom, bmr = 0.1, def = "hybridAdd", backgType = "modelBased"), '"hybridAdd" is not available for quantal data')
 })
 
 test_that("bmd function returns expected structure", {
@@ -73,7 +73,7 @@ test_that("bmd function returns expected structure", {
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
   expect_type(result, "list")
-  expect_named(result, c("Results", "bmrScaled", "interval", "SE", "model"))
+  expect_named(result, c("Results", "bmrScaled", "interval", "SE", "bmdOpts", "model"))
   expect_s3_class(result, "bmd")
 })
 
