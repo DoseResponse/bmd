@@ -88,10 +88,14 @@
 #' BMD is computed on the original scale.  Options include "none" (default),
 #' "log" (natural logarithm) and "sqrt"(square root).
 #' @param interval character string specifying the type of confidence interval
-#' to use: "delta" (default), "inv", "profile" or "profileGrid"
+#' to use: "delta" (default), "sandwich", "inv", "profile" or "profileGrid"
 #' 
 #' "delta" - BMDL is based on the lower limit of a Wald confidence interval
 #' based on the delta method
+#' 
+#' "sandwich" - BMDL is based on the lower limit of a Wald confidence interval
+#' based on the delta method with the sandwich variance-covariance matrix for the 
+#' parameters
 #' 
 #' "inv" - BMDL is based on inverse regression, that is the dose associated
 #' with the upper limit of the pointwise confidence interval of the
@@ -237,8 +241,8 @@ bmd<-function(object, bmr, backgType = c("modelBased", "absolute", "hybridSD", "
   # }
   
   # Extract information from model
-  # EDlist <- object$fct[["edfct"]] # Change after drc package has been updated with with edfct
-  EDlist <- bmd.edfct(object)
+  EDlist <- object$fct[["edfct"]] # Change after drc package has been updated with with edfct
+  # EDlist <- bmd.edfct(object)
   parmMat <- object$parmMat
   nCurves <- ncol(parmMat)
   

@@ -23,6 +23,10 @@
 #' @examples
 #' 
 #' library(drc)
+#' library(bmd)
+#' object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
+#' bmdResult <- bmd(object0, bmr = 0.08, def = "relative", backgType = "modelBased", display = FALSE)
+#' compParmAdditive <- compParmBmd(bmdResult, operator = "-", display = TRUE)
 #' 
 #' ## Examples to be added
 #' 

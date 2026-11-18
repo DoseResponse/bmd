@@ -19,5 +19,7 @@
   }
 }
 
+\source{Hoekstra JA (1987). Acute bioassays with control mortality. Water Air Soil Pollut. 35(3–4):311–7.}
+
 
 \keyword{datasets}

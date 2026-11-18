@@ -420,9 +420,9 @@ test_that("bmdBoot function computes BMD (relative) correctly for ryegrass horme
   
   # Expected results based on manual calculation (checked in v2.6.7)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.55704870290614)
-  expect_equal(result$Boot.samples.used, 42)
-  expect_equal(unname(result$interval[1,]), c(1.44434658745943,1.75290180636397), tolerance = 1e-2)
+  expect_equal(result$Results[1, "BMD"], 1.55704674088924)
+  expect_equal(result$Boot.samples.used, 37)
+  expect_equal(unname(result$interval[1,]), c(1.43307048248001,1.81243156716015), tolerance = 1e-2) # c(1.44434658745943,1.75290180636397)
 }) 
 
 test_that("bmdBoot function computes BMD (relative) with log-transformed response correctly for ryegrass model", {

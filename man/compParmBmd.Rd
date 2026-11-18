@@ -4,27 +4,44 @@
 \alias{compParmBmd}
 \title{Comparison of benchmark dose estimates}
 \usage{
-compParmBmd(
-  object,
-  operator = c("-", "/"),
-  vcov. = vcov,
-  od = FALSE,
-  display = TRUE
-)
+compParmBmd(object, operator = c("-", "/"), vcov. = vcov, display = TRUE)
 }
 \arguments{
 \item{object}{object of class \code{bmd}}
+
+\item{operator}{additive differences ("-") or proportional differences ("/")}
+
+\item{vcov.}{which function to use to compute variance-covariance matrix. Only
+relevant when object is bmd() object, and not bmdBoot()}
+
+\item{display}{whether to display the results}
+}
+\value{
+A matrix with columns containing the estimates, estimated standard
+errors, values of t-statistics and p-values for the null hypothesis that the
+ratio equals 1 or that the difference equals 0 (depending on the operator
+argument).
 }
 \description{
 Comparison of benchmark doses and benchmark dose estimates in models with
 multiple curve levels.
 }
+\details{
+DEVELOPMENT VERSION - USE AT OWN RISK AND PLEASE PROVIDE FEEDBACK ABOUT USAGE
+}
 \examples{
 
 library(drc)
+library(bmd)
+object0 <- drm(DryMatter ~ Dose, curveid = Herbicide, data = S.alba, fct = LL.4())
+bmdResult <- bmd(object0, bmr = 0.08, def = "relative", backgType = "modelBased", display = FALSE)
+compParmAdditive <- compParmBmd(bmdResult, operator = "-", display = TRUE)
 
 ## Examples to be added
 
+}
+\author{
+Signe M. Jensen and Jens Riis Baalkilde
 }
 \keyword{models}
 \keyword{nonlinear}

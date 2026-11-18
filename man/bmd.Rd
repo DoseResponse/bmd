@@ -106,10 +106,14 @@ BMD is computed on the original scale.  Options include "none" (default),
 "log" (natural logarithm) and "sqrt"(square root).}
 
 \item{interval}{character string specifying the type of confidence interval
-to use: "delta" (default), "inv", "profile" or "profileGrid"
+to use: "delta" (default), "sandwich", "inv", "profile" or "profileGrid"
 
 "delta" - BMDL is based on the lower limit of a Wald confidence interval
 based on the delta method
+
+"sandwich" - BMDL is based on the lower limit of a Wald confidence interval
+based on the delta method with the sandwich variance-covariance matrix for the
+parameters
 
 "inv" - BMDL is based on inverse regression, that is the dose associated
 with the upper limit of the pointwise confidence interval of the

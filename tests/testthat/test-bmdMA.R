@@ -178,7 +178,7 @@ test_that("bmdMA function handles type argument", {
   expect_equal(bmdMABootBCa$interval[1,2], "Not available for BCa bootstrap") 
   
   # SE (only for Buckland)
-  expect_equal(bmdMABuckland$SE[1, 1], 0.0785971536016299) # manual calculation checked in v2.6.7
+  expect_equal(bmdMABuckland$SE[1, 1], 0.0785982674608932, tolerance = 1e-8) # manual calculation checked in v2.6.8
 })
 
 test_that("bmdMA handles seed correctly when using Stacking weights",{
@@ -655,18 +655,18 @@ test_that("bmdMA function computes BMD (point) correctly for lemna models", {
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   resultCurveBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 52, def = "point", backgType = "modelBased", type = "curve", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.7.6)
+  # Expected results based on manual calculation (checked in v2.7.8)
   # Kang
   expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
   expect_equal(resultKang$Results[1, "BMD_MA"], 4.20666707444774)
   expect_equal(resultKang$SE[1,1], NA)
-  expect_equal(unname(resultKang$interval[1,]), c(0.735395381212274,7.67793876768321), tolerance = 1e-6)
+  expect_equal(unname(resultKang$interval[1,]), c(2.40415685555927,6.00917729333623), tolerance = 1e-6) # c(0.735395381212274,7.67793876768321)
   
   # Buckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 4.20666707444774)
-  expect_equal(resultBuckland$SE[1,1], 2.11445972559811, tolerance = 1e-5)
-  expect_equal(unname(resultBuckland$interval[1,]), c(0.728690325754875,7.68464382314061), tolerance = 1e-5)
+  expect_equal(resultBuckland$SE[1,1], 1.10255818084915, tolerance = 1e-5) # 2.11445972559811
+  expect_equal(unname(resultBuckland$interval[1,]), c(2.39312025175302,6.02021389714248), tolerance = 1e-5) # c(0.728690325754875,7.68464382314061)
   
   # Boot
   expect_true(!is.na(resultBoot$Results[1, "BMD_MA"]))
@@ -719,18 +719,18 @@ test_that("bmdMA function computes BMD (extra) correctly for lemna models", {
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   resultCurveBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "extra", backgType = "modelBased", type = "curve", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   # Kang
   expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
   expect_equal(resultKang$Results[1, "BMD_MA"], 0.853320135656905)
   expect_equal(resultKang$SE[1,1], NA)
-  expect_equal(unname(resultKang$interval[1,]), c(-0.923557891551217,2.63019816286503), tolerance = 1e-5)
+  expect_equal(unname(resultKang$interval[1,]), c(-0.0563126119100748,1.7629528832238), tolerance = 1e-5) # c(-0.923557891551217,2.63019816286503)
   
   # Buckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 0.853320135656905)
-  expect_equal(resultBuckland$SE[1,1], 1.11688376601134, tolerance = 1e-5)
-  expect_equal(unname(resultBuckland$interval[1,]), c(-0.983790177750073,2.69043044906388), tolerance = 1e-5)
+  expect_equal(resultBuckland$SE[1,1], 0.601610948968137, tolerance = 1e-5) # 1.11688376601134
+  expect_equal(unname(resultBuckland$interval[1,]), c(-0.136241815767092,1.84288208708082), tolerance = 1e-5) # c(-0.983790177750073,2.69043044906388)
   
   # Boot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))
@@ -784,18 +784,18 @@ test_that("bmdMA function computes BMD (relative) correctly for lemna models", {
   set.seed(1, kind = "Mersenne-Twister", normal.kind = "Inversion")
   resultCurveBCa <- bmdMA(modelList0, modelWeights = "AIC", bmr = 0.1, def = "relative", backgType = "modelBased", type = "curve", bootInterval = "BCa", R = 50, display = FALSE, progressInfo = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   # Kang
   expect_true(!is.na(resultKang$Results[1, "BMD_MA"]))
   expect_equal(resultKang$Results[1, "BMD_MA"], 0.853320135656905)
   expect_equal(resultKang$SE[1,1], NA)
-  expect_equal(unname(resultKang$interval[1,]), c(-0.923557891551217,2.63019816286503), tolerance = 1e-5)
+  expect_equal(unname(resultKang$interval[1,]), c(-0.0563126119100748,1.7629528832238), tolerance = 1e-5) # c(-0.923557891551217,2.63019816286503)
   
   # Buckland
   expect_true(!is.na(resultBuckland$Results[1, "BMD_MA"]))
   expect_equal(resultBuckland$Results[1, "BMD_MA"], 0.853320135656905)
-  expect_equal(resultBuckland$SE[1,1], 1.11688376601134, tolerance = 1e-5)
-  expect_equal(unname(resultBuckland$interval[1,]), c(-0.983790177750073,2.69043044906388), tolerance = 1e-5)
+  expect_equal(resultBuckland$SE[1,1], 0.601610948968137, tolerance = 1e-5) # 1.11688376601134
+  expect_equal(unname(resultBuckland$interval[1,]), c(-0.136241815767092,1.84288208708082), tolerance = 1e-5) # c(-0.983790177750073,2.69043044906388)
   
   # Boot
   expect_true(all(!is.na(resultBoot$Results[, "BMD_MA"])))

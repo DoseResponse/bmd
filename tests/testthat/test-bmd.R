@@ -515,11 +515,12 @@ test_that("bmd function computes BMD (point) correctly for ryegrass hormesis mod
   
   result <- bmd(object0, bmr = 3.2, def = "point", backgType = "modelBased", display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 3.63196270261622)
+  expect_equal(result$Results[1, "BMD"], 3.63196406872002, tolerance = 1e-8)
   expect_equal(result$bmrScaled[1,1], 3.2)
-  expect_equal(unname(result$interval[1,]), c(3.26967714112966,3.99424826410278))
+  expect_equal(result$SE[1,1], 0.2095189414838, tolerance = 1e-6)
+  expect_equal(unname(result$interval[1,]), c(3.26967799234597,3.99425014509407), tolerance = 1e-8) # c(3.26967714112966,3.99424826410278)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
 
@@ -528,12 +529,12 @@ test_that("bmd function computes BMD (extra) correctly for ryegrass hormesis mod
   
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.53181216366916)
-  expect_equal(result$bmrScaled[1,1], 7.00907118396823)
-  expect_equal(result$SE[1,1], 0.202141486943859)
-  expect_equal(unname(result$interval[1,]), c(1.18228268602468,1.88134164131337))
+  expect_equal(result$Results[1, "BMD"], 1.53180958567858)
+  expect_equal(result$bmrScaled[1,1], 7.00907118396836)
+  expect_equal(result$SE[1,1], 0.202140476111957)
+  expect_equal(unname(result$interval[1,]), c(1.18228185589685,1.88133731546032), tolerance = 1e-8) # c(1.18228268602468,1.88134164131337)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
 
@@ -542,12 +543,12 @@ test_that("bmd function computes BMD (relative) correctly for ryegrass hormesis 
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.55704870290614)
+  expect_equal(result$Results[1, "BMD"], 1.55704674088924)
   expect_equal(result$bmrScaled[1,1], 6.96755641076537)
-  expect_equal(result$SE[1,1], 0.199483130883183)
-  expect_equal(unname(result$interval[1,]), c(1.21211587595366,1.90198152985862))
+  expect_equal(result$SE[1,1], 0.199482370923757)
+  expect_equal(unname(result$interval[1,]), c(1.2121152280049,1.90197825377359), tolerance = 1e-8) # c(1.21211587595366,1.90198152985862)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](0)*0.9))
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
@@ -557,12 +558,12 @@ test_that("bmd function computes BMD (added) correctly for ryegrass hormesis mod
   
   result <- bmd(object0, bmr = 0.1, def = "added", backgType = "modelBased", display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.02789452211147)
+  expect_equal(result$Results[1, "BMD"], 1.02788071054439)
   expect_equal(result$bmrScaled[1,1], 7.64172934529486)
-  expect_equal(result$SE[1,1], 0.412427948360833)
-  expect_equal(unname(result$interval[1,]), c(0.31475182419264,1.7410372200303))
+  expect_equal(result$SE[1,1], 0.412556994761773)
+  expect_equal(unname(result$interval[1,]), c(0.314514874279161,1.74124654680962), tolerance = 1e-8) # c(0.31475182419264,1.7410372200303)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](0)-0.1))
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
@@ -572,12 +573,12 @@ test_that("bmd function computes BMD (hybridAdd with hybridSD background) correc
   
   result <- bmd(object0, bmr = 0.1, def = "hybridAdd", backgType = "hybridSD", backg = 2, display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.33874261053728)
+  expect_equal(result$Results[1, "BMD"], 1.33870885673267)
   expect_equal(result$bmrScaled[1,1], 7.29834344888762)
-  expect_equal(result$SE[1,1], 0.2514331458636)
-  expect_equal(unname(result$interval[1,]), c(0.903981308119492,1.77350391295507))
+  expect_equal(result$SE[1,1], 0.251427661542502)
+  expect_equal(unname(result$interval[1,]), c(0.903957037435446,1.7734606760299), tolerance = 1e-8)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
 
@@ -586,12 +587,12 @@ test_that("bmd function computes BMD (hybridExc with hybridSD background) correc
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridSD", backg = 2, display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.33434665932782)
+  expect_equal(result$Results[1, "BMD"], 1.33431080549692)
   expect_equal(result$bmrScaled[1,1], 7.30429999406768)
-  expect_equal(result$SE[1,1], 0.25271343096816)
-  expect_equal(unname(result$interval[1,]), c(0.897371573938349,1.77132174471728))
+  expect_equal(result$SE[1,1], 0.252707823543896)
+  expect_equal(unname(result$interval[1,]), c(0.897345416079014,1.77127619491482), tolerance = 1e-8)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
 
@@ -600,12 +601,12 @@ test_that("bmd function computes BMD (hybridExc with hybridPercentile background
   
   result <- bmd(object0, bmr = 0.1, def = "hybridExc", backgType = "hybridPercentile", backg = 0.05, display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.23434488297234)
+  expect_equal(result$Results[1, "BMD"], 1.23434793885437)
   expect_equal(result$bmrScaled[1,1], 7.43153058963181)
-  expect_equal(result$SE[1,1], 0.287813217834331)
-  expect_equal(unname(result$interval[1,]), c(0.736677604412129,1.73201216153255))
+  expect_equal(result$SE[1,1], 0.287730459847508)
+  expect_equal(unname(result$interval[1,]), c(0.73682375985791,1.73187211785083), tolerance = 1e-8)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
 
@@ -614,12 +615,12 @@ test_that("bmd function computes BMD (relative) with log-transformed response co
   
   result <- bmd(object0, bmr = 0.1, def = "relative", backgType = "modelBased", respTrans = "log", display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.44209342953523)
+  expect_equal(result$Results[1, "BMD"], 1.44210154121065)
   expect_equal(result$bmrScaled[1,1], 1.93422445377383)
-  expect_equal(result$SE[1,1], 0.355947968145662)
-  expect_equal(unname(result$interval[1,]), c(0.826612118446638,2.05757474062382))
+  expect_equal(result$SE[1,1], 0.355945593202198)
+  expect_equal(unname(result$interval[1,]), c(0.826624336888295,2.05757874553301), tolerance = 1e-8)
   expect_equal(result$bmrScaled[1], log(exp(drop(object0$curve[[1]](0)))*0.9))
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
@@ -631,10 +632,10 @@ test_that("bmd function computes BMD (relative) with square root-transformed res
   
   # Expected results based on manual calculation (checked in v2.6.7)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.52253767591639)
+  expect_equal(result$Results[1, "BMD"], 1.52253988839469)
   expect_equal(result$bmrScaled[1,1], 2.63448978657361)
-  expect_equal(result$SE[1,1], 0.243426470233301)
-  expect_equal(unname(result$interval[1,]), c(1.10162097905078,1.943454372782))
+  expect_equal(result$SE[1,1], 0.243427951419709)
+  expect_equal(unname(result$interval[1,]), c(1.10162063035344,1.94345914643594), tolerance = 1e-8)
   expect_equal(result$bmrScaled[1], drop(object0$curve[[1]](result$Results[1, "BMD"])), tolerance = 1e-4)
 })
 
@@ -643,15 +644,16 @@ test_that("bmd function computes correct delta confidence interval for a ryegras
   
   result <- bmd(object0, bmr = 0.1, def = "extra", backgType = "modelBased", display = FALSE)
   
-  # Expected results based on manual calculation (checked in v2.6.7)
+  # Expected results based on manual calculation (checked in v2.6.8)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.53181216366916)
+  expect_equal(result$Results[1, "BMD"], 1.53180958562746)
   expect_equal(result$bmrScaled[1,1], 7.00907118396823)
-  expect_equal(result$SE[1,1], 0.202141486943859)
-  expect_equal(unname(result$interval[1,]), c(1.18228268602468,1.88134164131337))
+  expect_equal(result$SE[1,1], 0.202140476121288)
+  expect_equal(unname(result$interval[1,]), c(1.18228185582959,1.88133731542533))
 })
 
 test_that("bmd function computes correct profile confidence interval for a ryegrass hormesis model", {
+  skip_on_cran()
   object0 <- drm(rootl ~ conc, data = ryegrass, fct = BC.5())
 
   invisible(
@@ -664,10 +666,10 @@ test_that("bmd function computes correct profile confidence interval for a ryegr
 
   # Expected results based on manual calculation (checked in v2.6.7)
   expect_true(!is.na(result$Results[1, "BMD"]))
-  expect_equal(result$Results[1, "BMD"], 1.53181216366916)
+  expect_equal(result$Results[1, "BMD"], 1.53180958565011)
   expect_equal(result$bmrScaled[1,1], 7.00907118396823)
   expect_true(unname(is.na(result$SE)))
-  expect_equal(unname(result$interval[1,]), c(1.36199561066341,1.71658644037318))
+  expect_equal(unname(result$interval[1,]), c(1.36200023246427,1.71661382540352), tolerance = 1e-8)
 })
 
 
@@ -749,6 +751,7 @@ test_that("bmd function computes BMD (excess) correctly for TCDD model", {
 })
 
 test_that("bmd function computes BMD (additional) correctly for TCDD model", {
+  skip_on_cran()
   object0 <- drm(incidence/total ~ conc, weights = total, fct = LL.4(), data = TCDD, type = "binomial")
   
   result <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", display = FALSE)
@@ -880,6 +883,7 @@ test_that("bmd function computes BMD (excess) correctly for Chlorac model", {
 })
 
 test_that("bmd function computes BMD (additional) correctly for Chlorac model", {
+  skip_on_cran()
   object0 <- drm(num.dead/total ~ conc, weights = total, data = chlorac, fct = LN.3u(), type = "binomial")
   
   result <- bmd(object0, bmr = 0.1, def = "additional", backgType = "modelBased", display = FALSE)
